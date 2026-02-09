@@ -25,6 +25,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const config = foundry.utils.mergeObject({
             pc: {
                 content: "CRITICAL",
+                fontFamily: "Bangers",
                 fontSize: "normal",
                 color: "#ffcc00",
                 backgroundColor: "#000000",
@@ -33,6 +34,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             },
             adversary: {
                 content: "CRITICAL",
+                fontFamily: "Bangers",
                 fontSize: "normal",
                 color: "#ff0000",
                 backgroundColor: "#000000",
@@ -43,6 +45,13 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
         return {
             config,
+            fonts: {
+                "Bangers": "Bangers",
+                "Black Ops One": "Black Ops One",
+                "Cinzel Decorative": "Cinzel Decorative",
+                "Metal Mania": "Metal Mania",
+                "Signika": "Signika"
+            },
             fontSizes: {
                 small: "Small",
                 normal: "Normal",

@@ -1,3 +1,35 @@
+@font-face {
+    font-family: "Bangers";
+    src: url("../fonts/Bangers-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Black Ops One";
+    src: url("../fonts/BlackOpsOne-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Cinzel Decorative";
+    src: url("../fonts/CinzelDecorative-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Metal Mania";
+    src: url("../fonts/MetalMania-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 /* IMPORTANTE: position: fixed !important garante que o overlay
    flutue sobre a tela inteira sem empurrar a UI do Foundry.
 */
@@ -31,7 +63,7 @@
 
 /* Texto Principal */
 .crit-title {
-    font-family: "Signika", sans-serif;
+    font-family: "Bangers", sans-serif;
     font-size: 8rem;
     font-weight: 900;
     text-transform: uppercase;
@@ -134,3 +166,55 @@
     border-bottom: 2px solid #ff6400;
     font-weight: bold;
 }
+
+/* --- Crit FX Styles (Moved from JS) --- */
+#dh-crit-fx-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 100000;
+    overflow: hidden;
+}
+
+#dh-crit-fx-border {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 200000;
+    box-sizing: border-box;
+    border: 0px solid transparent;
+    transition: border 0.3s ease;
+    display: none;
+    --cfx-border-rgb: 255, 0, 0;
+}
+
+#dh-crit-fx-border.active {
+    display: block;
+    animation: cfx-pulse-border 2s infinite;
+}
+
+.cfx-shard-realistic {
+    position: absolute;
+    background: rgba(220, 240, 255, 0.6);
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.8), 0 0 5px rgba(0,0,0,0.2);
+    pointer-events: none;
+    will-change: transform;
+    z-index: 100002;
+}
+
+@keyframes cfx-pulse-border { 0% { box-shadow: inset 0 0 20px rgba(var(--cfx-border-rgb), 0.5); border-color: rgba(var(--cfx-border-rgb), 0.8); } 50% { box-shadow: inset 0 0 50px rgba(var(--cfx-border-rgb), 0.8); border-color: rgba(var(--cfx-border-rgb), 1); } 100% { box-shadow: inset 0 0 20px rgba(var(--cfx-border-rgb), 0.5); border-color: rgba(var(--cfx-border-rgb), 0.8); } }
+@keyframes cfx-pulse-anim { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(var(--cfx-pulse-scale)); } 100% { transform: scale(1) rotate(0deg); } }
+
+/* --- Config Dialog Styles (Moved from HBS) --- */
+.dh-crit-config .tab { display: none; }
+.dh-crit-config .tab.active { display: block; }
+.dh-crit-config .form-group { margin-bottom: 0.8rem; }
+.dh-crit-config .tab-content-wrapper { margin-bottom: 1.5rem; }
+.dh-crit-config .notes { margin-bottom: 1rem; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #4b4a44; border-radius: 3px; color: #ffffff; font-size: 0.9em; }
+.dh-crit-config button[type="submit"] { width: 100%; }

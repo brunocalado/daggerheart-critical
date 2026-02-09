@@ -46,8 +46,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontSize: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
-            adversary: { content: "CRITICAL", fontSize: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
         };
         const textConfig = foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
 

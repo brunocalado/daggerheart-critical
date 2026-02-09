@@ -79,7 +79,8 @@ Hooks.once("init", () => {
         type: Object,
         default: {
             pc: {
-                content: "CRITICAL",
+                content: "CRITICAL!",
+                fontFamily: "Bangers",
                 fontSize: "normal",
                 color: "#ffcc00",
                 backgroundColor: "#000000",
@@ -87,7 +88,8 @@ Hooks.once("init", () => {
                 usePlayerColor: false
             },
             adversary: {
-                content: "CRITICAL",
+                content: "CRITICAL!",
+                fontFamily: "Bangers",
                 fontSize: "normal",
                 color: "#ff0000",
                 backgroundColor: "#000000",
