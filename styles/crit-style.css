@@ -13,7 +13,7 @@
     border: none !important;
     pointer-events: none; /* Permite clicar através */
     margin: 0 !important;
-    
+
     /* Centralização absoluta */
     display: flex !important;
     align-items: center;
@@ -38,36 +38,62 @@
     line-height: 1;
     opacity: 0;
     animation: crit-explode 3s ease-out forwards;
+    padding: 20px 40px;
+    border-radius: 8px;
 }
 
-/* Nome do Personagem */
-.crit-alias {
-    font-family: "Signika", sans-serif;
-    font-size: 3rem;
-    color: white;
-    margin-top: 10px;
-    text-shadow: 2px 2px 4px #000;
-    opacity: 0;
-    animation: fade-in-up 0.5s ease-out 0.2s forwards;
+/* --- Fill Modes --- */
+
+/* Box: text in a padded box (default) */
+.crit-fill-box .crit-title {
+    display: inline-block;
+}
+
+/* Band: full width horizontal band */
+.crit-fill-band {
+    width: 100vw;
+    flex-direction: row;
+}
+.crit-fill-band .crit-title {
+    width: 100%;
+    border-radius: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Full: entire screen filled */
+.crit-fill-full {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+}
+.crit-fill-full .crit-title {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0;
+    background-color: transparent !important;
 }
 
 /* --- Estilos por Tipo --- */
 
-/* Duality (Dourado) */
+/* Duality (Dourado) - text-shadow only, color comes from settings */
 .duality-style .crit-title {
-    color: #ffcc00;
-    text-shadow: 
-        0 0 10px #ffaa00, 
-        0 0 20px #ff4400, 
+    text-shadow:
+        0 0 10px currentColor,
+        0 0 20px rgba(0, 0, 0, 0.5),
         4px 4px 0px #000;
 }
 
-/* Adversary (Vermelho) */
+/* Adversary (Vermelho) - text-shadow only, color comes from settings */
 .adversary-style .crit-title {
-    color: #ff0000;
-    text-shadow: 
-        0 0 10px #880000, 
-        0 0 20px #000000, 
+    text-shadow:
+        0 0 10px currentColor,
+        0 0 20px rgba(0, 0, 0, 0.5),
         4px 4px 0px #000;
 }
 
@@ -81,7 +107,30 @@
     100% { opacity: 0; transform: scale(2.0); filter: blur(10px); }
 }
 
-@keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+/* --- Active Tab Styling (shared by both config dialogs) --- */
+
+.dh-crit-config .tabs a,
+.dh-crit-text-config .tabs a {
+    position: relative;
+    padding: 6px 16px;
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    color: #b0b0b0;
+    transition: all 0.15s ease;
+}
+
+.dh-crit-config .tabs a:hover,
+.dh-crit-text-config .tabs a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dh-crit-config .tabs a.active,
+.dh-crit-text-config .tabs a.active {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #7a7971;
+    border-bottom: 2px solid #ff6400;
+    font-weight: bold;
 }

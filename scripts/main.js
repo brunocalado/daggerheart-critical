@@ -1,5 +1,6 @@
 import { CritOverlay } from "./crit-overlay.js";
 import { CritConfig } from "./crit-config.js";
+import { CritTextConfig } from "./crit-text-config.js";
 import { CritFX } from "./crit-fx.js";
 
 const MODULE_ID = "daggerheart-critical";
@@ -61,6 +62,40 @@ Hooks.once("init", () => {
             adversary: { type: "none", options: {} }
         }
     });
+
+    // --- Critical Text Settings ---
+    game.settings.registerMenu(MODULE_ID, "critTextMenu", {
+        name: "Critical Text",
+        label: "Configure Text",
+        hint: "Customize the critical hit text appearance, size, color, and animation.",
+        icon: "fas fa-font",
+        type: CritTextConfig,
+        restricted: true
+    });
+
+    game.settings.register(MODULE_ID, "critTextSettings", {
+        scope: "world",
+        config: false,
+        type: Object,
+        default: {
+            pc: {
+                content: "CRITICAL",
+                fontSize: "normal",
+                color: "#ffcc00",
+                backgroundColor: "#000000",
+                fill: "none",
+                usePlayerColor: false
+            },
+            adversary: {
+                content: "CRITICAL",
+                fontSize: "normal",
+                color: "#ff0000",
+                backgroundColor: "#000000",
+                fill: "none",
+                usePlayerColor: false
+            }
+        }
+    });
 });
 
 Hooks.on("createChatMessage", (message) => {
@@ -89,10 +124,9 @@ function detectCritType(message, rollData) {
 }
 
 function triggerCriticalEffect(message, type) {
-    const alias = message.alias || message.author.name;
-    
     // Renders the visual
-    new CritOverlay({ alias, type }).render(true);
+    const userColor = message.author?.color?.toString() || "#ffffff";
+    new CritOverlay({ type, userColor }).render(true);
 
     // Triggers configured Visual FX
     const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");

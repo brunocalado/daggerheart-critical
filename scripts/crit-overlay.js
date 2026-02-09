@@ -1,11 +1,18 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
+const FONT_SIZE_MAP = {
+    small: "4",
+    normal: "8",
+    large: "12",
+    "extra-large": "16"
+};
+
 export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
-    
+
     constructor(options = {}) {
         super(options);
-        this.alias = options.alias || "Unknown";
         this.type = options.type || "duality"; // 'duality' or 'adversary'
+        this.userColor = options.userColor || "#ffffff";
     }
 
     static DEFAULT_OPTIONS = {
@@ -33,18 +40,31 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     async _prepareContext(options) {
-        // Presentation logic based on type
-        let label = "CRITICAL";
-        let cssClass = "duality-style";
+        const configKey = (this.type === "adversary") ? "adversary" : "pc";
+        const cssClass = (this.type === "adversary") ? "adversary-style" : "duality-style";
 
-        if (this.type === "adversary") {
-            cssClass = "adversary-style";
+        // Load text settings
+        const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
+        const defaults = {
+            pc: { content: "CRITICAL", fontSize: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
+            adversary: { content: "CRITICAL", fontSize: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
+        };
+        const textConfig = foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
+
+        // Map fontSize name to rem value
+        textConfig.fontSizeRem = FONT_SIZE_MAP[textConfig.fontSize] || "8";
+
+        // Resolve color: use player color if enabled
+        if (textConfig.usePlayerColor) {
+            textConfig.resolvedColor = this.userColor;
+        } else {
+            textConfig.resolvedColor = textConfig.color || defaults[configKey].color;
         }
 
         return {
-            alias: this.alias,
-            critTitle: label,
-            typeClass: cssClass
+            critTitle: textConfig.content || "CRITICAL",
+            typeClass: cssClass,
+            textConfig
         };
     }
 
