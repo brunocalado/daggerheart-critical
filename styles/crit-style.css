@@ -1,0 +1,87 @@
+/* IMPORTANTE: position: fixed !important garante que o overlay
+   flutue sobre a tela inteira sem empurrar a UI do Foundry.
+*/
+.crit-overlay-app {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 99999; /* Acima de tudo */
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    pointer-events: none; /* Permite clicar através */
+    margin: 0 !important;
+    
+    /* Centralização absoluta */
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Container do conteúdo */
+.crit-splash-container {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Texto Principal */
+.crit-title {
+    font-family: "Signika", sans-serif;
+    font-size: 8rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    line-height: 1;
+    opacity: 0;
+    animation: crit-explode 3s ease-out forwards;
+}
+
+/* Nome do Personagem */
+.crit-alias {
+    font-family: "Signika", sans-serif;
+    font-size: 3rem;
+    color: white;
+    margin-top: 10px;
+    text-shadow: 2px 2px 4px #000;
+    opacity: 0;
+    animation: fade-in-up 0.5s ease-out 0.2s forwards;
+}
+
+/* --- Estilos por Tipo --- */
+
+/* Duality (Dourado) */
+.duality-style .crit-title {
+    color: #ffcc00;
+    text-shadow: 
+        0 0 10px #ffaa00, 
+        0 0 20px #ff4400, 
+        4px 4px 0px #000;
+}
+
+/* Adversary (Vermelho) */
+.adversary-style .crit-title {
+    color: #ff0000;
+    text-shadow: 
+        0 0 10px #880000, 
+        0 0 20px #000000, 
+        4px 4px 0px #000;
+}
+
+/* --- Animações --- */
+
+@keyframes crit-explode {
+    0% { opacity: 0; transform: scale(0.1) rotate(-10deg); }
+    10% { opacity: 1; transform: scale(1.2) rotate(0deg); }
+    20% { transform: scale(1.0); }
+    85% { opacity: 1; transform: scale(1.1); filter: blur(0px); }
+    100% { opacity: 0; transform: scale(2.0); filter: blur(10px); }
+}
+
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
