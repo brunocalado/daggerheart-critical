@@ -56,7 +56,10 @@ Hooks.once("init", () => {
         scope: "world",
         config: false,
         type: Object,
-        default: { type: "none", options: {} }
+        default: {
+            pc: { type: "none", options: {} },
+            adversary: { type: "none", options: {} }
+        }
     });
 });
 
@@ -92,7 +95,11 @@ function triggerCriticalEffect(message, type) {
     new CritOverlay({ alias, type }).render(true);
 
     // Triggers configured Visual FX
-    const fxConfig = game.settings.get(MODULE_ID, "critFXSettings");
+    const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+    // The 'type' variable is 'duality' or 'adversary'. We map 'duality' to 'pc'.
+    const configKey = (type === "duality") ? "pc" : "adversary";
+    const fxConfig = fxSettings[configKey];
+
     if (fxConfig && fxConfig.type !== "none") {
         const fx = new CritFX();
         switch (fxConfig.type) {

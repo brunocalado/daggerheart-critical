@@ -1,52 +1,159 @@
-<div class="standard-form">
-    <div class="form-group">
-        <label>Effect Type</label>
-        <div class="form-fields">
-            <select name="type">
-                {{selectOptions effects selected=config.type}}
-            </select>
+<div class="d-flex flex-column gap-2 dh-crit-config">
+    <style>
+        .dh-crit-config .tab { display: none; }
+        .dh-crit-config .tab.active { display: block; }
+        .dh-crit-config .form-group { margin-bottom: 0.8rem; } /* Espaço entre opções */
+        .dh-crit-config .tab-content-wrapper { margin-bottom: 1.5rem; } /* Espaço antes do botão salvar */
+        .dh-crit-config .notes { margin-bottom: 1rem; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #4b4a44; border-radius: 3px; color: #ffffff; font-size: 0.9em; }
+        .dh-crit-config button[type="submit"] { width: 100%; }
+    </style>
+
+    <nav class="tabs" data-group="primary">
+        <a class="item{{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">Player Character</a>
+        <a class="item{{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">Adversary</a>
+    </nav>
+
+    <section class="content">
+        {{!-- Player Character Tab --}}
+        <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
+            <div class="tab-content-wrapper">
+            <p class="notes">Configure visual effects for Player Character (Duality Dice) criticals.</p>
+            
+            <div class="form-group">
+                <label>Effect Type</label>
+                <select name="pc.type">
+                    {{#each effects as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.pc.type key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            {{#if (eq config.pc.type "shake")}}
+            <div class="form-group">
+                <label>Intensity</label>
+                <select name="pc.options.intensity">
+                    <option value="mild" {{#if (eq config.pc.options.intensity "mild")}}selected{{/if}}>Mild</option>
+                    <option value="normal" {{#if (or (eq config.pc.options.intensity "normal") (not config.pc.options.intensity))}}selected{{/if}}>Normal</option>
+                    <option value="extreme" {{#if (eq config.pc.options.intensity "extreme")}}selected{{/if}}>Extreme</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="pc.options.duration" value="{{config.pc.options.duration}}" placeholder="500">
+            </div>
+            {{/if}}
+
+            {{#if (eq config.pc.type "shatter")}}
+            <div class="form-group">
+                <label>Shard Count</label>
+                <input type="number" name="pc.options.count" value="{{config.pc.options.count}}" placeholder="200">
+            </div>
+            {{/if}}
+
+            {{#if (eq config.pc.type "border")}}
+            <div class="form-group">
+                <label>Border Thickness (px)</label>
+                <input type="number" name="pc.options.thickness" value="{{config.pc.options.thickness}}" placeholder="20">
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <input type="color" name="pc.options.color" value="{{config.pc.options.color}}">
+            </div>
+            <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="pc.options.duration" value="{{config.pc.options.duration}}" placeholder="3000">
+            </div>
+            {{/if}}
+
+            {{#if (eq config.pc.type "pulsate")}}
+            <div class="form-group">
+                <label>Intensity (1-5)</label>
+                <input type="range" name="pc.options.intensity" value="{{config.pc.options.intensity}}" min="1" max="5" step="1">
+            </div>
+             <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="pc.options.duration" value="{{config.pc.options.duration}}" placeholder="1000">
+            </div>
+             <div class="form-group">
+                <label>Iterations</label>
+                <input type="number" name="pc.options.iterations" value="{{config.pc.options.iterations}}" placeholder="5">
+            </div>
+            {{/if}}
+            </div>
         </div>
-    </div>
 
-    <hr>
+        {{!-- Adversary Tab --}}
+        <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
+             <div class="tab-content-wrapper">
+             <p class="notes">Configure visual effects for Adversary (GM) criticals.</p>
+            
+            <div class="form-group">
+                <label>Effect Type</label>
+                <select name="adversary.type">
+                    {{#each effects as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.adversary.type key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
 
-    {{#if isShake}}
-    <div class="form-group">
-        <label>Intensity</label>
-        <select name="options.intensity">
-            {{selectOptions (object mild="Mild" heavy="Heavy" extreme="Extreme") selected=config.options.intensity}}
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Duration (ms)</label>
-        <input type="number" name="options.duration" value="{{config.options.duration}}" placeholder="500">
-    </div>
-    {{/if}}
+            {{#if (eq config.adversary.type "shake")}}
+            <div class="form-group">
+                <label>Intensity</label>
+                <select name="adversary.options.intensity">
+                    <option value="mild" {{#if (eq config.adversary.options.intensity "mild")}}selected{{/if}}>Mild</option>
+                    <option value="normal" {{#if (or (eq config.adversary.options.intensity "normal") (not config.adversary.options.intensity))}}selected{{/if}}>Normal</option>
+                    <option value="extreme" {{#if (eq config.adversary.options.intensity "extreme")}}selected{{/if}}>Extreme</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="adversary.options.duration" value="{{config.adversary.options.duration}}" placeholder="500">
+            </div>
+            {{/if}}
 
-    {{#if isShatter}}
-    <div class="form-group">
-        <label>Shard Count</label>
-        <input type="number" name="options.count" value="{{config.options.count}}" placeholder="200">
-    </div>
-    {{/if}}
+            {{#if (eq config.adversary.type "shatter")}}
+            <div class="form-group">
+                <label>Shard Count</label>
+                <input type="number" name="adversary.options.count" value="{{config.adversary.options.count}}" placeholder="200">
+            </div>
+            {{/if}}
 
-    {{#if isBorder}}
-    <div class="form-group">
-        <label>Color</label>
-        <input type="color" name="options.color" value="{{config.options.color}}">
-    </div>
-    <div class="form-group">
-        <label>Thickness (px)</label>
-        <input type="number" name="options.thickness" value="{{config.options.thickness}}" placeholder="20">
-    </div>
-    {{/if}}
+            {{#if (eq config.adversary.type "border")}}
+            <div class="form-group">
+                <label>Border Thickness (px)</label>
+                <input type="number" name="adversary.options.thickness" value="{{config.adversary.options.thickness}}" placeholder="20">
+            </div>
+            <div class="form-group">
+                <label>Color</label>
+                <input type="color" name="adversary.options.color" value="{{config.adversary.options.color}}">
+            </div>
+            <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="adversary.options.duration" value="{{config.adversary.options.duration}}" placeholder="3000">
+            </div>
+            {{/if}}
 
-    {{#if isPulsate}}
-    <div class="form-group">
-        <label>Intensity (1-5)</label>
-        <input type="number" name="options.intensity" value="{{config.options.intensity}}" placeholder="2">
+            {{#if (eq config.adversary.type "pulsate")}}
+            <div class="form-group">
+                <label>Intensity (1-5)</label>
+                <input type="range" name="adversary.options.intensity" value="{{config.adversary.options.intensity}}" min="1" max="5" step="1">
+            </div>
+             <div class="form-group">
+                <label>Duration (ms)</label>
+                <input type="number" name="adversary.options.duration" value="{{config.adversary.options.duration}}" placeholder="1000">
+            </div>
+             <div class="form-group">
+                <label>Iterations</label>
+                <input type="number" name="adversary.options.iterations" value="{{config.adversary.options.iterations}}" placeholder="5">
+            </div>
+            {{/if}}
+            </div>
+        </div>
+    </section>
+    
+    <div class="form-footer">
+        <button type="submit">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
     </div>
-    {{/if}}
-
-    <button type="submit"><i class="fas fa-save"></i> Save Configuration</button>
 </div>

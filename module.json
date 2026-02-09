@@ -1,7 +1,8 @@
 {
   "id": "daggerheart-critical",
-  "title": "Daggerheart: Critical",
+  "title": "Daggerheart: Critical",  
   "version": "0.0.1",
+  "description": "Animated Critical for Daggerheart.",  
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -27,5 +28,8 @@
   "styles": [
     "styles/crit-style.css"
   ],
-  "description": "Displays a visual splash screen and plays a sound when a Critical Success is rolled in Daggerheart."
+
+  "url": "https://github.com/brunocalado/daggerheart-critical",
+  "manifest": "https://raw.githubusercontent.com/brunocalado/daggerheart-critical/refs/heads/main/module.json",
+  "download": "https://codeload.github.com/brunocalado/daggerheart-critical/zip/main"
 }
