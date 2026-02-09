@@ -7,6 +7,13 @@ const FONT_SIZE_MAP = {
     "extra-large": "16"
 };
 
+const LETTER_SPACING_MAP = {
+    normal: "normal",
+    tight: "-0.05em",
+    wide: "0.15em",
+    "extra-wide": "0.3em"
+};
+
 export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
 
     constructor(options = {}) {
@@ -46,13 +53,16 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
-            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
         };
         const textConfig = foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
 
         // Map fontSize name to rem value
         textConfig.fontSizeRem = FONT_SIZE_MAP[textConfig.fontSize] || "8";
+
+        // Map letterSpacing name to CSS value
+        textConfig.letterSpacingCSS = LETTER_SPACING_MAP[textConfig.letterSpacing] || "normal";
 
         // Resolve color: use player color if enabled
         if (textConfig.usePlayerColor) {

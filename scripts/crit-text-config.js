@@ -27,6 +27,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 content: "CRITICAL",
                 fontFamily: "Bangers",
                 fontSize: "normal",
+                letterSpacing: "normal",
                 color: "#ffcc00",
                 backgroundColor: "#000000",
                 fill: "none",
@@ -36,6 +37,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 content: "CRITICAL",
                 fontFamily: "Bangers",
                 fontSize: "normal",
+                letterSpacing: "normal",
                 color: "#ff0000",
                 backgroundColor: "#000000",
                 fill: "none",
@@ -57,6 +59,12 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 normal: "Normal",
                 large: "Large",
                 "extra-large": "Extra Large"
+            },
+            letterSpacings: {
+                "normal": "Normal",
+                "tight": "Tight",
+                "wide": "Wide",
+                "extra-wide": "Extra Wide"
             },
             fills: {
                 none: "None",

@@ -1,7 +1,7 @@
 <div class="crit-splash-container {{typeClass}} crit-fill-{{textConfig.fill}}"
      style="{{#if (eq textConfig.fill 'full')}}background-color: {{textConfig.backgroundColor}};{{/if}}{{#if (eq textConfig.fill 'band')}}background-color: {{textConfig.backgroundColor}};{{/if}}">
     <div class="crit-title"
-         style="font-family: '{{textConfig.fontFamily}}', sans-serif; font-size: {{textConfig.fontSizeRem}}rem; color: {{textConfig.resolvedColor}};{{#if (eq textConfig.fill 'box')}} background-color: {{textConfig.backgroundColor}};{{/if}}">
+         style="font-family: '{{textConfig.fontFamily}}', sans-serif; font-size: {{textConfig.fontSizeRem}}rem; letter-spacing: {{textConfig.letterSpacingCSS}}; color: {{textConfig.resolvedColor}};{{#if (eq textConfig.fill 'box')}} background-color: {{textConfig.backgroundColor}};{{/if}}">
         {{critTitle}}
     </div>
 </div>

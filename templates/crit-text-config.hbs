@@ -43,6 +43,15 @@
             </div>
 
             <div class="form-group">
+                <label>Letter Spacing</label>
+                <select name="pc.letterSpacing">
+                    {{#each letterSpacings as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.pc.letterSpacing key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="form-group">
                 <label>Use Player Color</label>
                 <input type="checkbox" name="pc.usePlayerColor" {{#if config.pc.usePlayerColor}}checked{{/if}}>
             </div>
@@ -92,6 +101,15 @@
                 <select name="adversary.fontSize">
                     {{#each fontSizes as |label key|}}
                     <option value="{{key}}" {{#if (eq ../config.adversary.fontSize key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Letter Spacing</label>
+                <select name="adversary.letterSpacing">
+                    {{#each letterSpacings as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.adversary.letterSpacing key)}}selected{{/if}}>{{label}}</option>
                     {{/each}}
                 </select>
             </div>

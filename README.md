@@ -1,4 +1,4 @@
-# Daggerheart: Critical
+# Daggerheart: 💥 Critical 💥
 
 <p align="center"><img width="900" src="assets/images/banner.webp" alt="Critical FX Banner"></p>
 
