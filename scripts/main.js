@@ -1,4 +1,6 @@
 import { CritOverlay } from "./crit-overlay.js";
+import { CritConfig } from "./crit-config.js";
+import { CritFX } from "./crit-fx.js";
 
 const MODULE_ID = "daggerheart-critical";
 
@@ -40,6 +42,22 @@ Hooks.once("init", () => {
         default: false
     });
     
+    // --- Visual FX Settings ---
+    game.settings.registerMenu(MODULE_ID, "critFXMenu", {
+        name: "Critical FX",
+        label: "Configure Visual FX",
+        hint: "Choose a visual effect to play on critical hits.",
+        icon: "fas fa-bolt",
+        type: CritConfig,
+        restricted: true
+    });
+
+    game.settings.register(MODULE_ID, "critFXSettings", {
+        scope: "world",
+        config: false,
+        type: Object,
+        default: { type: "none", options: {} }
+    });
 });
 
 Hooks.on("createChatMessage", (message) => {
@@ -72,6 +90,18 @@ function triggerCriticalEffect(message, type) {
     
     // Renders the visual
     new CritOverlay({ alias, type }).render(true);
+
+    // Triggers configured Visual FX
+    const fxConfig = game.settings.get(MODULE_ID, "critFXSettings");
+    if (fxConfig && fxConfig.type !== "none") {
+        const fx = new CritFX();
+        switch (fxConfig.type) {
+            case "shake": fx.ScreenShake(fxConfig.options); break;
+            case "shatter": fx.GlassShatter(fxConfig.options); break;
+            case "border": fx.ScreenBorder(fxConfig.options); break;
+            case "pulsate": fx.Pulsate(fxConfig.options); break;
+        }
+    }
 
     // Selects sound based on type
     const settingKey = (type === "adversary") ? "adversarySoundPath" : "dualitySoundPath";

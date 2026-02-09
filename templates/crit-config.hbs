@@ -1,0 +1,52 @@
+<div class="standard-form">
+    <div class="form-group">
+        <label>Effect Type</label>
+        <div class="form-fields">
+            <select name="type">
+                {{selectOptions effects selected=config.type}}
+            </select>
+        </div>
+    </div>
+
+    <hr>
+
+    {{#if isShake}}
+    <div class="form-group">
+        <label>Intensity</label>
+        <select name="options.intensity">
+            {{selectOptions (object mild="Mild" heavy="Heavy" extreme="Extreme") selected=config.options.intensity}}
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Duration (ms)</label>
+        <input type="number" name="options.duration" value="{{config.options.duration}}" placeholder="500">
+    </div>
+    {{/if}}
+
+    {{#if isShatter}}
+    <div class="form-group">
+        <label>Shard Count</label>
+        <input type="number" name="options.count" value="{{config.options.count}}" placeholder="200">
+    </div>
+    {{/if}}
+
+    {{#if isBorder}}
+    <div class="form-group">
+        <label>Color</label>
+        <input type="color" name="options.color" value="{{config.options.color}}">
+    </div>
+    <div class="form-group">
+        <label>Thickness (px)</label>
+        <input type="number" name="options.thickness" value="{{config.options.thickness}}" placeholder="20">
+    </div>
+    {{/if}}
+
+    {{#if isPulsate}}
+    <div class="form-group">
+        <label>Intensity (1-5)</label>
+        <input type="number" name="options.intensity" value="{{config.options.intensity}}" placeholder="2">
+    </div>
+    {{/if}}
+
+    <button type="submit"><i class="fas fa-save"></i> Save Configuration</button>
+</div>
