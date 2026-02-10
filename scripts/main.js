@@ -2,6 +2,7 @@ import { CritOverlay } from "./crit-overlay.js";
 import { CritConfig } from "./crit-config.js";
 import { CritTextConfig } from "./crit-text-config.js";
 import { CritSoundConfig } from "./crit-sound-config.js";
+import { CritArtConfig } from "./crit-art-config.js";
 import { CritFX } from "./crit-fx.js";
 
 const MODULE_ID = "daggerheart-critical";
@@ -69,6 +70,23 @@ Hooks.once("init", () => {
             pc: { type: "none", options: {} },
             adversary: { type: "none", options: {} }
         }
+    });
+
+    // --- Critical Art Settings ---
+    game.settings.registerMenu(MODULE_ID, "critArtMenu", {
+        name: "Critical Art",
+        label: "Configure Art",
+        hint: "Configure per-player artwork displayed behind the critical text.",
+        icon: "fas fa-palette",
+        type: CritArtConfig,
+        restricted: true
+    });
+
+    game.settings.register(MODULE_ID, "critArtSettings", {
+        scope: "world",
+        config: false,
+        type: Object,
+        default: {}
     });
 
     // --- Critical Text Settings ---
@@ -173,7 +191,8 @@ function detectCritType(message, rollData) {
 function triggerCriticalEffect(message, type) {
     // Renders the visual
     const userColor = message.author?.color?.toString() || "#ffffff";
-    new CritOverlay({ type, userColor }).render(true);
+    const authorId = message.author?.id;
+    new CritOverlay({ type, userColor, authorId }).render(true);
 
     // Triggers configured Visual FX
     const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");

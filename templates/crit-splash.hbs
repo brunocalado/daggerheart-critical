@@ -1,5 +1,8 @@
 <div class="crit-splash-container {{typeClass}} {{#unless textConfig.useImage}}crit-fill-{{textConfig.fill}}{{/unless}}"
      style="{{#unless textConfig.useImage}}{{#if (eq textConfig.fill 'full')}}background-color: {{textConfig.backgroundColor}};{{/if}}{{#if (eq textConfig.fill 'band')}}background-color: {{textConfig.backgroundColor}};{{/if}}{{/unless}}">
+    {{#if artImagePath}}
+    <img class="crit-art crit-art-{{artPosition}} crit-art-y-{{artPositionY}} crit-art-size-{{artSize}}" src="{{artImagePath}}" alt="">
+    {{/if}}
     {{#if textConfig.useImage}}
     <img class="crit-image crit-image-{{textConfig.imageSize}}" src="{{textConfig.imagePath}}" alt="">
     {{else}}

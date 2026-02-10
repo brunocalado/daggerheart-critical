@@ -102,6 +102,7 @@
 
 /* Container do conteúdo */
 .crit-splash-container {
+    position: relative;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -175,6 +176,51 @@
 .crit-image-normal { max-height: 35vh; }
 .crit-image-large { max-height: 55vh; }
 .crit-image-extra-large { max-height: 75vh; }
+
+/* --- Critical Art (Player Artwork behind text) --- */
+.crit-art {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    --art-x: 0px;
+    --art-y: 0px;
+    translate: calc(-50% + var(--art-x)) calc(-50% + var(--art-y));
+    object-fit: contain;
+    opacity: 0;
+    animation: crit-explode 3s ease-out forwards;
+    pointer-events: none;
+    z-index: 0;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+.crit-title,
+.crit-image {
+    z-index: 1;
+    position: relative;
+}
+
+/* Art Sizes */
+.crit-art-size-very-small { max-height: 20vh; }
+.crit-art-size-small { max-height: 35vh; }
+.crit-art-size-normal { max-height: 55vh; }
+.crit-art-size-large { max-height: 80vh; }
+
+/* Horizontal Positions (X axis) */
+.crit-art-left-out { --art-x: -40vw; }
+.crit-art-left { --art-x: -20vw; }
+.crit-art-middle { --art-x: 0px; }
+.crit-art-right { --art-x: 20vw; }
+.crit-art-right-out { --art-x: 40vw; }
+
+/* Vertical Positions (Y axis) */
+.crit-art-y-top-out { --art-y: -35vh; }
+.crit-art-y-top { --art-y: -15vh; }
+.crit-art-y-middle { --art-y: 0px; }
+.crit-art-y-bottom { --art-y: 15vh; }
+.crit-art-y-bottom-out { --art-y: 35vh; }
 
 /* --- Estilos por Tipo --- */
 
@@ -261,7 +307,8 @@
 
 .dh-crit-config,
 .dh-crit-text-config,
-.dh-crit-sound-config {
+.dh-crit-sound-config,
+.dh-crit-art-config {
     font-family: "Signika", sans-serif;
 }
 
@@ -315,7 +362,8 @@
 /* --- Notes Box --- */
 .dh-crit-config .notes,
 .dh-crit-text-config .notes,
-.dh-crit-sound-config .notes {
+.dh-crit-sound-config .notes,
+.dh-crit-art-config .notes {
     margin-bottom: 1.5rem;
     padding: 10px 12px;
     background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
@@ -331,7 +379,8 @@
 
 .dh-crit-config .notes i,
 .dh-crit-text-config .notes i,
-.dh-crit-sound-config .notes i {
+.dh-crit-sound-config .notes i,
+.dh-crit-art-config .notes i {
     color: #1e90ff;
     font-size: 1.2em;
 }
@@ -339,7 +388,8 @@
 /* --- Form Groups (Modern Layout) --- */
 .dh-crit-config .form-group,
 .dh-crit-text-config .form-group,
-.dh-crit-sound-config .form-group {
+.dh-crit-sound-config .form-group,
+.dh-crit-art-config .form-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -350,7 +400,8 @@
 
 .dh-crit-config .form-group label,
 .dh-crit-text-config .form-group label,
-.dh-crit-sound-config .form-group label {
+.dh-crit-sound-config .form-group label,
+.dh-crit-art-config .form-group label {
     flex: 2;
     font-weight: 600;
     color: #ddd;
@@ -358,7 +409,8 @@
 
 .dh-crit-config .form-group .form-fields,
 .dh-crit-text-config .form-group .form-fields,
-.dh-crit-sound-config .form-group .form-fields {
+.dh-crit-sound-config .form-group .form-fields,
+.dh-crit-art-config .form-group .form-fields {
     flex: 3;
     display: flex;
     /*justify-content: flex-end; /* Alinha o grupo (botão + texto) à direita */
@@ -372,7 +424,10 @@
 .dh-crit-config select,
 .dh-crit-text-config input[type="text"],
 .dh-crit-text-config input[type="number"],
-.dh-crit-text-config select {
+.dh-crit-text-config select,
+.dh-crit-art-config input[type="text"],
+.dh-crit-art-config input[type="number"],
+.dh-crit-art-config select {
     background: var(--crit-bg-input);
     border: 1px solid #444;
     color: #fff;
@@ -386,7 +441,8 @@
 
 /* FIX: Dark background for Select Options */
 .dh-crit-config select option,
-.dh-crit-text-config select option {
+.dh-crit-text-config select option,
+.dh-crit-art-config select option {
     background-color: #2b2b2b;
     color: #f0f0f0;
 }
@@ -396,7 +452,9 @@
 .dh-crit-text-config input:focus,
 .dh-crit-text-config select:focus,
 .dh-crit-sound-config input:focus,
-.dh-crit-sound-config select:focus {
+.dh-crit-sound-config select:focus,
+.dh-crit-art-config input:focus,
+.dh-crit-art-config select:focus {
     outline: none;
     border-color: var(--crit-accent);
     box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
@@ -535,7 +593,8 @@ input:focus + .slider {
 /* Footer Buttons */
 .dh-crit-config .form-footer,
 .dh-crit-text-config .form-footer,
-.dh-crit-sound-config .form-footer {
+.dh-crit-sound-config .form-footer,
+.dh-crit-art-config .form-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--crit-border-light);
@@ -545,13 +604,15 @@ input:focus + .slider {
 
 .dh-crit-config .form-footer button,
 .dh-crit-text-config .form-footer button,
-.dh-crit-sound-config .form-footer button {
+.dh-crit-sound-config .form-footer button,
+.dh-crit-art-config .form-footer button {
     flex: 1;
 }
 
 .dh-crit-config button,
 .dh-crit-text-config button,
-.dh-crit-sound-config button {
+.dh-crit-sound-config button,
+.dh-crit-art-config button {
     background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
     border: 1px solid #111;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -562,8 +623,44 @@ input:focus + .slider {
 
 .dh-crit-config button:hover,
 .dh-crit-text-config button:hover,
-.dh-crit-sound-config button:hover {
+.dh-crit-sound-config button:hover,
+.dh-crit-art-config button:hover {
     background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
     color: #fff;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+/* --- Critical Art Config: Player List (scrollable) --- */
+.crit-art-player-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* --- Critical Art Config: Player Cards --- */
+.crit-art-player-card {
+    background: var(--crit-bg-dark);
+    border: 1px solid var(--crit-border-light);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 0.5rem;
+}
+
+.crit-art-player-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+    font-size: 1.05em;
+    color: #fff;
+}
+
+.crit-art-color-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.3);
+    flex-shrink: 0;
 }

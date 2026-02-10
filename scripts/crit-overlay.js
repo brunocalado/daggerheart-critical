@@ -21,6 +21,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         this.type = options.type || "duality"; // 'duality' or 'adversary'
         this.userColor = options.userColor || "#ffffff";
         this.configOverride = options.configOverride || null;
+        this.authorId = options.authorId || null;
+        this.artOverride = options.artOverride || null;
     }
 
     static DEFAULT_OPTIONS = {
@@ -74,10 +76,37 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             textConfig.resolvedColor = textConfig.color || defaults[configKey].color;
         }
 
+        // Load art settings for PC criticals
+        let artImagePath = null;
+        let artPosition = "middle";
+        let artPositionY = "middle";
+        let artSize = "normal";
+        if (this.artOverride) {
+            if (this.artOverride.imagePath) {
+                artImagePath = this.artOverride.imagePath;
+                artPosition = this.artOverride.position || "middle";
+                artPositionY = this.artOverride.positionY || "middle";
+                artSize = this.artOverride.artSize || "normal";
+            }
+        } else if (this.type !== "adversary" && this.authorId) {
+            const artSettings = game.settings.get("daggerheart-critical", "critArtSettings");
+            const userArt = artSettings[this.authorId];
+            if (userArt && userArt.imagePath) {
+                artImagePath = userArt.imagePath;
+                artPosition = userArt.position || "middle";
+                artPositionY = userArt.positionY || "middle";
+                artSize = userArt.artSize || "normal";
+            }
+        }
+
         return {
             critTitle: textConfig.content || "CRITICAL",
             typeClass: cssClass,
-            textConfig
+            textConfig,
+            artImagePath,
+            artPosition,
+            artPositionY,
+            artSize
         };
     }
 
