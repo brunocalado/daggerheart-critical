@@ -35,7 +35,7 @@ In a narrative game like Daggerheart, a Critical Success is a major story beat. 
     * **Personalize It:** Easily change the overlay text, font,animation or use a custom image to fit your game's unique aesthetic.
 
 * **👤 Per-User Configuration:**
-    * **GM Controlled Customization:** The GM can configure visual and sound effects individually for each player. Only the GM can modify these settings, ensuring a tailored experience for everyone at the table.
+    * **GM Controlled Customization:** The GM can configure visual and sound effects individually for each player.
 
 ## 🚀 Installation
 

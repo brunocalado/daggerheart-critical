@@ -265,6 +265,6 @@ function triggerCriticalEffect(message, type) {
     }
 
     if (soundEnabled && soundPath) {
-        foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+        foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, false);
     }
 }
