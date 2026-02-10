@@ -1,4 +1,8 @@
+import { CritOverlay } from "./crit-overlay.js";
+import { CritFX } from "./crit-fx.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const MODULE_ID = "daggerheart-critical";
 
 export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
@@ -76,6 +80,42 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 this.tabState.temp[key] = event.target.value;
                 this.render();
             });
+        });
+
+        // Preview button
+        this.element.querySelector(".crit-preview-btn")?.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const activeTab = this.tabState.activeTab; // "pc" or "adversary"
+            const type = activeTab === "pc" ? "duality" : "adversary";
+
+            // Read current FX values from the form
+            const formData = new FormDataExtended(this.element);
+            const object = foundry.utils.expandObject(formData.object);
+            const fxConfig = object[activeTab] || {};
+            fxConfig.options ??= {};
+
+            // Trigger overlay (uses saved text settings)
+            const userColor = game.user.color?.toString() || "#ffffff";
+            new CritOverlay({ type, userColor }).render(true);
+
+            // Trigger FX from current form values
+            if (fxConfig.type && fxConfig.type !== "none") {
+                const fx = new CritFX();
+                switch (fxConfig.type) {
+                    case "shake": fx.ScreenShake(fxConfig.options); break;
+                    case "shatter": fx.GlassShatter(fxConfig.options); break;
+                    case "border": fx.ScreenBorder(fxConfig.options); break;
+                    case "pulsate": fx.Pulsate(fxConfig.options); break;
+                }
+            }
+
+            // Play sound
+            const settingKey = (type === "adversary") ? "adversarySoundPath" : "dualitySoundPath";
+            const soundPath = game.settings.get(MODULE_ID, settingKey);
+            if (soundPath) {
+                foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+            }
+
         });
     }
 

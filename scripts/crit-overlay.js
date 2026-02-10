@@ -20,6 +20,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         super(options);
         this.type = options.type || "duality"; // 'duality' or 'adversary'
         this.userColor = options.userColor || "#ffffff";
+        this.configOverride = options.configOverride || null;
     }
 
     static DEFAULT_OPTIONS = {
@@ -56,7 +57,9 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" },
             adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" }
         };
-        const textConfig = foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
+        const textConfig = this.configOverride
+            ? foundry.utils.mergeObject(defaults[configKey], this.configOverride)
+            : foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
 
         // Map fontSize name to rem value
         textConfig.fontSizeRem = FONT_SIZE_MAP[textConfig.fontSize] || "8";

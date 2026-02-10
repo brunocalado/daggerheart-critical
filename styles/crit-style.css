@@ -437,12 +437,19 @@ input:focus + .slider {
     flex: 1; /* Ocupa o restante do espaço */
 }
 
-/* Footer Button */
+/* Footer Buttons */
 .dh-crit-config .form-footer,
 .dh-crit-text-config .form-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--crit-border-light);
+    display: flex;
+    gap: 8px;
+}
+
+.dh-crit-config .form-footer button,
+.dh-crit-text-config .form-footer button {
+    flex: 1;
 }
 
 .dh-crit-config button,

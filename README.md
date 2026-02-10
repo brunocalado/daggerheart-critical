@@ -58,6 +58,10 @@ https://raw.githubusercontent.com/brunocalado/daggerheart-critical/refs/heads/ma
 
 * **sfx-critical:** [https://pixabay.com/service/license-summary/](https://pixabay.com/service/license-summary/)
 
+* **Font Modification Notice:** The font files included in this module have been modified from their original Source form. Specifically, the original TrueType Font (.ttf) files were compressed and converted to Web Open Font Format 2 (.woff2) to optimize performance and reduce loading times within the Foundry VTT environment. All original copyright, trademark, and attribution notices have been retained.
+
+* **License Files:** [licenses](https://github.com/brunocalado/daggerheart-critical/tree/main/docs/licenses)
+
 **Disclaimer:** This module is an independent creation and is not affiliated with Darrington Press.
 
 # 🧰 My Daggerheart Modules

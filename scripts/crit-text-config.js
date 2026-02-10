@@ -1,4 +1,8 @@
+import { CritOverlay } from "./crit-overlay.js";
+import { CritFX } from "./crit-fx.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const MODULE_ID = "daggerheart-critical";
 
 export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
@@ -129,6 +133,45 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     textGroup.style.display = event.target.checked ? "none" : "";
                 }
             });
+        });
+
+        // Preview button
+        this.element.querySelector(".crit-preview-btn")?.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const activeTab = this.tabState.activeTab; // "pc" or "adversary"
+            const type = activeTab === "pc" ? "duality" : "adversary";
+
+            // Read current text values from the form
+            const formData = new FormDataExtended(this.element);
+            const object = foundry.utils.expandObject(formData.object);
+            object[activeTab].usePlayerColor ??= false;
+            object[activeTab].useImage ??= false;
+            const textConfig = object[activeTab];
+
+            // Trigger overlay with current form text settings
+            const userColor = game.user.color?.toString() || "#ffffff";
+            new CritOverlay({ type, userColor, configOverride: textConfig }).render(true);
+
+            // Trigger saved FX
+            const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+            const fxConfig = fxSettings[activeTab];
+            if (fxConfig && fxConfig.type !== "none") {
+                const fx = new CritFX();
+                switch (fxConfig.type) {
+                    case "shake": fx.ScreenShake(fxConfig.options || {}); break;
+                    case "shatter": fx.GlassShatter(fxConfig.options || {}); break;
+                    case "border": fx.ScreenBorder(fxConfig.options || {}); break;
+                    case "pulsate": fx.Pulsate(fxConfig.options || {}); break;
+                }
+            }
+
+            // Play sound
+            const settingKey = (type === "adversary") ? "adversarySoundPath" : "dualitySoundPath";
+            const soundPath = game.settings.get(MODULE_ID, settingKey);
+            if (soundPath) {
+                foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+            }
+
         });
     }
 
