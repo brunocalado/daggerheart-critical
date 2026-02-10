@@ -1,13 +1,4 @@
 <div class="d-flex flex-column gap-2 dh-crit-config">
-    <style>
-        .dh-crit-config .tab { display: none; }
-        .dh-crit-config .tab.active { display: block; }
-        .dh-crit-config .form-group { margin-bottom: 0.8rem; } /* Espaço entre opções */
-        .dh-crit-config .tab-content-wrapper { margin-bottom: 1.5rem; } /* Espaço antes do botão salvar */
-        .dh-crit-config .notes { margin-bottom: 1rem; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #4b4a44; border-radius: 3px; color: #ffffff; font-size: 0.9em; }
-        .dh-crit-config button[type="submit"] { width: 100%; }
-    </style>
-
     <nav class="tabs" data-group="primary">
         <a class="item{{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">Player Character</a>
         <a class="item{{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">Adversary</a>
@@ -17,7 +8,7 @@
         {{!-- Player Character Tab --}}
         <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
             <div class="tab-content-wrapper">
-            <p class="notes">Configure visual effects for Player Character (Duality Dice) criticals.</p>
+            <p class="notes"><i class="fas fa-info-circle"></i> Configure visual effects for Player Character (Duality Dice) criticals.</p>
             
             <div class="form-group">
                 <label>Effect Type</label>
@@ -85,7 +76,7 @@
         {{!-- Adversary Tab --}}
         <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
              <div class="tab-content-wrapper">
-             <p class="notes">Configure visual effects for Adversary (GM) criticals.</p>
+             <p class="notes"><i class="fas fa-info-circle"></i> Configure visual effects for Adversary (GM) criticals.</p>
             
             <div class="form-group">
                 <label>Effect Type</label>

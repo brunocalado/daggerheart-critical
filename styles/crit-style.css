@@ -233,7 +233,19 @@
 .dh-crit-config .tab.active { display: block; }
 .dh-crit-config .form-group { margin-bottom: 0.8rem; }
 .dh-crit-config .tab-content-wrapper { margin-bottom: 1.5rem; }
-.dh-crit-config .notes { margin-bottom: 1rem; padding: 8px; background: rgba(0, 0, 0, 0.2); border: 1px solid #4b4a44; border-radius: 3px; color: #ffffff; font-size: 0.9em; }
+.dh-crit-config .notes,
+.dh-crit-text-config .notes {
+    margin-bottom: 1rem;
+    padding: 8px;
+    background: rgba(30, 144, 255, 0.15);
+    border: 1px solid rgba(30, 144, 255, 0.4);
+    border-radius: 3px;
+    color: #ffffff;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
 .dh-crit-config button[type="submit"] { width: 100%; }
 
 /* --- Text Config Form Hints --- */
