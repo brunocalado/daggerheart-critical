@@ -26,7 +26,7 @@ Hooks.once("init", () => {
     game.settings.registerMenu(MODULE_ID, "critTextMenu", {
         name: "Critical Text",
         label: "Configure Text",
-        hint: "Customize the critical hit text appearance, size, color, and animation.",
+        hint: "Customize text appearance, size, color, and animation. You can use image.",
         icon: "fas fa-font",
         type: CritTextConfig,
         restricted: true
@@ -36,7 +36,7 @@ Hooks.once("init", () => {
     game.settings.registerMenu(MODULE_ID, "critFXMenu", {
         name: "Critical FX",
         label: "Configure Visual FX",
-        hint: "Choose a visual effect to play on critical hits.",
+        hint: "Visual effect to play on critical hits.",
         icon: "fas fa-bolt",
         type: CritConfig,
         restricted: true
@@ -46,7 +46,7 @@ Hooks.once("init", () => {
     game.settings.registerMenu(MODULE_ID, "critSoundMenu", {
         name: "Critical Sound",
         label: "Configure Sound",
-        hint: "Configure sound effects played on critical hits.",
+        hint: "Sound effects played on critical hits.",
         icon: "fas fa-music",
         type: CritSoundConfig,
         restricted: true
@@ -76,7 +76,7 @@ Hooks.once("init", () => {
 
     game.settings.register(MODULE_ID, "debugmode", {
         name: "Enable Debug Mode",
-        hint: "Prints roll detection info to console (F12).",
+        hint: "Prints debug info to console (F12).",
         scope: "world",
         config: true,
         type: Boolean,

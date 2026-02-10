@@ -31,22 +31,8 @@ In a narrative game like Daggerheart, a Critical Success is a major story beat. 
     * **For Players (Duality Dice):** Triggers when the Hope & Fear dice match.
     * **For GMs (Adversary Rolls):** Triggers on a d20 critical.
 
-* **✨ Customizable Critical Splash:** Display a stylish "CRITICAL!".
-    * **Personalize It:** Easily change the overlay text, font, and animation to fit your game's unique aesthetic.
-
-* **👤 Per-Player Effects:** Empower your players by letting them choose their own signature critical effect! The Barbarian's crits can shake the screen, while the Wizard's crits might shatter it like glass, giving each character a unique and personal feel in combat.
-
-## 🛠️ How to Use
-
-This module is designed to be **Plug & Play**.
-
-1.  **Install & Enable:** Once enabled, it works immediately with default settings.
-2.  **Configuration:** Go to `Module Settings` -> `Daggerheart: Critical FX` to customize your experience.
-3.  **Customize:**
-    * **Global & Per-Player FX:** Open the configuration menu to pick your preferred global effects (Shake, Shatter, etc.) or allow players to set their own. Adjust intensity, duration, and color.
-    * **Sounds:** Upload your own `.mp3` or `.ogg` files to match your campaign's vibe.
-
-<p align="center"><img width="600" src="docs/settings-preview.webp" alt="Settings Menu"></p>
+* **✨ Customizable Critical:** Display a stylish "CRITICAL!".
+    * **Personalize It:** Easily change the overlay text, font,animation or use a custom image to fit your game's unique aesthetic.
 
 ## 🚀 Installation
 
