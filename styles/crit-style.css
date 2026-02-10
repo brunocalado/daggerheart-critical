@@ -156,34 +156,6 @@
     100% { opacity: 0; transform: scale(2.0); filter: blur(10px); }
 }
 
-/* --- Active Tab Styling (shared by both config dialogs) --- */
-
-.dh-crit-config .tabs a,
-.dh-crit-text-config .tabs a {
-    position: relative;
-    padding: 6px 16px;
-    border: 1px solid transparent;
-    border-bottom: none;
-    border-radius: 4px 4px 0 0;
-    color: #b0b0b0;
-    transition: all 0.15s ease;
-}
-
-.dh-crit-config .tabs a:hover,
-.dh-crit-text-config .tabs a:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.dh-crit-config .tabs a.active,
-.dh-crit-text-config .tabs a.active {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: #7a7971;
-    border-bottom: 2px solid #ff6400;
-    font-weight: bold;
-}
-
 /* --- Crit FX Styles (Moved from JS) --- */
 #dh-crit-fx-layer {
     position: fixed;
@@ -228,25 +200,247 @@
 @keyframes cfx-pulse-border { 0% { box-shadow: inset 0 0 20px rgba(var(--cfx-border-rgb), 0.5); border-color: rgba(var(--cfx-border-rgb), 0.8); } 50% { box-shadow: inset 0 0 50px rgba(var(--cfx-border-rgb), 0.8); border-color: rgba(var(--cfx-border-rgb), 1); } 100% { box-shadow: inset 0 0 20px rgba(var(--cfx-border-rgb), 0.5); border-color: rgba(var(--cfx-border-rgb), 0.8); } }
 @keyframes cfx-pulse-anim { 0% { transform: scale(1) rotate(0deg); } 50% { transform: scale(var(--cfx-pulse-scale)); } 100% { transform: scale(1) rotate(0deg); } }
 
-/* --- Config Dialog Styles (Moved from HBS) --- */
-.dh-crit-config .tab { display: none; }
-.dh-crit-config .tab.active { display: block; }
-.dh-crit-config .form-group { margin-bottom: 0.8rem; }
-.dh-crit-config .tab-content-wrapper { margin-bottom: 1.5rem; }
+/* =========================================
+   Modern Config Dialog Styles
+   ========================================= */
+
+:root {
+    --crit-accent: #ff6400;
+    --crit-bg-dark: rgba(0, 0, 0, 0.2);
+    --crit-bg-input: rgba(0, 0, 0, 0.3);
+    --crit-border-light: rgba(255, 255, 255, 0.1);
+}
+
+.dh-crit-config,
+.dh-crit-text-config {
+    font-family: "Signika", sans-serif;
+}
+
+/* --- Tabs --- */
+.dh-crit-config .tabs,
+.dh-crit-text-config .tabs {
+    border-bottom: 2px solid var(--crit-border-light);
+    margin-bottom: 1rem;
+}
+
+.dh-crit-config .tabs a,
+.dh-crit-text-config .tabs a {
+    position: relative;
+    padding: 8px 20px;
+    border: none;
+    background: transparent;
+    color: #b0b0b0;
+    transition: all 0.2s ease;
+    font-weight: 600;
+    border-radius: 4px 4px 0 0;
+}
+
+.dh-crit-config .tabs a:hover,
+.dh-crit-text-config .tabs a:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.dh-crit-config .tabs a.active,
+.dh-crit-text-config .tabs a.active {
+    color: #ffffff;
+    background: var(--crit-bg-dark);
+    border-bottom: 3px solid var(--crit-accent);
+}
+
+/* --- Tab Content --- */
+.dh-crit-config .tab,
+.dh-crit-text-config .tab {
+    display: none;
+    animation: fadein 0.3s ease-in-out;
+}
+.dh-crit-config .tab.active,
+.dh-crit-text-config .tab.active { display: block; }
+
+@keyframes fadein {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Notes Box --- */
 .dh-crit-config .notes,
 .dh-crit-text-config .notes {
-    margin-bottom: 1rem;
-    padding: 8px;
-    background: rgba(30, 144, 255, 0.15);
-    border: 1px solid rgba(30, 144, 255, 0.4);
-    border-radius: 3px;
-    color: #ffffff;
-    font-size: 0.9em;
+    margin-bottom: 1.5rem;
+    padding: 10px 12px;
+    background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
+    border-left: 4px solid #1e90ff;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 0.95em;
     display: flex;
     align-items: center;
-    gap: 0.5em;
+    gap: 0.8em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.dh-crit-config button[type="submit"] { width: 100%; }
 
-/* --- Text Config Form Hints --- */
-.dh-crit-text-config .hint { font-size: 0.85em; color: #b0b0b0; margin-left: 0.5em; }
+.dh-crit-config .notes i,
+.dh-crit-text-config .notes i {
+    color: #1e90ff;
+    font-size: 1.2em;
+}
+
+/* --- Form Groups (Modern Layout) --- */
+.dh-crit-config .form-group,
+.dh-crit-text-config .form-group {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.8rem;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+
+.dh-crit-config .form-group label,
+.dh-crit-text-config .form-group label {
+    flex: 2;
+    font-weight: 600;
+    color: #ddd;
+}
+
+.dh-crit-config .form-group .form-fields,
+.dh-crit-text-config .form-group .form-fields {
+    flex: 3;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Inputs styling */
+.dh-crit-config input[type="text"],
+.dh-crit-config input[type="number"],
+.dh-crit-config select,
+.dh-crit-text-config input[type="text"],
+.dh-crit-text-config input[type="number"],
+.dh-crit-text-config select {
+    background: var(--crit-bg-input);
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 4px;
+    padding: 4px 8px;
+    transition: border-color 0.2s;
+    height: 28px;
+    flex: 1;
+    max-width: 100%;
+}
+
+.dh-crit-config input:focus,
+.dh-crit-config select:focus,
+.dh-crit-text-config input:focus,
+.dh-crit-text-config select:focus {
+    outline: none;
+    border-color: var(--crit-accent);
+    box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
+}
+
+/* Color Picker tweak */
+.dh-crit-config input[type="color"],
+.dh-crit-text-config input[type="color"] {
+    background: none;
+    border: none;
+    width: 40px;
+    height: 30px;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* --- Range Slider --- */
+.dh-crit-config input[type="range"],
+.dh-crit-text-config input[type="range"] {
+    accent-color: var(--crit-accent);
+    width: 100%;
+}
+
+/* --- Modern Toggle Switch (CSS Only) --- */
+.slide-toggle {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+.slide-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #555;
+    transition: .3s;
+    border-radius: 24px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+    background-color: var(--crit-accent);
+}
+
+input:checked + .slider:before {
+    transform: translateX(20px);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--crit-accent);
+}
+
+/* Hints */
+.dh-crit-text-config .hint {
+    font-size: 0.8em;
+    color: #999;
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+    line-height: 1.2;
+}
+
+/* Footer Button */
+.dh-crit-config .form-footer,
+.dh-crit-text-config .form-footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--crit-border-light);
+}
+
+.dh-crit-config button,
+.dh-crit-text-config button {
+    background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
+    border: 1px solid #111;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    color: #f0f0f0;
+    padding: 8px 0;
+    transition: all 0.2s;
+}
+
+.dh-crit-config button:hover,
+.dh-crit-text-config button:hover {
+    background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
