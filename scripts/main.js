@@ -66,8 +66,8 @@ Hooks.once("init", () => {
     // --- Per-User Override Settings ---
     game.settings.registerMenu(MODULE_ID, "critUserOverridesMenu", {
         name: "Per-User Overrides",
-        label: "Configure Per-User Overrides",
-        hint: "Customize critical effects (text, FX, sound) for individual players. Overrides default PC settings.",
+        label: "Per-User Overrides",
+        hint: "Customize text, FX, sound and art for individual players. Overrides default PC settings.",
         icon: "fas fa-users-cog",
         type: CritUserConfig,
         restricted: true
