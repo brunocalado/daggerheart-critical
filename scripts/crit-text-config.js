@@ -148,7 +148,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const type = activeTab === "pc" ? "duality" : "adversary";
 
             // Read current text values from the form
-            const formData = new FormDataExtended(this.element);
+            const formData = new foundry.applications.ux.FormDataExtended(this.element);
             const object = foundry.utils.expandObject(formData.object);
             object[activeTab].usePlayerColor ??= false;
             object[activeTab].useImage ??= false;

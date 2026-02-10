@@ -21,6 +21,27 @@ function isDSNActive() {
 }
 
 Hooks.once("init", () => {
+
+    // --- Critical Text Settings ---
+    game.settings.registerMenu(MODULE_ID, "critTextMenu", {
+        name: "Critical Text",
+        label: "Configure Text",
+        hint: "Customize the critical hit text appearance, size, color, and animation.",
+        icon: "fas fa-font",
+        type: CritTextConfig,
+        restricted: true
+    });
+
+    // --- Visual FX Settings ---
+    game.settings.registerMenu(MODULE_ID, "critFXMenu", {
+        name: "Critical FX",
+        label: "Configure Visual FX",
+        hint: "Choose a visual effect to play on critical hits.",
+        icon: "fas fa-bolt",
+        type: CritConfig,
+        restricted: true
+    });
+
     // --- Sound Settings ---
     game.settings.registerMenu(MODULE_ID, "critSoundMenu", {
         name: "Critical Sound",
@@ -28,6 +49,16 @@ Hooks.once("init", () => {
         hint: "Configure sound effects played on critical hits.",
         icon: "fas fa-music",
         type: CritSoundConfig,
+        restricted: true
+    });
+
+    // --- Critical Art Settings ---
+    game.settings.registerMenu(MODULE_ID, "critArtMenu", {
+        name: "Critical Art",
+        label: "Configure Art",
+        hint: "Configure per-player artwork displayed behind the critical text.",
+        icon: "fas fa-palette",
+        type: CritArtConfig,
         restricted: true
     });
 
@@ -52,15 +83,7 @@ Hooks.once("init", () => {
         default: false
     });
     
-    // --- Visual FX Settings ---
-    game.settings.registerMenu(MODULE_ID, "critFXMenu", {
-        name: "Critical FX",
-        label: "Configure Visual FX",
-        hint: "Choose a visual effect to play on critical hits.",
-        icon: "fas fa-bolt",
-        type: CritConfig,
-        restricted: true
-    });
+
 
     game.settings.register(MODULE_ID, "critFXSettings", {
         scope: "world",
@@ -72,15 +95,7 @@ Hooks.once("init", () => {
         }
     });
 
-    // --- Critical Art Settings ---
-    game.settings.registerMenu(MODULE_ID, "critArtMenu", {
-        name: "Critical Art",
-        label: "Configure Art",
-        hint: "Configure per-player artwork displayed behind the critical text.",
-        icon: "fas fa-palette",
-        type: CritArtConfig,
-        restricted: true
-    });
+
 
     game.settings.register(MODULE_ID, "critArtSettings", {
         scope: "world",
@@ -89,15 +104,7 @@ Hooks.once("init", () => {
         default: {}
     });
 
-    // --- Critical Text Settings ---
-    game.settings.registerMenu(MODULE_ID, "critTextMenu", {
-        name: "Critical Text",
-        label: "Configure Text",
-        hint: "Customize the critical hit text appearance, size, color, and animation.",
-        icon: "fas fa-font",
-        type: CritTextConfig,
-        restricted: true
-    });
+
 
     game.settings.register(MODULE_ID, "critTextSettings", {
         scope: "world",
