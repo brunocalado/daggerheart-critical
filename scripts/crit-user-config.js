@@ -54,6 +54,11 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 fxOverride.options.color = "#ff0000";
             }
 
+            // Art: use saved override or defaults
+            const artOverride = userOverride.art
+                ? { ...userOverride.art }
+                : { imagePath: "", position: "middle", positionY: "middle", artSize: "normal" };
+
             return {
                 id: u.id,
                 name: u.name,
@@ -61,9 +66,11 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 hasText: !!userOverride.text,
                 hasFx: !!userOverride.fx,
                 hasSound: !!userOverride.sound,
+                hasArt: !!userOverride.art,
                 textOverride,
                 fxOverride,
-                soundOverride: userOverride.sound || {}
+                soundOverride: userOverride.sound || {},
+                artOverride
             };
         });
 
@@ -117,16 +124,33 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     _onRender(context, options) {
-        // Toggle buttons for collapsible sections
+        // Toggle buttons for collapsible sections (accordion: one section at a time per card)
         this.element.querySelectorAll(".crit-user-toggle-btn").forEach(btn => {
             btn.addEventListener("click", event => {
                 event.preventDefault();
                 const targetId = btn.dataset.target;
                 const section = this.element.querySelector(`#${targetId}`);
-                if (section) {
-                    const isVisible = section.style.display !== "none";
-                    section.style.display = isVisible ? "none" : "";
-                    btn.classList.toggle("expanded", !isVisible);
+                const card = btn.closest(".crit-user-card");
+                if (!section || !card) return;
+
+                const isVisible = section.style.display !== "none";
+
+                // Collapse all sections and deactivate all toggle buttons in this card
+                card.querySelectorAll(".crit-user-section").forEach(s => {
+                    s.style.display = "none";
+                });
+                card.querySelectorAll(".crit-user-toggle-btn").forEach(b => {
+                    b.classList.remove("expanded");
+                });
+
+                // If the clicked section was hidden, expand it
+                if (!isVisible) {
+                    section.style.display = "";
+                    btn.classList.add("expanded");
+
+                    // Mark section as active when expanding
+                    const activeInput = section.querySelector("input[name$='._active']");
+                    if (activeInput) activeInput.value = "true";
                 }
             });
         });
@@ -168,9 +192,7 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 const fxSection = event.target.closest(".crit-user-section");
                 if (!fxSection) return;
                 const selectedType = event.target.value;
-                // Hide all fx option groups
                 fxSection.querySelectorAll(".fx-options-group").forEach(g => g.style.display = "none");
-                // Show the selected one
                 const target = fxSection.querySelector(`.fx-options-group[data-fx-type="${selectedType}"]`);
                 if (target) target.style.display = "";
             });
@@ -181,13 +203,15 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             btn.addEventListener("click", event => {
                 event.preventDefault();
                 const clearPrefix = btn.dataset.clear;
-                const category = btn.dataset.category; // "text", "fx", or "sound"
+                const category = btn.dataset.category;
                 const section = btn.closest(".crit-user-section");
                 const card = btn.closest(".crit-user-card");
                 if (section) {
-                    // Reset fields
+                    // Mark section as inactive
+                    const activeInput = section.querySelector("input[name$='._active']");
+                    if (activeInput) activeInput.value = "false";
+
                     if (category === "text") {
-                        // Reset to defaults
                         const fields = {
                             content: TEXT_DEFAULTS.content,
                             fontFamily: TEXT_DEFAULTS.fontFamily,
@@ -201,19 +225,16 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                             const input = section.querySelector(`[name="${clearPrefix}.${field}"]`);
                             if (input) input.value = val;
                         }
-                        // Uncheck toggles
                         const useImage = section.querySelector(`[name="${clearPrefix}.useImage"]`);
                         if (useImage) useImage.checked = false;
                         const usePlayerColor = section.querySelector(`[name="${clearPrefix}.usePlayerColor"]`);
                         if (usePlayerColor) usePlayerColor.checked = false;
-                        // Reset visibility
                         const imageGroup = section.querySelector(".user-image-group");
                         const textGroup = section.querySelector(".user-text-group");
                         const colorGroup = section.querySelector(".user-color-group");
                         if (imageGroup) imageGroup.style.display = "none";
                         if (textGroup) textGroup.style.display = "";
                         if (colorGroup) colorGroup.style.display = "";
-                        // Clear imagePath
                         const imgPath = section.querySelector(`[name="${clearPrefix}.imagePath"]`);
                         if (imgPath) imgPath.value = "";
                     } else if (category === "fx") {
@@ -231,6 +252,15 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                         if (soundPath) soundPath.value = "";
                         const soundGroup = section.querySelector(".user-sound-path-group");
                         if (soundGroup) soundGroup.style.display = "none";
+                    } else if (category === "art") {
+                        const imgPath = section.querySelector(`[name="${clearPrefix}.imagePath"]`);
+                        if (imgPath) imgPath.value = "";
+                        const posSelect = section.querySelector(`[name="${clearPrefix}.position"]`);
+                        if (posSelect) posSelect.value = "middle";
+                        const posYSelect = section.querySelector(`[name="${clearPrefix}.positionY"]`);
+                        if (posYSelect) posYSelect.value = "middle";
+                        const sizeSelect = section.querySelector(`[name="${clearPrefix}.artSize"]`);
+                        if (sizeSelect) sizeSelect.value = "normal";
                     }
 
                     // Collapse the section
@@ -262,16 +292,31 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
                 const userColor = game.users.get(userId)?.color?.toString() || "#ffffff";
 
-                // Text override
-                if (userData.text) {
+                // Text override (only if active)
+                let configOverride = null;
+                if (userData.text?._active === "true") {
                     userData.text.usePlayerColor ??= false;
                     userData.text.useImage ??= false;
+                    configOverride = userData.text;
                 }
+
+                // Art override (only if active and has image)
+                let artOverride = null;
+                if (userData.art?._active === "true" && userData.art.imagePath?.trim()) {
+                    artOverride = {
+                        imagePath: userData.art.imagePath,
+                        position: userData.art.position || "middle",
+                        positionY: userData.art.positionY || "middle",
+                        artSize: userData.art.artSize || "normal"
+                    };
+                }
+
                 new CritOverlay({
                     type: "duality",
                     userColor,
                     authorId: userId,
-                    configOverride: userData.text || null
+                    configOverride,
+                    artOverride
                 }).render(true);
 
                 // FX override
@@ -279,11 +324,17 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 fxConfig.options ??= {};
                 if (fxConfig.type && fxConfig.type !== "none") {
                     const fx = new CritFX();
+                    const cleanOpts = {};
+                    for (const [key, val] of Object.entries(fxConfig.options)) {
+                        if (key.startsWith(`${fxConfig.type}_`)) {
+                            cleanOpts[key.replace(`${fxConfig.type}_`, "")] = val;
+                        }
+                    }
                     switch (fxConfig.type) {
-                        case "shake": fx.ScreenShake(fxConfig.options); break;
-                        case "shatter": fx.GlassShatter(fxConfig.options); break;
-                        case "border": fx.ScreenBorder(fxConfig.options); break;
-                        case "pulsate": fx.Pulsate(fxConfig.options); break;
+                        case "shake": fx.ScreenShake(cleanOpts); break;
+                        case "shatter": fx.GlassShatter(cleanOpts); break;
+                        case "border": fx.ScreenBorder(cleanOpts); break;
+                        case "pulsate": fx.Pulsate(cleanOpts); break;
                     }
                 }
 
@@ -308,8 +359,9 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             for (const [userId, userData] of Object.entries(object.users)) {
                 const userOverride = {};
 
-                // Text override - only save if content or imagePath is set
-                if (userData.text) {
+                // Text override - only save if _active is true
+                if (userData.text && userData.text._active === "true") {
+                    delete userData.text._active;
                     userData.text.usePlayerColor ??= false;
                     userData.text.useImage ??= false;
                     const hasTextContent = userData.text.content?.trim();
@@ -323,7 +375,6 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 if (userData.fx) {
                     const fxType = userData.fx.type;
                     if (fxType && fxType !== "none") {
-                        // Map prefixed option names back to generic names
                         const rawOpts = userData.fx.options || {};
                         const cleanOpts = {};
                         for (const [key, val] of Object.entries(rawOpts)) {
@@ -340,6 +391,14 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     userData.sound.enabled ??= false;
                     if (userData.sound.enabled && userData.sound.soundPath?.trim()) {
                         userOverride.sound = userData.sound;
+                    }
+                }
+
+                // Art override - only save if _active is true and has imagePath
+                if (userData.art && userData.art._active === "true") {
+                    delete userData.art._active;
+                    if (userData.art.imagePath?.trim()) {
+                        userOverride.art = userData.art;
                     }
                 }
 

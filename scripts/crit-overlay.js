@@ -99,14 +99,14 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     artPositionY = advArt.positionY || "middle";
                     artSize = advArt.artSize || "normal";
                 }
-            } else if (this.authorId) {
-                // PC: use per-user art config
-                const userArt = artSettings[this.authorId];
-                if (userArt && userArt.imagePath) {
-                    artImagePath = userArt.imagePath;
-                    artPosition = userArt.position || "middle";
-                    artPositionY = userArt.positionY || "middle";
-                    artSize = userArt.artSize || "normal";
+            } else {
+                // PC: use default PC art config
+                const pcArt = artSettings.pc;
+                if (pcArt && pcArt.imagePath) {
+                    artImagePath = pcArt.imagePath;
+                    artPosition = pcArt.position || "middle";
+                    artPositionY = pcArt.positionY || "middle";
+                    artSize = pcArt.artSize || "normal";
                 }
             }
         }

@@ -28,27 +28,16 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     async _prepareContext(options) {
         const saved = game.settings.get(MODULE_ID, "critArtSettings");
 
-        // Get all non-GM users for PC tab
-        const players = game.users.filter(u => !u.isGM).map(u => {
-            const userSettings = saved[u.id] || {};
-            return {
-                id: u.id,
-                name: u.name,
-                color: u.color?.toString() || "#ffffff",
-                imagePath: userSettings.imagePath || "",
-                position: userSettings.position || "middle",
-                positionY: userSettings.positionY || "middle",
-                artSize: userSettings.artSize || "normal"
-            };
-        });
+        // PC default config (single default for all PCs)
+        const pcDefaults = { imagePath: "", position: "middle", positionY: "middle", artSize: "normal" };
+        const pc = foundry.utils.mergeObject(pcDefaults, saved.pc || {});
 
         // Adversary config
         const adversaryDefaults = { imagePath: "", position: "middle", positionY: "middle", artSize: "normal" };
         const adversary = foundry.utils.mergeObject(adversaryDefaults, saved.adversary || {});
 
         return {
-            players,
-            config: { adversary },
+            config: { pc, adversary },
             state: this.tabState
         };
     }
@@ -82,18 +71,13 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             let artOverride = null;
 
             if (activeTab === "pc") {
-                const users = object.users || {};
-                const currentUserId = game.user.id;
-                let previewUser = users[currentUserId];
-                if (!previewUser?.imagePath) {
-                    previewUser = Object.values(users).find(u => u.imagePath);
-                }
-                if (previewUser?.imagePath) {
+                const pc = object.pc || {};
+                if (pc.imagePath) {
                     artOverride = {
-                        imagePath: previewUser.imagePath,
-                        position: previewUser.position || "middle",
-                        positionY: previewUser.positionY || "middle",
-                        artSize: previewUser.artSize || "normal"
+                        imagePath: pc.imagePath,
+                        position: pc.position || "middle",
+                        positionY: pc.positionY || "middle",
+                        artSize: pc.artSize || "normal"
                     };
                 }
             } else {
@@ -145,11 +129,9 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     static async formHandler(event, form, formData) {
         const object = foundry.utils.expandObject(formData.object);
         const data = {};
-        // Per-user PC settings
-        if (object.users) {
-            Object.assign(data, object.users);
+        if (object.pc) {
+            data.pc = object.pc;
         }
-        // Adversary settings
         if (object.adversary) {
             data.adversary = object.adversary;
         }

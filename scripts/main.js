@@ -229,7 +229,8 @@ function triggerCriticalEffect(message, type) {
         type,
         userColor,
         authorId,
-        configOverride: userOverride?.text || null
+        configOverride: userOverride?.text || null,
+        artOverride: userOverride?.art || null
     }).render(true);
 
     // Triggers configured Visual FX
