@@ -1,27 +1,40 @@
 {
   "id": "daggerheart-critical",
   "title": "Daggerheart: Critical",  
-  "version": "0.0.2",
-  "description": "Animated Critical for Daggerheart.",  
+  "version": "0.0.3",
+  "description": "Animated Critical for Daggerheart!",  
   "compatibility": {
     "minimum": "13",
     "verified": "13"
   },
   "authors": [
     {
-      "name": "Mestre Digital",
-      "discord": ""
+      "name": "Mestre Digital"
     }
   ],
+  
   "relationships": {
     "systems": [
       {
         "id": "daggerheart",
         "type": "system",
-        "compatibility": {}
+        "compatibility": {
+          "minimum": "1.7.0"
+        }
+      }
+    ],
+    "recommends": [
+      {
+        "id": "dice-so-nice",
+        "type": "module",
+        "title": "Dice So Nice!",
+        "compatibility": {
+          "minimum": "5.2.4"
+        }
       }
     ]
   },
+  
   "esmodules": [
     "scripts/main.js"
   ],

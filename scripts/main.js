@@ -5,10 +5,17 @@ import { CritFX } from "./crit-fx.js";
 
 const MODULE_ID = "daggerheart-critical";
 
+/** Pending criticals waiting for Dice So Nice animation to finish */
+const pendingCriticals = new Map();
+
 function logDebug(...args) {
     if (game.settings.get(MODULE_ID, 'debugmode')) {
         console.log("DH-CRIT DEBUG |", ...args);
     }
+}
+
+function isDSNActive() {
+    return game.modules.get("dice-so-nice")?.active;
 }
 
 Hooks.once("init", () => {
@@ -111,8 +118,37 @@ Hooks.on("createChatMessage", (message) => {
     if (dhRoll.isCritical === true) {
         logDebug("Critical confirmed!");
         const type = detectCritType(message, dhRoll);
-        triggerCriticalEffect(message, type);
+
+        if (isDSNActive()) {
+            logDebug("Dice So Nice active — deferring effect for message", message.id);
+            pendingCriticals.set(message.id, type);
+        } else {
+            triggerCriticalEffect(message, type);
+        }
     }
+});
+
+Hooks.on("diceSoNiceRollComplete", (messageId) => {
+    if (!pendingCriticals.has(messageId)) return;
+
+    const type = pendingCriticals.get(messageId);
+    pendingCriticals.delete(messageId);
+
+    // Re-validate: retrieve the message and confirm it's still a critical
+    const message = game.messages.get(messageId);
+    if (!message) {
+        logDebug("DSN complete — message not found:", messageId);
+        return;
+    }
+
+    const dhRoll = message.system?.roll;
+    if (!dhRoll?.isCritical) {
+        logDebug("DSN complete — re-validation failed, not a critical:", messageId);
+        return;
+    }
+
+    logDebug("DSN complete — triggering critical effect for message", messageId);
+    triggerCriticalEffect(message, type);
 });
 
 function detectCritType(message, rollData) {
