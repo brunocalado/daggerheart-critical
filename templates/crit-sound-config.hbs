@@ -1,0 +1,51 @@
+<div class="d-flex flex-column gap-2 dh-crit-sound-config">
+    <p class="notes"><i class="fas fa-info-circle"></i> To adjust the volume, each user must customize the sound by going to the Playlists directory and adjusting the "Interface" slider.</p>
+
+    <div class="form-group sound-enable-row">
+        <label><i class="fas fa-volume-up"></i> Duality Sound</label>
+        <div class="form-fields">
+            <label class="slide-toggle">
+                <input type="checkbox" name="dualityEnabled" {{#if config.dualityEnabled}}checked{{/if}}>
+                <span class="slider"></span>
+            </label>
+            <span class="hint">Enable sound for Player/Duality criticals.</span>
+        </div>
+    </div>
+
+    <div class="duality-sound-group" {{#unless config.dualityEnabled}}style="display:none"{{/unless}}>
+        <div class="form-group">
+            <label>Sound Path</label>
+            <div class="form-fields">
+                <file-picker style="flex: 1;" type="audio" name="dualitySoundPath" value="{{config.dualitySoundPath}}" placeholder="modules/daggerheart-critical/assets/sfx/pc-orchestral-win.mp3"></file-picker>
+            </div>
+        </div>
+        <p class="field-hint">Audio played when a Player/Duality critical occurs.</p>
+    </div>
+
+    <div class="form-group sound-enable-row">
+        <label><i class="fas fa-volume-up"></i> Adversary Sound</label>
+        <div class="form-fields">
+            <label class="slide-toggle">
+                <input type="checkbox" name="adversaryEnabled" {{#if config.adversaryEnabled}}checked{{/if}}>
+                <span class="slider"></span>
+            </label>
+            <span class="hint">Enable sound for GM/Adversary criticals.</span>
+        </div>
+    </div>
+
+    <div class="adversary-sound-group" {{#unless config.adversaryEnabled}}style="display:none"{{/unless}}>
+        <div class="form-group">
+            <label>Sound Path</label>
+            <div class="form-fields">
+                <file-picker style="flex: 1;" type="audio" name="adversarySoundPath" value="{{config.adversarySoundPath}}" placeholder="modules/daggerheart-critical/assets/sfx/adv-critical-tension-impact.mp3"></file-picker>
+            </div>
+        </div>
+        <p class="field-hint">Audio played when a GM/Adversary critical occurs.</p>
+    </div>
+
+    <div class="form-footer">
+        <button type="submit">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+    </div>
+</div>

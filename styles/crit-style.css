@@ -260,7 +260,8 @@
 }
 
 .dh-crit-config,
-.dh-crit-text-config {
+.dh-crit-text-config,
+.dh-crit-sound-config {
     font-family: "Signika", sans-serif;
 }
 
@@ -313,7 +314,8 @@
 
 /* --- Notes Box --- */
 .dh-crit-config .notes,
-.dh-crit-text-config .notes {
+.dh-crit-text-config .notes,
+.dh-crit-sound-config .notes {
     margin-bottom: 1.5rem;
     padding: 10px 12px;
     background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
@@ -328,14 +330,16 @@
 }
 
 .dh-crit-config .notes i,
-.dh-crit-text-config .notes i {
+.dh-crit-text-config .notes i,
+.dh-crit-sound-config .notes i {
     color: #1e90ff;
     font-size: 1.2em;
 }
 
 /* --- Form Groups (Modern Layout) --- */
 .dh-crit-config .form-group,
-.dh-crit-text-config .form-group {
+.dh-crit-text-config .form-group,
+.dh-crit-sound-config .form-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -345,14 +349,16 @@
 }
 
 .dh-crit-config .form-group label,
-.dh-crit-text-config .form-group label {
+.dh-crit-text-config .form-group label,
+.dh-crit-sound-config .form-group label {
     flex: 2;
     font-weight: 600;
     color: #ddd;
 }
 
 .dh-crit-config .form-group .form-fields,
-.dh-crit-text-config .form-group .form-fields {
+.dh-crit-text-config .form-group .form-fields,
+.dh-crit-sound-config .form-group .form-fields {
     flex: 3;
     display: flex;
     /*justify-content: flex-end; /* Alinha o grupo (botão + texto) à direita */
@@ -388,7 +394,9 @@
 .dh-crit-config input:focus,
 .dh-crit-config select:focus,
 .dh-crit-text-config input:focus,
-.dh-crit-text-config select:focus {
+.dh-crit-text-config select:focus,
+.dh-crit-sound-config input:focus,
+.dh-crit-sound-config select:focus {
     outline: none;
     border-color: var(--crit-accent);
     box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
@@ -424,7 +432,8 @@
 
 /* Override .form-group label { flex: 2 } which has higher specificity */
 .dh-crit-config .form-group .form-fields .slide-toggle,
-.dh-crit-text-config .form-group .form-fields .slide-toggle {
+.dh-crit-text-config .form-group .form-fields .slide-toggle,
+.dh-crit-sound-config .form-group .form-fields .slide-toggle {
     flex: 0 0 50px;
 }
 
@@ -475,7 +484,8 @@ input:focus + .slider {
 }
 
 /* Hints (Texto Explicativo) */
-.dh-crit-text-config .hint {
+.dh-crit-text-config .hint,
+.dh-crit-sound-config .hint {
     font-size: 0.85em;
     color: #b0b0b0;
     font-style: italic;
@@ -499,9 +509,33 @@ input:focus + .slider {
     margin-right: 4px;
 }
 
+/* --- Sound Enable Row --- */
+.dh-crit-sound-config .sound-enable-row {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 1rem;
+}
+
+.dh-crit-sound-config .sound-enable-row label i.fa-volume-up {
+    color: var(--crit-accent);
+    margin-right: 4px;
+}
+
+/* --- Field Hint (below file picker) --- */
+.dh-crit-sound-config .field-hint {
+    font-size: 0.85em;
+    color: #b0b0b0;
+    font-style: italic;
+    margin: -0.4rem 0 1rem 0;
+    padding-left: 2px;
+}
+
 /* Footer Buttons */
 .dh-crit-config .form-footer,
-.dh-crit-text-config .form-footer {
+.dh-crit-text-config .form-footer,
+.dh-crit-sound-config .form-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--crit-border-light);
@@ -510,12 +544,14 @@ input:focus + .slider {
 }
 
 .dh-crit-config .form-footer button,
-.dh-crit-text-config .form-footer button {
+.dh-crit-text-config .form-footer button,
+.dh-crit-sound-config .form-footer button {
     flex: 1;
 }
 
 .dh-crit-config button,
-.dh-crit-text-config button {
+.dh-crit-text-config button,
+.dh-crit-sound-config button {
     background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
     border: 1px solid #111;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -525,7 +561,8 @@ input:focus + .slider {
 }
 
 .dh-crit-config button:hover,
-.dh-crit-text-config button:hover {
+.dh-crit-text-config button:hover,
+.dh-crit-sound-config button:hover {
     background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
     color: #fff;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);

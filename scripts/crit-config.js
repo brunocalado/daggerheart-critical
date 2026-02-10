@@ -110,10 +110,13 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             }
 
             // Play sound
-            const settingKey = (type === "adversary") ? "adversarySoundPath" : "dualitySoundPath";
-            const soundPath = game.settings.get(MODULE_ID, settingKey);
-            if (soundPath) {
-                foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+            const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+            const soundEnabled = (type === "adversary") ? soundSettings.adversaryEnabled : soundSettings.dualityEnabled;
+            if (soundEnabled) {
+                const soundPath = (type === "adversary") ? soundSettings.adversarySoundPath : soundSettings.dualitySoundPath;
+                if (soundPath) {
+                    foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+                }
             }
 
         });

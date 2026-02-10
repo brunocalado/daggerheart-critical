@@ -1,6 +1,7 @@
 import { CritOverlay } from "./crit-overlay.js";
 import { CritConfig } from "./crit-config.js";
 import { CritTextConfig } from "./crit-text-config.js";
+import { CritSoundConfig } from "./crit-sound-config.js";
 import { CritFX } from "./crit-fx.js";
 
 const MODULE_ID = "daggerheart-critical";
@@ -19,26 +20,26 @@ function isDSNActive() {
 }
 
 Hooks.once("init", () => {
-    // --- Updated Sound Settings ---
-
-    game.settings.register(MODULE_ID, "dualitySoundPath", {
-        name: "Duality Critical Sound",
-        hint: "Audio played when a Player/Duality critical occurs.",
-        scope: "world",
-        config: true,
-        type: String,
-        default: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`,
-        filePicker: "audio"
+    // --- Sound Settings ---
+    game.settings.registerMenu(MODULE_ID, "critSoundMenu", {
+        name: "Critical Sound",
+        label: "Configure Sound",
+        hint: "Configure sound effects played on critical hits.",
+        icon: "fas fa-music",
+        type: CritSoundConfig,
+        restricted: true
     });
 
-    game.settings.register(MODULE_ID, "adversarySoundPath", {
-        name: "Adversary Critical Sound",
-        hint: "Audio played when a GM/Adversary critical occurs.",
+    game.settings.register(MODULE_ID, "critSoundSettings", {
         scope: "world",
-        config: true,
-        type: String,
-        default: `modules/${MODULE_ID}/assets/sfx/adv-critical-tension-impact.mp3`,
-        filePicker: "audio"
+        config: false,
+        type: Object,
+        default: {
+            dualityEnabled: true,
+            adversaryEnabled: true,
+            dualitySoundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`,
+            adversarySoundPath: `modules/${MODULE_ID}/assets/sfx/adv-critical-tension-impact.mp3`
+        }
     });
 
     game.settings.register(MODULE_ID, "debugmode", {
@@ -191,11 +192,12 @@ function triggerCriticalEffect(message, type) {
     }
 
     // Selects sound based on type
-    const settingKey = (type === "adversary") ? "adversarySoundPath" : "dualitySoundPath";
-    const soundPath = game.settings.get(MODULE_ID, settingKey);
-
-    if (soundPath) {
-        // Correct namespace for V12+
-        foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+    const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+    const soundEnabled = (type === "adversary") ? soundSettings.adversaryEnabled : soundSettings.dualityEnabled;
+    if (soundEnabled) {
+        const soundPath = (type === "adversary") ? soundSettings.adversarySoundPath : soundSettings.dualitySoundPath;
+        if (soundPath) {
+            foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
+        }
     }
 }
