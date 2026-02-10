@@ -368,10 +368,16 @@
 .slide-toggle {
     position: relative;
     display: inline-block;
-    
+
     flex: 0 0 50px;
     height: 24px;
     margin-right: 0;
+}
+
+/* Override .form-group label { flex: 2 } which has higher specificity */
+.dh-crit-config .form-group .form-fields .slide-toggle,
+.dh-crit-text-config .form-group .form-fields .slide-toggle {
+    flex: 0 0 50px;
 }
 
 .slide-toggle input {
