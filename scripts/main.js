@@ -93,7 +93,10 @@ Hooks.once("init", () => {
                 color: "#ffcc00",
                 backgroundColor: "#000000",
                 fill: "none",
-                usePlayerColor: false
+                usePlayerColor: false,
+                useImage: false,
+                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/molten_voltage.webp`,
+                imageSize: "normal"
             },
             adversary: {
                 content: "CRITICAL!",
@@ -103,7 +106,10 @@ Hooks.once("init", () => {
                 color: "#ff0000",
                 backgroundColor: "#000000",
                 fill: "none",
-                usePlayerColor: false
+                usePlayerColor: false,
+                useImage: false,
+                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/molten_voltage.webp`,
+                imageSize: "normal"
             }
         }
     });

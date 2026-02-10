@@ -53,8 +53,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false },
-            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" }
         };
         const textConfig = foundry.utils.mergeObject(defaults[configKey], textSettings[configKey] || {});
 

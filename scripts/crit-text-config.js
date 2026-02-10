@@ -31,7 +31,10 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 color: "#ffcc00",
                 backgroundColor: "#000000",
                 fill: "none",
-                usePlayerColor: false
+                usePlayerColor: false,
+                useImage: false,
+                imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
+                imageSize: "normal"
             },
             adversary: {
                 content: "CRITICAL",
@@ -41,7 +44,10 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 color: "#ff0000",
                 backgroundColor: "#000000",
                 fill: "none",
-                usePlayerColor: false
+                usePlayerColor: false,
+                useImage: false,
+                imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
+                imageSize: "normal"
             }
         }, settings);
 
@@ -71,6 +77,12 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 box: "Box",
                 band: "Band",
                 full: "Full Screen"
+            },
+            imageSizes: {
+                small: "Small",
+                normal: "Normal",
+                large: "Large",
+                "extra-large": "Extra Large"
             },
             state: this.tabState
         };
@@ -103,6 +115,21 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 }
             });
         });
+
+        // Toggle image/text groups based on useImage checkbox
+        this.element.querySelectorAll("input[name$='.useImage']").forEach(checkbox => {
+            checkbox.addEventListener("change", (event) => {
+                const key = event.target.name.split('.')[0];
+                const imageGroup = this.element.querySelector(`.${key}-image-group`);
+                const textGroup = this.element.querySelector(`.${key}-text-group`);
+                if (imageGroup) {
+                    imageGroup.style.display = event.target.checked ? "" : "none";
+                }
+                if (textGroup) {
+                    textGroup.style.display = event.target.checked ? "none" : "";
+                }
+            });
+        });
     }
 
     static async formHandler(event, form, formData) {
@@ -110,6 +137,8 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         // Checkboxes not submitted when unchecked, ensure defaults
         object.pc.usePlayerColor ??= false;
         object.adversary.usePlayerColor ??= false;
+        object.pc.useImage ??= false;
+        object.adversary.useImage ??= false;
         await game.settings.set("daggerheart-critical", "critTextSettings", object);
     }
 }
