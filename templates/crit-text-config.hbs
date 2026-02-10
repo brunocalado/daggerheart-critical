@@ -13,15 +13,14 @@
                 <div class="form-group">
                     <label>Use Image</label>
                     <div class="form-fields">
+                        {{!-- Ordem: Botão -> Texto --}}
                         <label class="slide-toggle">
                             <input type="checkbox" name="pc.useImage" {{#if config.pc.useImage}}checked{{/if}}>
                             <span class="slider"></span>
                         </label>
+                        <span class="hint">When enabled, an image is displayed instead of text.</span>
                     </div>
                 </div>
-                {{#if config.pc.useImage}}
-                    <span class="hint" style="text-align: right; display:block; margin-top:-10px; margin-bottom:10px;">When enabled, an image is displayed instead of text.</span>
-                {{/if}}
 
                 <div class="pc-image-group" {{#unless config.pc.useImage}}style="display:none"{{/unless}}>
                     <div class="form-group">
@@ -130,15 +129,14 @@
                 <div class="form-group">
                     <label>Use Image</label>
                     <div class="form-fields">
+                        {{!-- Ordem: Botão -> Texto --}}
                         <label class="slide-toggle">
                             <input type="checkbox" name="adversary.useImage" {{#if config.adversary.useImage}}checked{{/if}}>
                             <span class="slider"></span>
                         </label>
+                        <span class="hint">When enabled, an image is displayed instead of text.</span>
                     </div>
                 </div>
-                {{#if config.adversary.useImage}}
-                     <span class="hint" style="text-align: right; display:block; margin-top:-10px; margin-bottom:10px;">When enabled, an image is displayed instead of text.</span>
-                {{/if}}
 
                 <div class="adversary-image-group" {{#unless config.adversary.useImage}}style="display:none"{{/unless}}>
                     <div class="form-group">
