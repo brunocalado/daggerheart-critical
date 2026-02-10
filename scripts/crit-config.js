@@ -89,7 +89,7 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const type = activeTab === "pc" ? "duality" : "adversary";
 
             // Read current FX values from the form
-            const formData = new FormDataExtended(this.element);
+            const formData = new foundry.applications.ux.FormDataExtended(this.element);
             const object = foundry.utils.expandObject(formData.object);
             const fxConfig = object[activeTab] || {};
             fxConfig.options ??= {};
