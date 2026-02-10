@@ -88,14 +88,26 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                 artPositionY = this.artOverride.positionY || "middle";
                 artSize = this.artOverride.artSize || "normal";
             }
-        } else if (this.type !== "adversary" && this.authorId) {
+        } else {
             const artSettings = game.settings.get("daggerheart-critical", "critArtSettings");
-            const userArt = artSettings[this.authorId];
-            if (userArt && userArt.imagePath) {
-                artImagePath = userArt.imagePath;
-                artPosition = userArt.position || "middle";
-                artPositionY = userArt.positionY || "middle";
-                artSize = userArt.artSize || "normal";
+            if (this.type === "adversary") {
+                // Adversary: use shared adversary art config
+                const advArt = artSettings.adversary;
+                if (advArt && advArt.imagePath) {
+                    artImagePath = advArt.imagePath;
+                    artPosition = advArt.position || "middle";
+                    artPositionY = advArt.positionY || "middle";
+                    artSize = advArt.artSize || "normal";
+                }
+            } else if (this.authorId) {
+                // PC: use per-user art config
+                const userArt = artSettings[this.authorId];
+                if (userArt && userArt.imagePath) {
+                    artImagePath = userArt.imagePath;
+                    artPosition = userArt.position || "middle";
+                    artPositionY = userArt.positionY || "middle";
+                    artSize = userArt.artSize || "normal";
+                }
             }
         }
 

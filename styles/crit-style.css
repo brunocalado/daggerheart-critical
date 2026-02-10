@@ -314,13 +314,15 @@
 
 /* --- Tabs --- */
 .dh-crit-config .tabs,
-.dh-crit-text-config .tabs {
+.dh-crit-text-config .tabs,
+.dh-crit-art-config .tabs {
     border-bottom: 2px solid var(--crit-border-light);
     margin-bottom: 1rem;
 }
 
 .dh-crit-config .tabs a,
-.dh-crit-text-config .tabs a {
+.dh-crit-text-config .tabs a,
+.dh-crit-art-config .tabs a {
     position: relative;
     padding: 8px 20px;
     border: none;
@@ -332,14 +334,16 @@
 }
 
 .dh-crit-config .tabs a:hover,
-.dh-crit-text-config .tabs a:hover {
+.dh-crit-text-config .tabs a:hover,
+.dh-crit-art-config .tabs a:hover {
     color: #ffffff;
     background: rgba(255, 255, 255, 0.05);
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
 .dh-crit-config .tabs a.active,
-.dh-crit-text-config .tabs a.active {
+.dh-crit-text-config .tabs a.active,
+.dh-crit-art-config .tabs a.active {
     color: #ffffff;
     background: var(--crit-bg-dark);
     border-bottom: 3px solid var(--crit-accent);
@@ -347,12 +351,14 @@
 
 /* --- Tab Content --- */
 .dh-crit-config .tab,
-.dh-crit-text-config .tab {
+.dh-crit-text-config .tab,
+.dh-crit-art-config .tab {
     display: none;
     animation: fadein 0.3s ease-in-out;
 }
 .dh-crit-config .tab.active,
-.dh-crit-text-config .tab.active { display: block; }
+.dh-crit-text-config .tab.active,
+.dh-crit-art-config .tab.active { display: block; }
 
 @keyframes fadein {
     from { opacity: 0; transform: translateY(-5px); }

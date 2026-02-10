@@ -1,61 +1,125 @@
 <div class="d-flex flex-column gap-2 dh-crit-art-config">
-    <p class="notes"><i class="fas fa-info-circle"></i> Configure character artwork displayed behind the critical text for each player. Leave the image empty to disable art for that player.</p>
+    <nav class="tabs" data-group="primary">
+        <a class="item{{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">Player Character</a>
+        <a class="item{{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">Adversary</a>
+    </nav>
 
-    <div class="crit-art-player-list">
-        {{#each players}}
-        <div class="crit-art-player-card">
-            <div class="crit-art-player-header">
-                <span class="crit-art-color-dot" style="background-color: {{this.color}};"></span>
-                <span class="crit-art-player-name">{{this.name}}</span>
-            </div>
+    <section class="content">
+        {{!-- Player Character Tab --}}
+        <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
+            <div class="tab-content-wrapper">
+                <p class="notes"><i class="fas fa-info-circle"></i> Configure per-player artwork displayed behind the critical text for Player Character (Duality Dice) criticals. Leave the image empty to disable art for that player.</p>
 
-            <div class="form-group">
-                <label>Image</label>
-                <div class="form-fields">
-                    <file-picker style="flex: 1;" type="imagevideo" name="users.{{this.id}}.imagePath" value="{{this.imagePath}}" placeholder="path/to/art.webp"></file-picker>
-                </div>
-            </div>
+                <div class="crit-art-player-list">
+                    {{#each players}}
+                    <div class="crit-art-player-card">
+                        <div class="crit-art-player-header">
+                            <span class="crit-art-color-dot" style="background-color: {{this.color}};"></span>
+                            <span class="crit-art-player-name">{{this.name}}</span>
+                        </div>
 
-            <div class="form-group">
-                <label>Horizontal</label>
-                <div class="form-fields">
-                    <select name="users.{{this.id}}.position">
-                        <option value="left-out" {{#if (eq this.position "left-out")}}selected{{/if}}>Left - Out</option>
-                        <option value="left" {{#if (eq this.position "left")}}selected{{/if}}>Left</option>
-                        <option value="middle" {{#if (eq this.position "middle")}}selected{{/if}}>Middle</option>
-                        <option value="right" {{#if (eq this.position "right")}}selected{{/if}}>Right</option>
-                        <option value="right-out" {{#if (eq this.position "right-out")}}selected{{/if}}>Right - Out</option>
-                    </select>
-                </div>
-            </div>
+                        <div class="form-group">
+                            <label>Image</label>
+                            <div class="form-fields">
+                                <file-picker style="flex: 1;" type="imagevideo" name="users.{{this.id}}.imagePath" value="{{this.imagePath}}" placeholder="path/to/art.webp"></file-picker>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label>Vertical</label>
-                <div class="form-fields">
-                    <select name="users.{{this.id}}.positionY">
-                        <option value="top-out" {{#if (eq this.positionY "top-out")}}selected{{/if}}>Top - Out</option>
-                        <option value="top" {{#if (eq this.positionY "top")}}selected{{/if}}>Top</option>
-                        <option value="middle" {{#if (eq this.positionY "middle")}}selected{{/if}}>Middle</option>
-                        <option value="bottom" {{#if (eq this.positionY "bottom")}}selected{{/if}}>Bottom</option>
-                        <option value="bottom-out" {{#if (eq this.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
-                    </select>
-                </div>
-            </div>
+                        <div class="form-group">
+                            <label>Horizontal</label>
+                            <div class="form-fields">
+                                <select name="users.{{this.id}}.position">
+                                    <option value="left-out" {{#if (eq this.position "left-out")}}selected{{/if}}>Left - Out</option>
+                                    <option value="left" {{#if (eq this.position "left")}}selected{{/if}}>Left</option>
+                                    <option value="middle" {{#if (eq this.position "middle")}}selected{{/if}}>Middle</option>
+                                    <option value="right" {{#if (eq this.position "right")}}selected{{/if}}>Right</option>
+                                    <option value="right-out" {{#if (eq this.position "right-out")}}selected{{/if}}>Right - Out</option>
+                                </select>
+                            </div>
+                        </div>
 
-            <div class="form-group">
-                <label>Size</label>
-                <div class="form-fields">
-                    <select name="users.{{this.id}}.artSize">
-                        <option value="very-small" {{#if (eq this.artSize "very-small")}}selected{{/if}}>Very Small</option>
-                        <option value="small" {{#if (eq this.artSize "small")}}selected{{/if}}>Small</option>
-                        <option value="normal" {{#if (eq this.artSize "normal")}}selected{{/if}}>Normal</option>
-                        <option value="large" {{#if (eq this.artSize "large")}}selected{{/if}}>Large</option>
-                    </select>
+                        <div class="form-group">
+                            <label>Vertical</label>
+                            <div class="form-fields">
+                                <select name="users.{{this.id}}.positionY">
+                                    <option value="top-out" {{#if (eq this.positionY "top-out")}}selected{{/if}}>Top - Out</option>
+                                    <option value="top" {{#if (eq this.positionY "top")}}selected{{/if}}>Top</option>
+                                    <option value="middle" {{#if (eq this.positionY "middle")}}selected{{/if}}>Middle</option>
+                                    <option value="bottom" {{#if (eq this.positionY "bottom")}}selected{{/if}}>Bottom</option>
+                                    <option value="bottom-out" {{#if (eq this.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Size</label>
+                            <div class="form-fields">
+                                <select name="users.{{this.id}}.artSize">
+                                    <option value="very-small" {{#if (eq this.artSize "very-small")}}selected{{/if}}>Very Small</option>
+                                    <option value="small" {{#if (eq this.artSize "small")}}selected{{/if}}>Small</option>
+                                    <option value="normal" {{#if (eq this.artSize "normal")}}selected{{/if}}>Normal</option>
+                                    <option value="large" {{#if (eq this.artSize "large")}}selected{{/if}}>Large</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
-        {{/each}}
-    </div>
+
+        {{!-- Adversary Tab --}}
+        <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
+            <div class="tab-content-wrapper">
+                <p class="notes"><i class="fas fa-info-circle"></i> Configure a default artwork displayed behind the critical text for all Adversary (GM) criticals. Leave the image empty to disable.</p>
+
+                <div class="form-group">
+                    <label>Image</label>
+                    <div class="form-fields">
+                        <file-picker style="flex: 1;" type="imagevideo" name="adversary.imagePath" value="{{config.adversary.imagePath}}" placeholder="path/to/art.webp"></file-picker>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Horizontal</label>
+                    <div class="form-fields">
+                        <select name="adversary.position">
+                            <option value="left-out" {{#if (eq config.adversary.position "left-out")}}selected{{/if}}>Left - Out</option>
+                            <option value="left" {{#if (eq config.adversary.position "left")}}selected{{/if}}>Left</option>
+                            <option value="middle" {{#if (eq config.adversary.position "middle")}}selected{{/if}}>Middle</option>
+                            <option value="right" {{#if (eq config.adversary.position "right")}}selected{{/if}}>Right</option>
+                            <option value="right-out" {{#if (eq config.adversary.position "right-out")}}selected{{/if}}>Right - Out</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Vertical</label>
+                    <div class="form-fields">
+                        <select name="adversary.positionY">
+                            <option value="top-out" {{#if (eq config.adversary.positionY "top-out")}}selected{{/if}}>Top - Out</option>
+                            <option value="top" {{#if (eq config.adversary.positionY "top")}}selected{{/if}}>Top</option>
+                            <option value="middle" {{#if (eq config.adversary.positionY "middle")}}selected{{/if}}>Middle</option>
+                            <option value="bottom" {{#if (eq config.adversary.positionY "bottom")}}selected{{/if}}>Bottom</option>
+                            <option value="bottom-out" {{#if (eq config.adversary.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Size</label>
+                    <div class="form-fields">
+                        <select name="adversary.artSize">
+                            <option value="very-small" {{#if (eq config.adversary.artSize "very-small")}}selected{{/if}}>Very Small</option>
+                            <option value="small" {{#if (eq config.adversary.artSize "small")}}selected{{/if}}>Small</option>
+                            <option value="normal" {{#if (eq config.adversary.artSize "normal")}}selected{{/if}}>Normal</option>
+                            <option value="large" {{#if (eq config.adversary.artSize "large")}}selected{{/if}}>Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <div class="form-footer">
         <button type="button" class="crit-preview-btn">
