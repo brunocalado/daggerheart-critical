@@ -1,4 +1,6 @@
-# Daggerheart: 💥 Critical 💥
+# 💥 Critical 💥
+
+# for Daggerheart
 
 <p align="center"><img width="900" src="assets/images/banner.webp" alt="Critical FX Banner"></p>
 
@@ -14,30 +16,34 @@ In a narrative game like Daggerheart, a Critical Success is a major story beat. 
 
 ## 🚀 Key Features
 
-* **💥 Visual Impact:** Choose from four distinct visual effects:
-    * **Glass Shatter:** The screen cracks and shards fly—perfect for high-impact moments.
-    * **Screen Shake:** A physical rumble that sells the weight of the blow.
-    * **Pulsate:** A rhythmic visual heartbeat for magical or psychic intense moments.
-    * **Blood/Energy Border:** A glowing border that constricts the screen (customizable color).
+* **💥 Dynamic Visual FX:** Choose from a suite of powerful, screen-spanning visual effects:
+    * **Glass Shatter:** The screen cracks and shards fly—perfect for a devastating blow.
+    * **Screen Shake:** A physical rumble that sells the weight and force of an action.
+    * **Pulsate:** A rhythmic visual heartbeat for moments of intense magical or psychic power.
+    * **Energy Border:** A glowing, colored border that pulses and constricts the screen.
+    * **Fine-Tune Everything:** Control the intensity, duration, and color of each effect to perfectly match the action on screen.
 
-* **🔊 Audio Immersion:** Automatically plays sound effects (SFX) when a crit lands.
-    * *Fully customizable:* Set your own sounds for Players and GMs separately.
+* **🔊 Cinematic Audio:** Automatically trigger custom sound effects to give crits their own auditory signature.
+    * **Asymmetric Sound Design:** Assign different sounds for Player and GM criticals. Celebrate player victories with a heroic fanfare while a GM's crit is met with a terrifying horror sting.
+    * **Bring Your Own Sounds:** Comes with ready-to-use SFX, or easily upload your own `.mp3` or `.ogg` files.
 
 * **⚔️ Duality vs. Adversary:**
     * **For Players (Duality Dice):** Triggers when the Hope & Fear dice match.
-    * **For GMs (Adversary):** Triggers when the d20 rolls a natural 20 (or is marked as critical).
-    * *Unique Settings:* You can set different effects for Players vs. GMs (e.g., Players get "Glass Shatter" with orchestral music, while GMs get a red "Screen Border" with a horror sting).
+    * **For GMs (Adversary Rolls):** Triggers on a d20 critical.
 
-* **✨ Critical Splash:** Displays a stylish "CRITICAL" overlay with the character's name, so there is no confusion about who just did something awesome.
+* **✨ Customizable Critical Splash:** Display a stylish "CRITICAL!".
+    * **Personalize It:** Easily change the overlay text, font, and animation to fit your game's unique aesthetic.
+
+* **👤 Per-Player Effects:** Empower your players by letting them choose their own signature critical effect! The Barbarian's crits can shake the screen, while the Wizard's crits might shatter it like glass, giving each character a unique and personal feel in combat.
 
 ## 🛠️ How to Use
 
 This module is designed to be **Plug & Play**.
 
 1.  **Install & Enable:** Once enabled, it works immediately with default settings.
-2.  **Configuration:** Go to `Module Settings` -> `Daggerheart: Critical FX`.
+2.  **Configuration:** Go to `Module Settings` -> `Daggerheart: Critical FX` to customize your experience.
 3.  **Customize:**
-    * **Visual FX:** Open the configuration menu to pick your preferred effect (Shake, Shatter, etc.) and adjust intensity/duration.
+    * **Global & Per-Player FX:** Open the configuration menu to pick your preferred global effects (Shake, Shatter, etc.) or allow players to set their own. Adjust intensity, duration, and color.
     * **Sounds:** Upload your own `.mp3` or `.ogg` files to match your campaign's vibe.
 
 <p align="center"><img width="600" src="docs/settings-preview.webp" alt="Settings Menu"></p>

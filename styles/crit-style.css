@@ -78,8 +78,8 @@
     font-display: swap;
 }
 
-/* IMPORTANTE: position: fixed !important garante que o overlay
-   flutue sobre a tela inteira sem empurrar a UI do Foundry.
+/* IMPORTANT: position: fixed !important ensures the overlay
+   floats over the entire screen without pushing the Foundry UI.
 */
 .crit-overlay-app {
     position: fixed !important;
@@ -87,20 +87,20 @@
     left: 0;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 99999; /* Acima de tudo */
+    z-index: 99999; /* Above everything */
     background: transparent !important;
     box-shadow: none !important;
     border: none !important;
-    pointer-events: none; /* Permite clicar através */
+    pointer-events: none; /* Allows clicking through */
     margin: 0 !important;
 
-    /* Centralização absoluta */
+    /* Absolute centering */
     display: flex !important;
     align-items: center;
     justify-content: center;
 }
 
-/* Container do conteúdo */
+/* Content container */
 .crit-splash-container {
     position: relative;
     text-align: center;
@@ -110,7 +110,7 @@
     justify-content: center;
 }
 
-/* Texto Principal */
+/* Main Text */
 .crit-title {
     font-family: "Bangers", sans-serif;
     font-size: 8rem;
@@ -222,9 +222,9 @@
 .crit-art-y-bottom { --art-y: 15vh; }
 .crit-art-y-bottom-out { --art-y: 35vh; }
 
-/* --- Estilos por Tipo --- */
+/* --- Styles by Type --- */
 
-/* Duality (Dourado) - text-shadow only, color comes from settings */
+/* Duality (Gold) - text-shadow only, color comes from settings */
 .duality-style .crit-title {
     text-shadow:
         0 0 10px currentColor,
@@ -232,7 +232,7 @@
         4px 4px 0px #000;
 }
 
-/* Adversary (Vermelho) - text-shadow only, color comes from settings */
+/* Adversary (Red) - text-shadow only, color comes from settings */
 .adversary-style .crit-title {
     text-shadow:
         0 0 10px currentColor,
@@ -240,7 +240,7 @@
         4px 4px 0px #000;
 }
 
-/* --- Animações --- */
+/* --- Animations --- */
 
 @keyframes crit-explode {
     0% { opacity: 0; transform: scale(0.1) rotate(-10deg); }
@@ -419,9 +419,9 @@
 .dh-crit-art-config .form-group .form-fields {
     flex: 3;
     display: flex;
-    /*justify-content: flex-end; /* Alinha o grupo (botão + texto) à direita */
+    /*justify-content: flex-end; /* Aligns the group (button + text) to the right */
     align-items: center;
-    gap: 0; /* Gap removido pois vamos usar margin no hint */
+    gap: 0; /* Gap removed because we will use margin on the hint */
 }
 
 /* Inputs styling */
@@ -508,7 +508,7 @@
 }
 
 .slider {
-    /* FIX: Width Fixa de 50px */
+    /* FIX: Fixed width of 50px */
     width: 50px;    
     position: absolute;
     cursor: pointer;
@@ -540,23 +540,23 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px); /* Ajustado para a largura de 50px */
+    transform: translateX(26px); /* Adjusted for 50px width */
 }
 
 input:focus + .slider {
     box-shadow: 0 0 1px var(--crit-accent);
 }
 
-/* Hints (Texto Explicativo) */
+/* Hints (Explanatory Text) */
 .dh-crit-text-config .hint,
 .dh-crit-sound-config .hint {
     font-size: 0.85em;
     color: #b0b0b0;
     font-style: italic;
     line-height: 1.2;
-    text-align: left; /* Alinha o texto à esquerda (perto do botão) */
-    margin-left: 10px; /* Espaço entre o botão e o texto */
-    flex: 1; /* Ocupa o restante do espaço */
+    text-align: left; /* Aligns text to the left (near the button) */
+    margin-left: 10px; /* Space between button and text */
+    flex: 1; /* Occupies remaining space */
 }
 
 /* --- Use Image Row --- */

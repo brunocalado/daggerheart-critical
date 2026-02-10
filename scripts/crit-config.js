@@ -62,11 +62,11 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 event.preventDefault();
                 const activeTab = event.currentTarget.dataset.tab;
                 
-                // Atualiza a navegação
+                // Update navigation
                 this.element.querySelectorAll(".tabs a").forEach(t => t.classList.remove("active"));
                 event.currentTarget.classList.add("active");
 
-                // Atualiza o conteúdo visível via CSS (sem re-renderizar)
+                // Update visible content via CSS (without re-rendering)
                 this.element.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
                 this.element.querySelector(`.tab[data-tab="${activeTab}"]`)?.classList.add("active");
                 
