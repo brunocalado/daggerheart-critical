@@ -2,11 +2,11 @@
 
 ## for Daggerheart
 
-[![Demo Video](docs/preview.webp)](https://youtu.be/y5GEFZrrJ58)
-
 <p align="center"><img width="900" src="docs/preview.webp" alt="Critical"></p>
 
 <p align="center"><img width="900" src="docs/settings.webp" alt="Settings"></p>
+
+Watch a video demo: [Youtube](https://youtu.be/y5GEFZrrJ58)
 
 ## What is it?
 
