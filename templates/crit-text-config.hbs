@@ -10,10 +10,9 @@
             <div class="tab-content-wrapper">
                 <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance for Player Character (Duality Dice) criticals.</p>
 
-                <div class="form-group">
-                    <label>Use Image</label>
+                <div class="form-group use-image-row">
+                    <label><i class="fas fa-image"></i> Use Image</label>
                     <div class="form-fields">
-                        {{!-- Ordem: Botão -> Texto --}}
                         <label class="slide-toggle">
                             <input type="checkbox" name="pc.useImage" {{#if config.pc.useImage}}checked{{/if}}>
                             <span class="slider"></span>
@@ -26,7 +25,7 @@
                     <div class="form-group">
                         <label>Image Path</label>
                         <div class="form-fields">
-                            <file-picker type="imagevideo" name="pc.imagePath" value="{{config.pc.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp"></file-picker>
+                            <file-picker style="flex: 1;" type="imagevideo" name="pc.imagePath" value="{{config.pc.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp"></file-picker>
                         </div>
                     </div>
 
@@ -126,10 +125,9 @@
             <div class="tab-content-wrapper">
                 <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance for Adversary (GM) criticals.</p>
 
-                <div class="form-group">
-                    <label>Use Image</label>
+                <div class="form-group use-image-row">
+                    <label><i class="fas fa-image"></i> Use Image</label>
                     <div class="form-fields">
-                        {{!-- Ordem: Botão -> Texto --}}
                         <label class="slide-toggle">
                             <input type="checkbox" name="adversary.useImage" {{#if config.adversary.useImage}}checked{{/if}}>
                             <span class="slider"></span>
@@ -142,7 +140,7 @@
                     <div class="form-group">
                         <label>Image Path</label>
                         <div class="form-fields">
-                            <file-picker type="imagevideo" name="adversary.imagePath" value="{{config.adversary.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp"></file-picker>
+                            <file-picker style="flex: 1;" type="imagevideo" name="adversary.imagePath" value="{{config.adversary.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp"></file-picker>
                         </div>
                     </div>
 

@@ -61,7 +61,14 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 "Bangers": "Bangers",
                 "Black Ops One": "Black Ops One",
                 "Cinzel Decorative": "Cinzel Decorative",
+                "Creepster": "Creepster",
+                "Eater": "Eater",
+                "MedievalSharp": "MedievalSharp",
                 "Metal Mania": "Metal Mania",
+                "Nosifer": "Nosifer",
+                "Rubik Glitch": "Rubik Glitch",
+                "Shojumaru": "Shojumaru",
+                "Special Elite": "Special Elite",
                 "Signika": "Signika"
             },
             fontSizes: {
@@ -71,8 +78,8 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 "extra-large": "Extra Large"
             },
             letterSpacings: {
+                "tight": "Tight",                
                 "normal": "Normal",
-                "tight": "Tight",
                 "wide": "Wide",
                 "extra-wide": "Extra Wide"
             },
