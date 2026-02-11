@@ -58,7 +58,7 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             // Art: use saved override or defaults
             const artOverride = userOverride.art
                 ? { ...userOverride.art }
-                : { imagePath: "", position: "middle", positionY: "middle", artSize: "normal", offsetX: 0, offsetY: 0 };
+                : { imagePath: "", artSize: "normal", offsetX: 0, offsetY: 0 };
             
             // Ensure offset defaults if not present in saved data
             artOverride.offsetX ??= 0;
@@ -211,6 +211,16 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             });
         });
 
+        // Range Slider Value Display Logic (Updates the number span while dragging)
+        this.element.querySelectorAll(".range-slider").forEach(input => {
+            input.addEventListener("input", (e) => {
+                const span = e.target.nextElementSibling;
+                if (span && span.classList.contains("range-value")) {
+                    span.textContent = e.target.value;
+                }
+            });
+        });
+
         // Clear buttons
         this.element.querySelectorAll(".crit-user-clear-btn").forEach(btn => {
             btn.addEventListener("click", event => {
@@ -268,16 +278,20 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     } else if (category === "art") {
                         const imgPath = section.querySelector(`[name="${clearPrefix}.imagePath"]`);
                         if (imgPath) imgPath.value = "";
-                        const posSelect = section.querySelector(`[name="${clearPrefix}.position"]`);
-                        if (posSelect) posSelect.value = "middle";
-                        const posYSelect = section.querySelector(`[name="${clearPrefix}.positionY"]`);
-                        if (posYSelect) posYSelect.value = "middle";
-                        const sizeSelect = section.querySelector(`[name="${clearPrefix}.artSize"]`);
-                        if (sizeSelect) sizeSelect.value = "normal";
+                        
+                        // Default to center 0,0
                         const offsetX = section.querySelector(`[name="${clearPrefix}.offsetX"]`);
                         if (offsetX) offsetX.value = 0;
+                        const offsetXVal = section.querySelector(`[name="${clearPrefix}.offsetX"] + .range-value`);
+                        if (offsetXVal) offsetXVal.textContent = "0";
+
                         const offsetY = section.querySelector(`[name="${clearPrefix}.offsetY"]`);
                         if (offsetY) offsetY.value = 0;
+                        const offsetYVal = section.querySelector(`[name="${clearPrefix}.offsetY"] + .range-value`);
+                        if (offsetYVal) offsetYVal.textContent = "0";
+
+                        const sizeSelect = section.querySelector(`[name="${clearPrefix}.artSize"]`);
+                        if (sizeSelect) sizeSelect.value = "normal";
                     }
 
                     // Collapse the section
@@ -322,11 +336,11 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 if (userData.art?._active === "true" && userData.art.imagePath?.trim()) {
                     artOverride = {
                         imagePath: userData.art.imagePath,
-                        position: userData.art.position || "middle",
-                        positionY: userData.art.positionY || "middle",
+                        position: "middle", // Force middle for offset logic
+                        positionY: "middle", // Force middle for offset logic
                         artSize: userData.art.artSize || "normal",
-                        offsetX: userData.art.offsetX || 0,
-                        offsetY: userData.art.offsetY || 0
+                        offsetX: Number(userData.art.offsetX) || 0,
+                        offsetY: Number(userData.art.offsetY) || 0
                     };
                 }
 
@@ -418,6 +432,11 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 if (userData.art && userData.art._active === "true") {
                     delete userData.art._active;
                     if (userData.art.imagePath?.trim()) {
+                        // Force middle positions for data consistency
+                        userData.art.position = "middle";
+                        userData.art.positionY = "middle";
+                        userData.art.offsetX = Number(userData.art.offsetX) || 0;
+                        userData.art.offsetY = Number(userData.art.offsetY) || 0;
                         userOverride.art = userData.art;
                     }
                 }

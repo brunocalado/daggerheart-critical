@@ -303,28 +303,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Horizontal</label>
+                    <label>Offset X (px)</label>
                     <div class="form-fields">
-                        <select name="users.{{this.id}}.art.position">
-                            <option value="left-out" {{#if (eq this.artOverride.position "left-out")}}selected{{/if}}>Left - Out</option>
-                            <option value="left" {{#if (eq this.artOverride.position "left")}}selected{{/if}}>Left</option>
-                            <option value="middle" {{#if (eq this.artOverride.position "middle")}}selected{{/if}}>Middle</option>
-                            <option value="right" {{#if (eq this.artOverride.position "right")}}selected{{/if}}>Right</option>
-                            <option value="right-out" {{#if (eq this.artOverride.position "right-out")}}selected{{/if}}>Right - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="users.{{this.id}}.art.offsetX" value="{{this.artOverride.offsetX}}" min="-600" max="600" step="10">
+                        <span class="range-value">{{this.artOverride.offsetX}}</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Vertical</label>
+                    <label>Offset Y (px)</label>
                     <div class="form-fields">
-                        <select name="users.{{this.id}}.art.positionY">
-                            <option value="top-out" {{#if (eq this.artOverride.positionY "top-out")}}selected{{/if}}>Top - Out</option>
-                            <option value="top" {{#if (eq this.artOverride.positionY "top")}}selected{{/if}}>Top</option>
-                            <option value="middle" {{#if (eq this.artOverride.positionY "middle")}}selected{{/if}}>Middle</option>
-                            <option value="bottom" {{#if (eq this.artOverride.positionY "bottom")}}selected{{/if}}>Bottom</option>
-                            <option value="bottom-out" {{#if (eq this.artOverride.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="users.{{this.id}}.art.offsetY" value="{{this.artOverride.offsetY}}" min="-300" max="300" step="10">
+                        <span class="range-value">{{this.artOverride.offsetY}}</span>
                     </div>
                 </div>
 
