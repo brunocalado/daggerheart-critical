@@ -1,14 +1,26 @@
-<div class="crit-splash-container {{typeClass}} {{#unless textConfig.useImage}}crit-fill-{{textConfig.fill}}{{/unless}}"
-     style="{{#unless textConfig.useImage}}{{#if (eq textConfig.fill 'full')}}background-color: {{textConfig.backgroundColor}};{{/if}}{{#if (eq textConfig.fill 'band')}}background-color: {{textConfig.backgroundColor}};{{/if}}{{/unless}}">
+<div class="crit-splash-container {{typeClass}} crit-fill-{{textConfig.fill}}">
+    
     {{#if artImagePath}}
-    <img class="crit-art crit-art-{{artPosition}} crit-art-y-{{artPositionY}} crit-art-size-{{artSize}}" src="{{artImagePath}}" alt="">
+    <img src="{{artImagePath}}" class="crit-art crit-art-{{artPosition}} crit-art-y-{{artPositionY}} crit-art-size-{{artSize}}">
     {{/if}}
+
     {{#if textConfig.useImage}}
-    <img class="crit-image crit-image-{{textConfig.imageSize}}" src="{{textConfig.imagePath}}" alt="">
+        {{#if isVideo}}
+            <video src="{{mediaPath}}" autoplay class="crit-video crit-video-{{textConfig.imageSize}}"></video>
+        {{else}}
+            <img src="{{mediaPath}}" class="crit-image crit-image-{{textConfig.imageSize}}">
+        {{/if}}
     {{else}}
-    <div class="crit-title"
-         style="font-family: '{{textConfig.fontFamily}}', sans-serif; font-size: {{textConfig.fontSizeRem}}rem; letter-spacing: {{textConfig.letterSpacingCSS}}; color: {{textConfig.resolvedColor}};{{#if (eq textConfig.fill 'box')}} background-color: {{textConfig.backgroundColor}};{{/if}}">
-        {{critTitle}}
-    </div>
+        <h1 class="crit-title" 
+            style="
+                font-family: '{{textConfig.fontFamily}}'; 
+                font-size: {{textConfig.fontSizeRem}}rem; 
+                letter-spacing: {{textConfig.letterSpacingCSS}};
+                color: {{textConfig.resolvedColor}};
+                {{#if (ne textConfig.fill 'none')}}background-color: {{textConfig.backgroundColor}};{{/if}}
+                {{#if (eq textConfig.fill 'none')}}text-shadow: 4px 4px 0px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;{{/if}}
+            ">
+            {{critTitle}}
+        </h1>
     {{/if}}
 </div>

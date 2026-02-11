@@ -50,9 +50,10 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const fxOverride = { ...(userOverride.fx || {}) };
             fxOverride.type ??= "none";
             fxOverride.options ??= {};
-            if (fxOverride.type === "border" && !fxOverride.options.color) {
-                fxOverride.options.color = "#ff0000";
-            }
+            
+            // Ensure color is always defined to prevent browser warnings on <input type="color">
+            // even if the border effect is not currently active.
+            fxOverride.options.color ??= "#ff0000";
 
             // Art: use saved override or defaults
             const artOverride = userOverride.art

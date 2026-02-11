@@ -76,6 +76,17 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             textConfig.resolvedColor = textConfig.color || defaults[configKey].color;
         }
 
+        // Determine if imagePath is a video
+        let isVideo = false;
+        let mediaPath = textConfig.imagePath;
+        
+        if (textConfig.useImage && mediaPath) {
+            const ext = mediaPath.split('.').pop().toLowerCase();
+            if (ext === "webm" || ext === "mp4") {
+                isVideo = true;
+            }
+        }
+
         // Load art settings for PC criticals
         let artImagePath = null;
         let artPosition = "middle";
@@ -115,6 +126,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             critTitle: textConfig.content || "CRITICAL",
             typeClass: cssClass,
             textConfig,
+            isVideo,
+            mediaPath,
             artImagePath,
             artPosition,
             artPositionY,
@@ -123,9 +136,40 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     _onRender(context, options) {
-        // Automatically closes after 3 seconds
-        setTimeout(() => {
-            this.close();
-        }, 3000);
+        // Look for a video element
+        const videoElement = this.element.querySelector("video.crit-video");
+
+        if (videoElement) {
+            // Mute the video element so it doesn't play raw audio
+            // This allows us to play the audio separately via AudioHelper (Interface Channel)
+            videoElement.muted = true;
+
+            // Play the audio track via Foundry's AudioHelper
+            const src = videoElement.getAttribute("src");
+            if (src) {
+                foundry.audio.AudioHelper.play({
+                    src: src,
+                    volume: 0.8,
+                    autoplay: true,
+                    loop: false
+                }, false); // scope=false implies interface/client-side sound
+            }
+            
+            // Close when video ends
+            videoElement.onended = () => {
+                this.close();
+            };
+
+            // Fallback safety: close after 15 seconds if video loops or hangs
+            setTimeout(() => {
+                if (this.element) this.close();
+            }, 15000);
+
+        } else {
+            // Standard Image/Text behavior: close after 3 seconds
+            setTimeout(() => {
+                this.close();
+            }, 3000);
+        }
     }
 }
