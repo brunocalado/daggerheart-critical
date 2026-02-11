@@ -165,9 +165,12 @@ export class CritFX {
         canvas.height = window.innerHeight;
 
         // Map intensity (1-5) to particle count
+        // Default to intensity 3 (Normal) if not provided
         const intensityMap = { 1: 50, 2: 100, 3: 200, 4: 400, 5: 800 };
         const particleCount = intensityMap[parseInt(options.intensity)] || 200;
-        const duration = options.duration || 3000;
+        
+        // Default duration 4000ms
+        const duration = options.duration || 4000;
 
         const colors = ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'];
         

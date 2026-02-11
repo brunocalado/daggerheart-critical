@@ -241,7 +241,7 @@
                         <div class="form-fields">
                             <select name="users.{{this.id}}.fx.options.confetti_intensity">
                                 {{#each ../confettiIntensities as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../fxOverride.options.intensity key)}}selected{{/if}}>{{label}}</option>
+                                <option value="{{key}}" {{#if (or (eq ../fxOverride.options.intensity key) (and (not ../fxOverride.options.intensity) (eq key "3")))}}selected{{/if}}>{{label}}</option>
                                 {{/each}}
                             </select>
                         </div>
@@ -249,7 +249,7 @@
                     <div class="form-group">
                         <label>Duration (ms)</label>
                         <div class="form-fields">
-                            <input type="number" name="users.{{this.id}}.fx.options.confetti_duration" value="{{this.fxOverride.options.duration}}" placeholder="3000">
+                            <input type="number" name="users.{{this.id}}.fx.options.confetti_duration" value="{{this.fxOverride.options.duration}}" placeholder="4000">
                         </div>
                     </div>
                 </div>

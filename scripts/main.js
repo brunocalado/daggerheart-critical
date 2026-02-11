@@ -250,6 +250,7 @@ function triggerCriticalEffect(message, type) {
             case "shatter": fx.GlassShatter(fxConfig.options); break;
             case "border": fx.ScreenBorder(fxConfig.options); break;
             case "pulsate": fx.Pulsate(fxConfig.options); break;
+            case "confetti": fx.Confetti(fxConfig.options); break;
         }
     }
 
