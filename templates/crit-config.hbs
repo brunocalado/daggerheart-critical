@@ -90,6 +90,26 @@
                     </div>
                 </div>
                 {{/if}}
+
+                {{#if (eq config.pc.type "confetti")}}
+                <div class="form-group">
+                    <label>Intensity</label>
+                    <div class="form-fields">
+                        <select name="pc.options.intensity">
+                            {{!-- Removed ../ prefix from confettiIntensities because we are in root context --}}
+                            {{#each confettiIntensities as |label key|}}
+                            <option value="{{key}}" {{#if (eq ../config.pc.options.intensity key)}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Duration (ms)</label>
+                    <div class="form-fields">
+                        <input type="number" name="pc.options.duration" value="{{config.pc.options.duration}}" placeholder="3000">
+                    </div>
+                </div>
+                {{/if}}
             </div>
         </div>
 
@@ -175,6 +195,26 @@
                     <label>Iterations</label>
                     <div class="form-fields">
                         <input type="number" name="adversary.options.iterations" value="{{config.adversary.options.iterations}}" placeholder="5">
+                    </div>
+                </div>
+                {{/if}}
+
+                {{#if (eq config.adversary.type "confetti")}}
+                <div class="form-group">
+                    <label>Intensity</label>
+                    <div class="form-fields">
+                        <select name="adversary.options.intensity">
+                            {{!-- Removed ../ prefix here as well --}}
+                            {{#each confettiIntensities as |label key|}}
+                            <option value="{{key}}" {{#if (eq ../config.adversary.options.intensity key)}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Duration (ms)</label>
+                    <div class="form-fields">
+                        <input type="number" name="adversary.options.duration" value="{{config.adversary.options.duration}}" placeholder="3000">
                     </div>
                 </div>
                 {{/if}}

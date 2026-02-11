@@ -234,6 +234,25 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="fx-options-group" data-fx-type="confetti" {{#unless (eq this.fxOverride.type "confetti")}}style="display:none"{{/unless}}>
+                    <div class="form-group">
+                        <label>Intensity</label>
+                        <div class="form-fields">
+                            <select name="users.{{this.id}}.fx.options.confetti_intensity">
+                                {{#each ../confettiIntensities as |label key|}}
+                                <option value="{{key}}" {{#if (eq ../fxOverride.options.intensity key)}}selected{{/if}}>{{label}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (ms)</label>
+                        <div class="form-fields">
+                            <input type="number" name="users.{{this.id}}.fx.options.confetti_duration" value="{{this.fxOverride.options.duration}}" placeholder="3000">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {{!-- SOUND OVERRIDE SECTION --}}

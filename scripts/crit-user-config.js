@@ -119,7 +119,15 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 shake: "Screen Shake",
                 shatter: "Glass Shatter",
                 border: "Screen Border",
-                pulsate: "Pulsate"
+                pulsate: "Pulsate",
+                confetti: "Confetti"
+            },
+            confettiIntensities: {
+                1: "Very Weak",
+                2: "Weak",
+                3: "Normal",
+                4: "Strong",
+                5: "Very Strong"
             }
         };
     }
@@ -336,6 +344,7 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                         case "shatter": fx.GlassShatter(cleanOpts); break;
                         case "border": fx.ScreenBorder(cleanOpts); break;
                         case "pulsate": fx.Pulsate(cleanOpts); break;
+                        case "confetti": fx.Confetti(cleanOpts); break;
                     }
                 }
 

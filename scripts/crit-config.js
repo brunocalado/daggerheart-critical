@@ -50,7 +50,15 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 shake: "Screen Shake",
                 shatter: "Glass Shatter",
                 border: "Screen Border",
-                pulsate: "Pulsate"
+                pulsate: "Pulsate",
+                confetti: "Confetti"
+            },
+            confettiIntensities: {
+                1: "Very Weak",
+                2: "Weak",
+                3: "Normal",
+                4: "Strong",
+                5: "Very Strong"
             },
             state: this.tabState
         };
@@ -106,6 +114,7 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     case "shatter": fx.GlassShatter(fxConfig.options); break;
                     case "border": fx.ScreenBorder(fxConfig.options); break;
                     case "pulsate": fx.Pulsate(fxConfig.options); break;
+                    case "confetti": fx.Confetti(fxConfig.options); break;
                 }
             }
 
