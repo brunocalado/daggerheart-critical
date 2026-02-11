@@ -1,7 +1,7 @@
 <div class="crit-splash-container {{typeClass}} crit-fill-{{textConfig.fill}}">
     
     {{#if artImagePath}}
-    <img src="{{artImagePath}}" class="crit-art crit-art-{{artPosition}} crit-art-y-{{artPositionY}} crit-art-size-{{artSize}}">
+    <img src="{{artImagePath}}" class="crit-art crit-art-{{artPosition}} crit-art-y-{{artPositionY}} crit-art-size-{{artSize}}" style="--art-offset-x: {{artOffsetX}}px; --art-offset-y: {{artOffsetY}}px;">
     {{/if}}
 
     {{#if textConfig.useImage}}

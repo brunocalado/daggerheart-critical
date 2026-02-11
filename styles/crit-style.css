@@ -173,13 +173,7 @@
     background: transparent !important;
 }
 
-/* For video, we might want to override the animation if it causes jitter, 
-   but usually fade-in/scale-up works fine for video too. 
-   If video needs to stay fully opaque once started, we might need a separate animation,
    but for now we reuse crit-explode to match image style.
-   Note: video element controls (play/pause) are hidden by default, which is good.
-*/
-
 .crit-image-small, .crit-video-small { max-height: 20vh; }
 .crit-image-normal, .crit-video-normal { max-height: 35vh; }
 .crit-image-large, .crit-video-large { max-height: 55vh; }
@@ -192,7 +186,9 @@
     left: 50%;
     --art-x: 0px;
     --art-y: 0px;
-    translate: calc(-50% + var(--art-x)) calc(-50% + var(--art-y));
+    --art-offset-x: 0px;
+    --art-offset-y: 0px;
+    translate: calc(-50% + var(--art-x) + var(--art-offset-x)) calc(-50% + var(--art-y) + var(--art-offset-y));
     object-fit: contain;
     opacity: 0;
     animation: crit-explode 3s ease-out forwards;

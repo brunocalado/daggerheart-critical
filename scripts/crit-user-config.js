@@ -58,7 +58,11 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             // Art: use saved override or defaults
             const artOverride = userOverride.art
                 ? { ...userOverride.art }
-                : { imagePath: "", position: "middle", positionY: "middle", artSize: "normal" };
+                : { imagePath: "", position: "middle", positionY: "middle", artSize: "normal", offsetX: 0, offsetY: 0 };
+            
+            // Ensure offset defaults if not present in saved data
+            artOverride.offsetX ??= 0;
+            artOverride.offsetY ??= 0;
 
             return {
                 id: u.id,
@@ -270,6 +274,10 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                         if (posYSelect) posYSelect.value = "middle";
                         const sizeSelect = section.querySelector(`[name="${clearPrefix}.artSize"]`);
                         if (sizeSelect) sizeSelect.value = "normal";
+                        const offsetX = section.querySelector(`[name="${clearPrefix}.offsetX"]`);
+                        if (offsetX) offsetX.value = 0;
+                        const offsetY = section.querySelector(`[name="${clearPrefix}.offsetY"]`);
+                        if (offsetY) offsetY.value = 0;
                     }
 
                     // Collapse the section
@@ -316,7 +324,9 @@ export class CritUserConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                         imagePath: userData.art.imagePath,
                         position: userData.art.position || "middle",
                         positionY: userData.art.positionY || "middle",
-                        artSize: userData.art.artSize || "normal"
+                        artSize: userData.art.artSize || "normal",
+                        offsetX: userData.art.offsetX || 0,
+                        offsetY: userData.art.offsetY || 0
                     };
                 }
 

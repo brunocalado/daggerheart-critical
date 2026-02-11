@@ -8,7 +8,7 @@
         {{!-- Player Character Tab --}}
         <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
             <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure default artwork displayed behind the critical text for all Player Character (Duality Dice) criticals. Use Per-User Overrides to customize art for individual players.</p>
+                <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for Duality (PC) criticals.</p>
 
                 <div class="form-group">
                     <label>Image</label>
@@ -18,28 +18,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Horizontal</label>
+                    <label>Offset X (px)</label>
                     <div class="form-fields">
-                        <select name="pc.position">
-                            <option value="left-out" {{#if (eq config.pc.position "left-out")}}selected{{/if}}>Left - Out</option>
-                            <option value="left" {{#if (eq config.pc.position "left")}}selected{{/if}}>Left</option>
-                            <option value="middle" {{#if (eq config.pc.position "middle")}}selected{{/if}}>Middle</option>
-                            <option value="right" {{#if (eq config.pc.position "right")}}selected{{/if}}>Right</option>
-                            <option value="right-out" {{#if (eq config.pc.position "right-out")}}selected{{/if}}>Right - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="pc.offsetX" value="{{config.pc.offsetX}}" min="-600" max="600" step="10">
+                        <span class="range-value">{{config.pc.offsetX}}</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Vertical</label>
+                    <label>Offset Y (px)</label>
                     <div class="form-fields">
-                        <select name="pc.positionY">
-                            <option value="top-out" {{#if (eq config.pc.positionY "top-out")}}selected{{/if}}>Top - Out</option>
-                            <option value="top" {{#if (eq config.pc.positionY "top")}}selected{{/if}}>Top</option>
-                            <option value="middle" {{#if (eq config.pc.positionY "middle")}}selected{{/if}}>Middle</option>
-                            <option value="bottom" {{#if (eq config.pc.positionY "bottom")}}selected{{/if}}>Bottom</option>
-                            <option value="bottom-out" {{#if (eq config.pc.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="pc.offsetY" value="{{config.pc.offsetY}}" min="-300" max="300" step="10">
+                        <span class="range-value">{{config.pc.offsetY}}</span>
                     </div>
                 </div>
 
@@ -47,10 +37,9 @@
                     <label>Size</label>
                     <div class="form-fields">
                         <select name="pc.artSize">
-                            <option value="very-small" {{#if (eq config.pc.artSize "very-small")}}selected{{/if}}>Very Small</option>
-                            <option value="small" {{#if (eq config.pc.artSize "small")}}selected{{/if}}>Small</option>
-                            <option value="normal" {{#if (eq config.pc.artSize "normal")}}selected{{/if}}>Normal</option>
-                            <option value="large" {{#if (eq config.pc.artSize "large")}}selected{{/if}}>Large</option>
+                            {{#each sizes as |label key|}}
+                            <option value="{{key}}" {{#if (eq ../config.pc.artSize key)}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
                         </select>
                     </div>
                 </div>
@@ -60,7 +49,7 @@
         {{!-- Adversary Tab --}}
         <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
             <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure a default artwork displayed behind the critical text for all Adversary (GM) criticals. Leave the image empty to disable.</p>
+                <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for Adversary (GM) criticals.</p>
 
                 <div class="form-group">
                     <label>Image</label>
@@ -69,29 +58,19 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Horizontal</label>
+                 <div class="form-group">
+                    <label>Offset X (px)</label>
                     <div class="form-fields">
-                        <select name="adversary.position">
-                            <option value="left-out" {{#if (eq config.adversary.position "left-out")}}selected{{/if}}>Left - Out</option>
-                            <option value="left" {{#if (eq config.adversary.position "left")}}selected{{/if}}>Left</option>
-                            <option value="middle" {{#if (eq config.adversary.position "middle")}}selected{{/if}}>Middle</option>
-                            <option value="right" {{#if (eq config.adversary.position "right")}}selected{{/if}}>Right</option>
-                            <option value="right-out" {{#if (eq config.adversary.position "right-out")}}selected{{/if}}>Right - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="adversary.offsetX" value="{{config.adversary.offsetX}}" min="-600" max="600" step="10">
+                        <span class="range-value">{{config.adversary.offsetX}}</span>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Vertical</label>
+                    <label>Offset Y (px)</label>
                     <div class="form-fields">
-                        <select name="adversary.positionY">
-                            <option value="top-out" {{#if (eq config.adversary.positionY "top-out")}}selected{{/if}}>Top - Out</option>
-                            <option value="top" {{#if (eq config.adversary.positionY "top")}}selected{{/if}}>Top</option>
-                            <option value="middle" {{#if (eq config.adversary.positionY "middle")}}selected{{/if}}>Middle</option>
-                            <option value="bottom" {{#if (eq config.adversary.positionY "bottom")}}selected{{/if}}>Bottom</option>
-                            <option value="bottom-out" {{#if (eq config.adversary.positionY "bottom-out")}}selected{{/if}}>Bottom - Out</option>
-                        </select>
+                        <input type="range" class="range-slider" name="adversary.offsetY" value="{{config.adversary.offsetY}}" min="-300" max="300" step="10">
+                        <span class="range-value">{{config.adversary.offsetY}}</span>
                     </div>
                 </div>
 
@@ -99,10 +78,9 @@
                     <label>Size</label>
                     <div class="form-fields">
                         <select name="adversary.artSize">
-                            <option value="very-small" {{#if (eq config.adversary.artSize "very-small")}}selected{{/if}}>Very Small</option>
-                            <option value="small" {{#if (eq config.adversary.artSize "small")}}selected{{/if}}>Small</option>
-                            <option value="normal" {{#if (eq config.adversary.artSize "normal")}}selected{{/if}}>Normal</option>
-                            <option value="large" {{#if (eq config.adversary.artSize "large")}}selected{{/if}}>Large</option>
+                            {{#each sizes as |label key|}}
+                            <option value="{{key}}" {{#if (eq ../config.adversary.artSize key)}}selected{{/if}}>{{label}}</option>
+                            {{/each}}
                         </select>
                     </div>
                 </div>

@@ -42,6 +42,12 @@
     "styles/crit-style.css"
   ],
 
+  "media": [{
+    "type": "setup",
+    "url": "modules/daggerheart-critical/docs/thumbnail.webp",
+    "thumbnail": "modules/daggerheart-critical/docs/thumbnail.webp"
+  }], 
+
   "url": "https://github.com/brunocalado/daggerheart-critical",
   "manifest": "https://raw.githubusercontent.com/brunocalado/daggerheart-critical/refs/heads/main/module.json",
   "download": "https://codeload.github.com/brunocalado/daggerheart-critical/zip/main"

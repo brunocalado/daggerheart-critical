@@ -92,12 +92,17 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         let artPosition = "middle";
         let artPositionY = "middle";
         let artSize = "normal";
+        let artOffsetX = 0;
+        let artOffsetY = 0;
+
         if (this.artOverride) {
             if (this.artOverride.imagePath) {
                 artImagePath = this.artOverride.imagePath;
                 artPosition = this.artOverride.position || "middle";
                 artPositionY = this.artOverride.positionY || "middle";
                 artSize = this.artOverride.artSize || "normal";
+                artOffsetX = this.artOverride.offsetX || 0;
+                artOffsetY = this.artOverride.offsetY || 0;
             }
         } else {
             const artSettings = game.settings.get("daggerheart-critical", "critArtSettings");
@@ -109,6 +114,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     artPosition = advArt.position || "middle";
                     artPositionY = advArt.positionY || "middle";
                     artSize = advArt.artSize || "normal";
+                    artOffsetX = advArt.offsetX || 0;
+                    artOffsetY = advArt.offsetY || 0;
                 }
             } else {
                 // PC: use default PC art config
@@ -118,6 +125,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     artPosition = pcArt.position || "middle";
                     artPositionY = pcArt.positionY || "middle";
                     artSize = pcArt.artSize || "normal";
+                    artOffsetX = pcArt.offsetX || 0;
+                    artOffsetY = pcArt.offsetY || 0;
                 }
             }
         }
@@ -131,7 +140,9 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             artImagePath,
             artPosition,
             artPositionY,
-            artSize
+            artSize,
+            artOffsetX,
+            artOffsetY
         };
     }
 
