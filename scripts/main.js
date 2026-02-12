@@ -247,14 +247,55 @@ function triggerCriticalEffect(message, type) {
         }
     } else if (type === "adversary") {
         // Adversary: match by adversaryId (actor UUID) AND rollType
+        // Priority: specific adversary > all adversaries > default
+        
+        logDebug("Actor UUID from speaker:", actorUuid);
+        
+        // First, try to find a specific adversary match (non-default)
         if (actorUuid) {
-            const adversaryConfigs = configurations.filter(c => 
-                c.type === "Adversary" && 
-                c.adversaryId === actorUuid
-            );
+            // Log all adversary configurations for debugging
+            const adversaryConfigs = configurations.filter(c => c.type === "Adversary");
+            logDebug("All adversary configs:", adversaryConfigs.map(c => ({ 
+                id: c.id, 
+                name: c.name, 
+                adversaryId: c.adversaryId,
+                isDefault: c.isDefault,
+                target: c.target
+            })));
             
-            // Find the most specific match for the rollType
-            matchedConfig = adversaryConfigs.find(c => c.getRollTypes().includes(rollType));
+            matchedConfig = configurations.find(c => 
+                c.type === "Adversary" && 
+                c.adversaryId === actorUuid &&
+                !c.isDefault &&
+                c.getRollTypes().includes(rollType)
+            );
+            logDebug("Specific adversary match:", matchedConfig ? matchedConfig.name : "none");
+            
+            // If no match, check if it's a UUID format issue
+            if (!matchedConfig) {
+                logDebug("Checking for UUID format issues...");
+                matchedConfig = configurations.find(c => {
+                    if (c.type !== "Adversary" || c.isDefault || !c.adversaryId) return false;
+                    const matches = c.adversaryId === actorUuid || 
+                                  c.adversaryId.includes(actorUuid) || 
+                                  actorUuid.includes(c.adversaryId);
+                    if (matches) {
+                        logDebug("Found match with UUID comparison:", c.adversaryId, "vs", actorUuid);
+                    }
+                    return matches && c.getRollTypes().includes(rollType);
+                });
+            }
+        }
+        
+        // If no specific match, try "all adversaries" (empty adversaryId, non-default)
+        if (!matchedConfig) {
+            matchedConfig = configurations.find(c => 
+                c.type === "Adversary" && 
+                (!c.adversaryId || c.adversaryId === "") &&
+                !c.isDefault &&
+                c.getRollTypes().includes(rollType)
+            );
+            logDebug("All adversaries match:", matchedConfig ? matchedConfig.name : "none");
         }
         
         // Fallback to default Adversary if it matches the rollType
@@ -263,6 +304,7 @@ function triggerCriticalEffect(message, type) {
                 c.id === "default-adversary" &&
                 c.getRollTypes().includes(rollType)
             );
+            logDebug("Default adversary match:", matchedConfig ? matchedConfig.name : "none");
         }
     }
 

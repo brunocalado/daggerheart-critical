@@ -90,7 +90,7 @@
                             {{/each}}
                         </select>
                     {{else}}
-                        <label>Adversary</label>
+                        <label>Adversary {{#if config.adversaryId}}(Single){{else}}(All){{/if}}</label>
                         <div class="adversary-drop-zone" data-config-id="{{config.id}}">
                             {{#if config.adversaryId}}
                                 <span class="adversary-name">{{#if config.adversaryName}}{{config.adversaryName}}{{else}}{{config.adversaryId}}{{/if}}</span>

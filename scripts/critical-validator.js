@@ -68,9 +68,8 @@ export class ConfigurationValidator {
      * @returns {string|null} Error message or null if valid
      */
     static validateAdversaryEntry(config) {
-        if (config.type === "Adversary" && !config.adversaryId && !config.isDefault) {
-            return "Please select an adversary for Adversary type";
-        }
+        // Empty adversaryId is valid - it means "all adversaries"
+        // No validation needed for adversary type
         return null;
     }
 

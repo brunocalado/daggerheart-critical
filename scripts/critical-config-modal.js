@@ -99,7 +99,26 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
 
         // Type change handlers - re-render to show/hide user/adversary fields
         this.element.querySelectorAll("select[name$='.type']").forEach(select => {
-            select.addEventListener("change", (event) => {
+            select.addEventListener("change", async (event) => {
+                const configId = event.target.name.match(/config_(.+)\.type/)[1];
+                const newType = event.target.value;
+                
+                // Update the configuration in memory before re-rendering
+                const configs = CriticalSettingsManager.getConfigurations();
+                const config = configs.find(c => c.id === configId);
+                if (config) {
+                    config.type = newType;
+                    // Clear the opposite field when switching types
+                    if (newType === "Player Character") {
+                        config.adversaryId = "";
+                        config.userId = config.userId || "all";
+                    } else {
+                        config.userId = "";
+                        config.adversaryId = config.adversaryId || "";
+                    }
+                    await CriticalSettingsManager.saveConfigurations(configs);
+                }
+                
                 this.render();
             });
         });
@@ -145,9 +164,13 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                         }
                         
                         const configId = zone.dataset.configId;
-                        const hiddenInput = this.element.querySelector(`input[name="config_${configId}.adversaryId"]`);
-                        if (hiddenInput) {
-                            hiddenInput.value = data.uuid;
+                        
+                        // Update the configuration in memory before re-rendering
+                        const configs = CriticalSettingsManager.getConfigurations();
+                        const config = configs.find(c => c.id === configId);
+                        if (config) {
+                            config.adversaryId = data.uuid;
+                            await CriticalSettingsManager.saveConfigurations(configs);
                             this.render();
                         }
                     }
@@ -163,9 +186,13 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
             btn.addEventListener("click", async (event) => {
                 event.preventDefault();
                 const configId = event.currentTarget.dataset.id;
-                const hiddenInput = this.element.querySelector(`input[name="config_${configId}.adversaryId"]`);
-                if (hiddenInput) {
-                    hiddenInput.value = "";
+                
+                // Update the configuration in memory before re-rendering
+                const configs = CriticalSettingsManager.getConfigurations();
+                const config = configs.find(c => c.id === configId);
+                if (config) {
+                    config.adversaryId = "";
+                    await CriticalSettingsManager.saveConfigurations(configs);
                     this.render();
                 }
             });
