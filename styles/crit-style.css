@@ -958,6 +958,13 @@ input:focus + .slider {
     padding-right: 8px;
 }
 
+.default-entries-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 0.8rem;
+}
+
 .config-list::-webkit-scrollbar {
     width: 8px;
 }
@@ -995,6 +1002,11 @@ input:focus + .slider {
     align-items: end;
 }
 
+.default-entry .entry-row {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+}
+
 .entry-field {
     display: flex;
     flex-direction: column;
@@ -1005,6 +1017,13 @@ input:focus + .slider {
     font-size: 0.85em;
     font-weight: 600;
     color: #ddd;
+}
+
+.entry-field .config-name-label {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #fff;
+    padding: 6px 0;
 }
 
 .entry-field input[type="text"],
