@@ -1,0 +1,119 @@
+<div class="d-flex flex-column gap-2 dh-crit-config-modal">
+    <p class="notes">
+        <i class="fas fa-info-circle"></i>
+        Manage critical configurations. Default entries cannot be deleted. Create custom configurations for specific players or adversaries.
+    </p>
+
+    <div class="config-list">
+        {{#each configurations as |config|}}
+        <div class="config-entry {{#if config.isDefault}}default-entry{{/if}}" data-id="{{config.id}}">
+            <div class="entry-row">
+                <!-- Hidden fields -->
+                <input type="hidden" name="config_{{config.id}}.id" value="{{config.id}}">
+                <input type="hidden" name="config_{{config.id}}.isDefault" value="{{config.isDefault}}">
+                <input type="hidden" name="config_{{config.id}}.createdAt" value="{{config.createdAt}}">
+
+                <!-- Name -->
+                <div class="entry-field name-field">
+                    <label>Name</label>
+                    <input type="text" 
+                           name="config_{{config.id}}.name" 
+                           value="{{config.name}}" 
+                           maxlength="30"
+                           {{#if config.isDefault}}readonly{{/if}}>
+                </div>
+
+                <!-- Type -->
+                <div class="entry-field type-field">
+                    <label>Type</label>
+                    <select name="config_{{config.id}}.type" {{#if config.isDefault}}disabled{{/if}}>
+                        <option value="Player Character" {{#if (eq config.type "Player Character")}}selected{{/if}}>Player Character</option>
+                        <option value="Adversary" {{#if (eq config.type "Adversary")}}selected{{/if}}>Adversary</option>
+                    </select>
+                </div>
+
+                <!-- User/Adversary Selection -->
+                <div class="entry-field selection-field">
+                    {{#if (eq config.type "Player Character")}}
+                        <label>User</label>
+                        {{#if config.isDefault}}
+                            <input type="text" value="All" readonly>
+                            <input type="hidden" name="config_{{config.id}}.userId" value="all">
+                        {{else}}
+                            <select name="config_{{config.id}}.userId" data-current-user="{{config.userId}}">
+                                <option value="">Select User...</option>
+                                {{#each @root.nonGMUsers as |user|}}
+                                <option value="{{user.id}}">
+                                    {{user.name}}
+                                </option>
+                                {{/each}}
+                            </select>
+                        {{/if}}
+                    {{else}}
+                        <label>Adversary</label>
+                        {{#if config.isDefault}}
+                            <input type="text" value="All" readonly>
+                            <input type="hidden" name="config_{{config.id}}.adversaryId" value="all">
+                        {{else}}
+                            <div class="adversary-drop-zone" data-config-id="{{config.id}}">
+                                {{#if config.adversaryId}}
+                                    <span class="adversary-name">{{#if config.adversaryName}}{{config.adversaryName}}{{else}}{{config.adversaryId}}{{/if}}</span>
+                                    <button type="button" class="clear-adversary-btn" data-id="{{config.id}}">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                {{else}}
+                                    <span class="placeholder">Drag an Adversary here</span>
+                                {{/if}}
+                            </div>
+                            <input type="hidden" name="config_{{config.id}}.adversaryId" value="{{config.adversaryId}}">
+                        {{/if}}
+                    {{/if}}
+                </div>
+
+                <!-- Target -->
+                <div class="entry-field target-field">
+                    <label>Target</label>
+                    <select name="config_{{config.id}}.target">
+                        <option value="Action and Reaction" {{#if (eq config.target "Action and Reaction")}}selected{{/if}}>Action and Reaction</option>
+                        <option value="Only Action" {{#if (eq config.target "Only Action")}}selected{{/if}}>Only Action</option>
+                        <option value="Only Reaction" {{#if (eq config.target "Only Reaction")}}selected{{/if}}>Only Reaction</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="entry-actions">
+                    <button type="button" class="action-btn" data-action="text" data-id="{{config.id}}" title="Text Configuration">
+                        <i class="fas fa-font"></i>
+                    </button>
+                    <button type="button" class="action-btn" data-action="fx" data-id="{{config.id}}" title="FX Configuration">
+                        <i class="fas fa-bolt"></i>
+                    </button>
+                    <button type="button" class="action-btn" data-action="sound" data-id="{{config.id}}" title="Sound Configuration">
+                        <i class="fas fa-music"></i>
+                    </button>
+                    <button type="button" class="action-btn" data-action="art" data-id="{{config.id}}" title="Art Configuration">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                    <button type="button" class="action-btn" data-action="preview" data-id="{{config.id}}" title="Preview">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    {{#unless config.isDefault}}
+                    <button type="button" class="delete-entry-btn" data-id="{{config.id}}" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    {{/unless}}
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+    <div class="form-footer">
+        <button type="button" class="add-entry-btn">
+            <i class="fas fa-plus"></i> Add Configuration
+        </button>
+        <button type="submit">
+            <i class="fas fa-save"></i> Save Changes
+        </button>
+    </div>
+</div>

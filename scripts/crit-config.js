@@ -1,5 +1,6 @@
 import { CritOverlay } from "./crit-overlay.js";
 import { CritFX } from "./crit-fx.js";
+import { CriticalSettingsManager } from "./critical-settings-manager.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const MODULE_ID = "daggerheart-critical";
@@ -7,10 +8,8 @@ const MODULE_ID = "daggerheart-critical";
 export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
         super(options);
-        this.tabState = {
-            activeTab: "pc",
-            temp: {}
-        };
+        this.configId = options.configId || null;
+        this.tempType = null;
     }
 
     static DEFAULT_OPTIONS = {
@@ -26,21 +25,31 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
  
     async _prepareContext(options) {
-        const settings = game.settings.get("daggerheart-critical", "critFXSettings");
+        // Get config-specific settings if configId is provided
+        let configSettings = null;
+        if (this.configId) {
+            configSettings = CriticalSettingsManager.getConfigSettings(this.configId, "fx");
+        }
+        
+        // Fallback to global settings if no config-specific settings
+        if (!configSettings) {
+            const settings = game.settings.get("daggerheart-critical", "critFXSettings");
+            configSettings = settings.pc || {};
+        }
+
         const config = foundry.utils.mergeObject({
-            pc: { type: "none", options: {} },
-            adversary: { type: "none", options: {} }
-        }, settings);
+            type: "none",
+            options: {}
+        }, configSettings);
 
-        if (this.tabState.temp.pc) config.pc.type = this.tabState.temp.pc;
-        if (this.tabState.temp.adversary) config.adversary.type = this.tabState.temp.adversary;
-        this.tabState.temp = {};
+        // Use temp type if set (from select change)
+        if (this.tempType) {
+            config.type = this.tempType;
+            this.tempType = null;
+        }
 
-        for (const key of ["pc", "adversary"]) {
-            config[key].options ??= {};
-            if (config[key].type === "border" && !config[key].options.color) {
-                config[key].options.color = "#ff0000";
-            }
+        if (config.type === "border" && !config.options.color) {
+            config.options.color = "#ff0000";
         }
 
         return {
@@ -59,47 +68,28 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 3: "Normal",
                 4: "Strong",
                 5: "Very Strong"
-            },
-            state: this.tabState
+            }
         };
     }
 
     _onRender(context, options) {
-        this.element.querySelectorAll(".tabs a").forEach(tab => {
-            tab.addEventListener("click", event => {
-                event.preventDefault();
-                const activeTab = event.currentTarget.dataset.tab;
-                
-                // Update navigation
-                this.element.querySelectorAll(".tabs a").forEach(t => t.classList.remove("active"));
-                event.currentTarget.classList.add("active");
-
-                // Update visible content via CSS (without re-rendering)
-                this.element.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-                this.element.querySelector(`.tab[data-tab="${activeTab}"]`)?.classList.add("active");
-                
-                this.tabState.activeTab = activeTab;
-            });
-        });
-
-        this.element.querySelectorAll("select[name$='.type']").forEach(select => {
-            select.addEventListener("change", (event) => {
-                const key = event.target.name.split('.')[0];
-                this.tabState.temp[key] = event.target.value;
+        const typeSelect = this.element.querySelector("select[name='type']");
+        if (typeSelect) {
+            typeSelect.addEventListener("change", (event) => {
+                this.tempType = event.target.value;
                 this.render();
             });
-        });
+        }
 
         // Preview button
         this.element.querySelector(".crit-preview-btn")?.addEventListener("click", async (event) => {
             event.preventDefault();
-            const activeTab = this.tabState.activeTab; // "pc" or "adversary"
-            const type = activeTab === "pc" ? "duality" : "adversary";
+            const type = "duality";
 
             // Read current FX values from the form
             const formData = new foundry.applications.ux.FormDataExtended(this.element);
             const object = foundry.utils.expandObject(formData.object);
-            const fxConfig = object[activeTab] || {};
+            const fxConfig = object;
             fxConfig.options ??= {};
 
             // Trigger overlay (uses saved text settings)
@@ -120,21 +110,34 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
             // Play sound
             const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-            const soundEnabled = (type === "adversary") ? soundSettings.adversaryEnabled : soundSettings.dualityEnabled;
-            if (soundEnabled) {
-                const soundPath = (type === "adversary") ? soundSettings.adversarySoundPath : soundSettings.dualitySoundPath;
-                if (soundPath) {
-                    foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
-                }
+            const soundConfig = soundSettings.duality;
+            if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+                foundry.audio.AudioHelper.play({ 
+                    src: soundConfig.soundPath, 
+                    volume: 0.8, 
+                    autoplay: true, 
+                    loop: false 
+                }, true);
             }
-
         });
     }
 
     static async formHandler(event, form, formData) {
         const object = foundry.utils.expandObject(formData.object);
-        object.pc.options ??= {};
-        object.adversary.options ??= {};
-        await game.settings.set("daggerheart-critical", "critFXSettings", object);
+        object.options ??= {};
+        
+        // Get the configId from the form's app instance
+        const app = form.closest(".window-app")?._app;
+        const configId = app?.configId;
+        
+        if (configId) {
+            // Save to config-specific settings
+            await CriticalSettingsManager.saveConfigSettings(configId, "fx", object);
+        } else {
+            // Fallback to global settings
+            const settings = game.settings.get("daggerheart-critical", "critFXSettings");
+            settings.pc = object;
+            await game.settings.set("daggerheart-critical", "critFXSettings", settings);
+        }
     }
 }

@@ -1,240 +1,113 @@
 <div class="d-flex flex-column gap-2 dh-crit-text-config">
-    <nav class="tabs" data-group="primary">
-        <a class="item{{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">Player Character</a>
-        <a class="item{{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">Adversary</a>
-    </nav>
+    <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance.</p>
 
-    <section class="content">
-        {{!-- Player Character Tab --}}
-        <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
-            <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance for Player Character (Duality Dice) criticals.</p>
+    <div class="form-group use-image-row">
+        <label><i class="fas fa-image"></i> Use Image/Video</label>
+        <div class="form-fields">
+            <label class="slide-toggle">
+                <input type="checkbox" name="useImage" {{#if config.useImage}}checked{{/if}}>
+                <span class="slider"></span>
+            </label>
+            <span class="hint">When enabled, an image or video is displayed instead of text.</span>
+        </div>
+    </div>
 
-                <div class="form-group use-image-row">
-                    <label><i class="fas fa-image"></i> Use Image/Video</label>
-                    <div class="form-fields">
-                        <label class="slide-toggle">
-                            <input type="checkbox" name="pc.useImage" {{#if config.pc.useImage}}checked{{/if}}>
-                            <span class="slider"></span>
-                        </label>
-                        <span class="hint">When enabled, an image or video is displayed instead of text.</span>
-                    </div>
-                </div>
-
-                <div class="pc-image-group" {{#unless config.pc.useImage}}style="display:none"{{/unless}}>
-                    <div class="form-group">
-                        <label>File Path</label>
-                        <div class="form-fields">
-                            <file-picker style="flex: 1;" type="imagevideo" name="pc.imagePath" value="{{config.pc.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp"></file-picker>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Size</label>
-                        <div class="form-fields">
-                            <select name="pc.imageSize">
-                                {{#each imageSizes as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.pc.imageSize key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pc-text-group" {{#if config.pc.useImage}}style="display:none"{{/if}}>
-                    <div class="form-group">
-                        <label>Text</label>
-                        <div class="form-fields">
-                            <input type="text" name="pc.content" value="{{config.pc.content}}" placeholder="CRITICAL" maxlength="16">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Font</label>
-                        <div class="form-fields">
-                            <select name="pc.fontFamily">
-                                {{#each fonts as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.pc.fontFamily key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Font Size</label>
-                        <div class="form-fields">
-                            <select name="pc.fontSize">
-                                {{#each fontSizes as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.pc.fontSize key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Letter Spacing</label>
-                        <div class="form-fields">
-                            <select name="pc.letterSpacing">
-                                {{#each letterSpacings as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.pc.letterSpacing key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Use Player Color</label>
-                        <div class="form-fields">
-                            <label class="slide-toggle">
-                                <input type="checkbox" name="pc.usePlayerColor" {{#if config.pc.usePlayerColor}}checked{{/if}}>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group pc-color-group" {{#if config.pc.usePlayerColor}}style="display:none"{{/if}}>
-                        <label>Color</label>
-                        <div class="form-fields">
-                            <input type="color" name="pc.color" value="{{config.pc.color}}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Background Color</label>
-                        <div class="form-fields">
-                            <input type="color" name="pc.backgroundColor" value="{{config.pc.backgroundColor}}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Fill Mode</label>
-                        <div class="form-fields">
-                            <select name="pc.fill">
-                                {{#each fills as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.pc.fill key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <div class="image-group" {{#unless config.useImage}}style="display:none"{{/unless}}>
+        <div class="form-group">
+            <label>File Path</label>
+            <div class="form-fields">
+                <file-picker style="flex: 1;" type="imagevideo" name="imagePath" value="{{config.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp"></file-picker>
             </div>
         </div>
 
-        {{!-- Adversary Tab --}}
-        <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
-            <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance for Adversary (GM) criticals.</p>
-
-                <div class="form-group use-image-row">
-                    <label><i class="fas fa-image"></i> Use Image/Video</label>
-                    <div class="form-fields">
-                        <label class="slide-toggle">
-                            <input type="checkbox" name="adversary.useImage" {{#if config.adversary.useImage}}checked{{/if}}>
-                            <span class="slider"></span>
-                        </label>
-                        <span class="hint">When enabled, an image or video is displayed instead of text.</span>
-                    </div>
-                </div>
-
-                <div class="adversary-image-group" {{#unless config.adversary.useImage}}style="display:none"{{/unless}}>
-                    <div class="form-group">
-                        <label>File Path</label>
-                        <div class="form-fields">
-                            <file-picker style="flex: 1;" type="imagevideo" name="adversary.imagePath" value="{{config.adversary.imagePath}}" placeholder="modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp"></file-picker>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Size</label>
-                        <div class="form-fields">
-                            <select name="adversary.imageSize">
-                                {{#each imageSizes as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.adversary.imageSize key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="adversary-text-group" {{#if config.adversary.useImage}}style="display:none"{{/if}}>
-                    <div class="form-group">
-                        <label>Text</label>
-                        <div class="form-fields">
-                            <input type="text" name="adversary.content" value="{{config.adversary.content}}" placeholder="CRITICAL" maxlength="16">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Font</label>
-                        <div class="form-fields">
-                            <select name="adversary.fontFamily">
-                                {{#each fonts as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.adversary.fontFamily key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Font Size</label>
-                        <div class="form-fields">
-                            <select name="adversary.fontSize">
-                                {{#each fontSizes as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.adversary.fontSize key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Letter Spacing</label>
-                        <div class="form-fields">
-                            <select name="adversary.letterSpacing">
-                                {{#each letterSpacings as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.adversary.letterSpacing key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Use Player Color</label>
-                        <div class="form-fields">
-                            <label class="slide-toggle">
-                                <input type="checkbox" name="adversary.usePlayerColor" {{#if config.adversary.usePlayerColor}}checked{{/if}}>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="form-group adversary-color-group" {{#if config.adversary.usePlayerColor}}style="display:none"{{/if}}>
-                        <label>Color</label>
-                        <div class="form-fields">
-                            <input type="color" name="adversary.color" value="{{config.adversary.color}}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Background Color</label>
-                        <div class="form-fields">
-                            <input type="color" name="adversary.backgroundColor" value="{{config.adversary.backgroundColor}}">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Fill Mode</label>
-                        <div class="form-fields">
-                            <select name="adversary.fill">
-                                {{#each fills as |label key|}}
-                                <option value="{{key}}" {{#if (eq ../config.adversary.fill key)}}selected{{/if}}>{{label}}</option>
-                                {{/each}}
-                            </select>
-                        </div>
-                    </div>
-                </div>
+        <div class="form-group">
+            <label>Size</label>
+            <div class="form-fields">
+                <select name="imageSize">
+                    {{#each imageSizes as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.imageSize key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
             </div>
         </div>
-    </section>
+    </div>
+
+    <div class="text-group" {{#if config.useImage}}style="display:none"{{/if}}>
+        <div class="form-group">
+            <label>Text</label>
+            <div class="form-fields">
+                <input type="text" name="content" value="{{config.content}}" placeholder="CRITICAL" maxlength="16">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Font</label>
+            <div class="form-fields">
+                <select name="fontFamily">
+                    {{#each fonts as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.fontFamily key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Font Size</label>
+            <div class="form-fields">
+                <select name="fontSize">
+                    {{#each fontSizes as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.fontSize key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Letter Spacing</label>
+            <div class="form-fields">
+                <select name="letterSpacing">
+                    {{#each letterSpacings as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.letterSpacing key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Use Player Color</label>
+            <div class="form-fields">
+                <label class="slide-toggle">
+                    <input type="checkbox" name="usePlayerColor" {{#if config.usePlayerColor}}checked{{/if}}>
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group color-group" {{#if config.usePlayerColor}}style="display:none"{{/if}}>
+            <label>Color</label>
+            <div class="form-fields">
+                <input type="color" name="color" value="{{config.color}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Background Color</label>
+            <div class="form-fields">
+                <input type="color" name="backgroundColor" value="{{config.backgroundColor}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Fill Mode</label>
+            <div class="form-fields">
+                <select name="fill">
+                    {{#each fills as |label key|}}
+                    <option value="{{key}}" {{#if (eq ../config.fill key)}}selected{{/if}}>{{label}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+    </div>
 
     <div class="form-footer">
         <button type="button" class="crit-preview-btn">

@@ -1,0 +1,318 @@
+import { CriticalSettingsManager } from "./critical-settings-manager.js";
+import { CriticalConfiguration } from "./critical-data-model.js";
+import { ConfigurationValidator } from "./critical-validator.js";
+import { CritTextConfig } from "./crit-text-config.js";
+import { CritConfig } from "./crit-config.js";
+import { CritSoundConfig } from "./crit-sound-config.js";
+import { CritArtConfig } from "./crit-art-config.js";
+import { CritOverlay } from "./crit-overlay.js";
+import { CritFX } from "./crit-fx.js";
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const MODULE_ID = "daggerheart-critical";
+
+/**
+ * Critical Configuration Modal
+ * Centralized interface for managing critical configurations
+ */
+export class CriticalConfigurationModal extends HandlebarsApplicationMixin(ApplicationV2) {
+    constructor(options = {}) {
+        super(options);
+    }
+
+    static DEFAULT_OPTIONS = {
+        id: "daggerheart-critical-config-modal",
+        tag: "form",
+        window: { title: "Configure Criticals" },
+        position: { width: 1000, height: "auto" },
+        form: { 
+            handler: CriticalConfigurationModal.formHandler, 
+            closeOnSubmit: true,
+            submitOnChange: false
+        }
+    };
+
+    static get PARTS() {
+        return {
+            content: {
+                template: "modules/daggerheart-critical/templates/critical-config-modal.hbs"
+            }
+        };
+    }
+
+    async _prepareContext(options) {
+        const configurations = CriticalSettingsManager.getConfigurations();
+        
+        // Get non-GM users for dropdowns
+        const nonGMUsers = game.users.filter(u => !u.isGM).map(u => ({
+            id: u.id,
+            name: u.name,
+            color: u.color?.toString() || "#ffffff"
+        }));
+
+        // Resolve adversary names from UUIDs
+        const configsWithNames = await Promise.all(configurations.map(async (c) => {
+            const configData = c.toJSON();
+            
+            // If it's an adversary type with an adversaryId, resolve the name
+            if (configData.type === "Adversary" && configData.adversaryId && configData.adversaryId !== "all") {
+                try {
+                    const actor = await fromUuid(configData.adversaryId);
+                    if (actor) {
+                        configData.adversaryName = actor.name;
+                    }
+                } catch (error) {
+                    console.warn("Failed to resolve adversary:", configData.adversaryId, error);
+                }
+            }
+            
+            return configData;
+        }));
+
+        return {
+            configurations: configsWithNames,
+            nonGMUsers
+        };
+    }
+
+    _onRender(context, options) {
+        // Set selected users based on saved userId values
+        this.element.querySelectorAll("select[name$='.userId'][data-current-user]").forEach(select => {
+            const currentUserId = select.dataset.currentUser;
+            if (currentUserId) {
+                select.value = currentUserId;
+            }
+        });
+
+        // Add entry button
+        this.element.querySelector(".add-entry-btn")?.addEventListener("click", async (event) => {
+            event.preventDefault();
+            await this.addEntry();
+        });
+
+        // Delete entry buttons
+        this.element.querySelectorAll(".delete-entry-btn").forEach(btn => {
+            btn.addEventListener("click", async (event) => {
+                event.preventDefault();
+                const entryId = event.currentTarget.dataset.id;
+                await this.deleteEntry(entryId);
+            });
+        });
+
+        // Type change handlers - re-render to show/hide user/adversary fields
+        this.element.querySelectorAll("select[name$='.type']").forEach(select => {
+            select.addEventListener("change", (event) => {
+                this.render();
+            });
+        });
+
+        // Action buttons (Text, FX, Sound, Art, Preview)
+        this.element.querySelectorAll(".action-btn").forEach(btn => {
+            btn.addEventListener("click", async (event) => {
+                event.preventDefault();
+                const action = event.currentTarget.dataset.action;
+                const entryId = event.currentTarget.dataset.id;
+                await this.handleActionButton(action, entryId);
+            });
+        });
+
+        // Drag-and-drop for adversary fields
+        this.element.querySelectorAll(".adversary-drop-zone").forEach(zone => {
+            zone.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                zone.classList.add("drag-over");
+            });
+
+            zone.addEventListener("dragleave", (event) => {
+                zone.classList.remove("drag-over");
+            });
+
+            zone.addEventListener("drop", async (event) => {
+                event.preventDefault();
+                zone.classList.remove("drag-over");
+                
+                try {
+                    const data = JSON.parse(event.dataTransfer.getData("text/plain"));
+                    if (data.type === "Actor") {
+                        // Get the actor to validate it's an adversary
+                        const actor = await fromUuid(data.uuid);
+                        if (!actor) {
+                            ui.notifications.warn("Actor not found");
+                            return;
+                        }
+                        
+                        if (actor.type !== "adversary") {
+                            ui.notifications.warn("Only adversary actors can be assigned here");
+                            return;
+                        }
+                        
+                        const configId = zone.dataset.configId;
+                        const hiddenInput = this.element.querySelector(`input[name="config_${configId}.adversaryId"]`);
+                        if (hiddenInput) {
+                            hiddenInput.value = data.uuid;
+                            this.render();
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error handling drop:", error);
+                    ui.notifications.error("Failed to assign adversary");
+                }
+            });
+        });
+
+        // Clear adversary buttons
+        this.element.querySelectorAll(".clear-adversary-btn").forEach(btn => {
+            btn.addEventListener("click", async (event) => {
+                event.preventDefault();
+                const configId = event.currentTarget.dataset.id;
+                const hiddenInput = this.element.querySelector(`input[name="config_${configId}.adversaryId"]`);
+                if (hiddenInput) {
+                    hiddenInput.value = "";
+                    this.render();
+                }
+            });
+        });
+    }
+
+    /**
+     * Adds new entry
+     */
+    async addEntry() {
+        const newConfig = new CriticalConfiguration();
+        await CriticalSettingsManager.addConfiguration(newConfig);
+        this.render();
+    }
+
+    /**
+     * Deletes entry (prevents deletion of defaults)
+     * @param {string} entryId
+     */
+    async deleteEntry(entryId) {
+        if (entryId === "default-player-character" || entryId === "default-adversary") {
+            ui.notifications.warn("Cannot delete default configuration entries");
+            return;
+        }
+        
+        await CriticalSettingsManager.deleteConfiguration(entryId);
+        this.render();
+    }
+
+    /**
+     * Handles action button clicks
+     * @param {string} action - text, fx, sound, art, preview
+     * @param {string} entryId
+     */
+    async handleActionButton(action, entryId) {
+        const configs = CriticalSettingsManager.getConfigurations();
+        const config = configs.find(c => c.id === entryId);
+        
+        if (!config) {
+            ui.notifications.error("Configuration not found");
+            return;
+        }
+
+        switch (action) {
+            case "text":
+                new CritTextConfig({ configId: entryId }).render(true);
+                break;
+            case "fx":
+                new CritConfig({ configId: entryId }).render(true);
+                break;
+            case "sound":
+                new CritSoundConfig({ configId: entryId }).render(true);
+                break;
+            case "art":
+                new CritArtConfig({ configId: entryId }).render(true);
+                break;
+            case "preview":
+                await this.previewConfiguration(config);
+                break;
+        }
+    }
+
+    /**
+     * Previews a configuration
+     * @param {CriticalConfiguration} config
+     */
+    async previewConfiguration(config) {
+        const MODULE_ID = "daggerheart-critical";
+        
+        // Determine type based on configuration
+        const type = config.type === "Player Character" ? "duality" : "adversary";
+        const userColor = game.user.color?.toString() || "#ffffff";
+
+        // Get saved settings for this type
+        const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
+        const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+        const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+        const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+
+        const configKey = type === "duality" ? "pc" : "adversary";
+
+        // Trigger overlay
+        new CritOverlay({
+            type,
+            userColor,
+            configOverride: textSettings[configKey],
+            artOverride: artSettings[configKey]
+        }).render(true);
+
+        // Trigger FX
+        const fxConfig = fxSettings[configKey];
+        if (fxConfig && fxConfig.type !== "none") {
+            const fx = new CritFX();
+            switch (fxConfig.type) {
+                case "shake": fx.ScreenShake(fxConfig.options || {}); break;
+                case "shatter": fx.GlassShatter(fxConfig.options || {}); break;
+                case "border": fx.ScreenBorder(fxConfig.options || {}); break;
+                case "pulsate": fx.Pulsate(fxConfig.options || {}); break;
+                case "confetti": fx.Confetti(fxConfig.options || {}); break;
+            }
+        }
+
+        // Play sound - use new structure
+        const soundConfig = soundSettings[type === "duality" ? "duality" : "adversary"];
+        if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+            foundry.audio.AudioHelper.play({ 
+                src: soundConfig.soundPath, 
+                volume: 0.8, 
+                autoplay: true, 
+                loop: false 
+            }, true);
+        }
+    }
+
+    /**
+     * Form submission handler
+     */
+    static async formHandler(event, form, formData) {
+        const object = foundry.utils.expandObject(formData.object);
+        const configurations = [];
+
+        // Parse form data into configurations
+        for (const [key, value] of Object.entries(object)) {
+            if (key.startsWith("config_")) {
+                // Convert string booleans to actual booleans
+                if (typeof value.isDefault === "string") {
+                    value.isDefault = value.isDefault === "true";
+                }
+                
+                const config = new CriticalConfiguration(value);
+                
+                // Validate (skip validation for defaults)
+                if (!config.isDefault) {
+                    const errors = ConfigurationValidator.validateConfiguration(config);
+                    if (errors.length > 0) {
+                        ui.notifications.error(`Validation failed for ${config.name}: ${errors.join(", ")}`);
+                        throw new Error(`Validation failed for ${config.name}`);
+                    }
+                }
+                
+                configurations.push(config);
+            }
+        }
+
+        await CriticalSettingsManager.saveConfigurations(configurations);
+        ui.notifications.info("Critical configurations saved successfully");
+    }
+}

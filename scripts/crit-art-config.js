@@ -1,4 +1,5 @@
 import { CritOverlay } from "./crit-overlay.js";
+import { CriticalSettingsManager } from "./critical-settings-manager.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const MODULE_ID = "daggerheart-critical";
@@ -6,9 +7,7 @@ const MODULE_ID = "daggerheart-critical";
 export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
         super(options);
-        this.tabState = {
-            activeTab: "pc"
-        };
+        this.configId = options.configId || null;
     }
 
     static DEFAULT_OPTIONS = {
@@ -24,28 +23,27 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     async _prepareContext(options) {
-        const settings = game.settings.get(MODULE_ID, "critArtSettings");
+        // Get config-specific settings if configId is provided
+        let configSettings = null;
+        if (this.configId) {
+            configSettings = CriticalSettingsManager.getConfigSettings(this.configId, "art");
+        }
         
-        // Merge with defaults to ensure structure exists
-        // Position defaults are preserved in data but hidden in UI (defaulting to middle)
-        const config = foundry.utils.mergeObject({
-            pc: { 
-                imagePath: "", 
-                artSize: "normal", 
-                offsetX: 0, 
-                offsetY: 0 
-            },
-            adversary: { 
-                imagePath: "", 
-                artSize: "normal", 
-                offsetX: 0, 
-                offsetY: 0 
-            }
-        }, settings);
+        // Fallback to global settings if no config-specific settings
+        if (!configSettings) {
+            const settings = game.settings.get(MODULE_ID, "critArtSettings");
+            configSettings = settings.pc || {};
+        }
+
+        const config = foundry.utils.mergeObject({ 
+            imagePath: "", 
+            artSize: "normal", 
+            offsetX: 0, 
+            offsetY: 0 
+        }, configSettings);
 
         return {
             config,
-            state: this.tabState,
             sizes: {
                 "very-small": "Very Small",
                 "small": "Small",
@@ -56,26 +54,6 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     _onRender(context, options) {
-        // Tab navigation logic
-        const tabs = this.element.querySelectorAll(".item[data-tab]");
-        tabs.forEach(tab => {
-            tab.addEventListener("click", (e) => {
-                e.preventDefault();
-                const tabName = e.currentTarget.dataset.tab;
-                
-                // Update internal state
-                this.tabState.activeTab = tabName;
-
-                // Update UI classes
-                this.element.querySelectorAll(".item").forEach(t => t.classList.remove("active"));
-                this.element.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-                
-                e.currentTarget.classList.add("active");
-                const targetContent = this.element.querySelector(`.tab[data-tab="${tabName}"]`);
-                if (targetContent) targetContent.classList.add("active");
-            });
-        });
-
         // Range Slider Value Display Logic
         this.element.querySelectorAll(".range-slider").forEach(input => {
             // Update on input (drag)
@@ -95,14 +73,11 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 const formData = new foundry.applications.ux.FormDataExtended(this.element);
                 const object = foundry.utils.expandObject(formData.object);
                 
-                // Determine active tab to preview correct data (pc or adversary)
-                const activeTab = this.tabState.activeTab;
-                const artData = object[activeTab];
+                const artData = object;
 
                 if (!artData) return;
                 
                 // Construct override object for CritOverlay
-                // We hardcode positions to 'middle' to ensure offsets start from center (0,0)
                 const artOverride = {
                     imagePath: artData.imagePath,
                     position: "middle",
@@ -112,13 +87,12 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     offsetY: Number(artData.offsetY) || 0
                 };
 
-                // Type determines the default text style (Gold/Duality or Red/Adversary)
-                const type = activeTab === "pc" ? "duality" : "adversary";
+                const type = "duality";
 
                 new CritOverlay({
                     type: type,
                     artOverride: artOverride,
-                    userColor: "#ffffff" // Default color for preview
+                    userColor: "#ffffff"
                 }).render(true);
             });
         }
@@ -128,17 +102,25 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const object = foundry.utils.expandObject(formData.object);
         
         // Ensure defaults if fields are empty
-        object.pc.offsetX = Number(object.pc.offsetX) || 0;
-        object.pc.offsetY = Number(object.pc.offsetY) || 0;
-        object.adversary.offsetX = Number(object.adversary.offsetX) || 0;
-        object.adversary.offsetY = Number(object.adversary.offsetY) || 0;
+        object.offsetX = Number(object.offsetX) || 0;
+        object.offsetY = Number(object.offsetY) || 0;
 
         // Force positions to middle in the saved settings to maintain consistency
-        object.pc.position = "middle";
-        object.pc.positionY = "middle";
-        object.adversary.position = "middle";
-        object.adversary.positionY = "middle";
+        object.position = "middle";
+        object.positionY = "middle";
 
-        await game.settings.set(MODULE_ID, "critArtSettings", object);
+        // Get the configId from the form's app instance
+        const app = form.closest(".window-app")?._app;
+        const configId = app?.configId;
+
+        if (configId) {
+            // Save to config-specific settings
+            await CriticalSettingsManager.saveConfigSettings(configId, "art", object);
+        } else {
+            // Fallback to global settings
+            const settings = game.settings.get(MODULE_ID, "critArtSettings");
+            settings.pc = object;
+            await game.settings.set(MODULE_ID, "critArtSettings", settings);
+        }
     }
 }

@@ -468,6 +468,14 @@
     color: #f0f0f0;
 }
 
+.dh-crit-config select,
+.dh-crit-text-config select,
+.dh-crit-art-config select,
+.dh-crit-user-config select {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
 .dh-crit-config input:focus,
 .dh-crit-config select:focus,
 .dh-crit-text-config input:focus,
@@ -910,4 +918,282 @@ input:focus + .slider {
     border-color: var(--crit-accent) !important;
     color: #fff !important;
     box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
+}
+
+
+/* =========================================
+   Critical Configuration Modal Styles
+   ========================================= */
+
+.dh-crit-config-modal {
+    font-family: "Signika", sans-serif;
+}
+
+.dh-crit-config-modal .notes {
+    margin-bottom: 1.5rem;
+    padding: 10px 12px;
+    background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
+    border-left: 4px solid #1e90ff;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 0.95em;
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.dh-crit-config-modal .notes i {
+    color: #1e90ff;
+    font-size: 1.2em;
+}
+
+.config-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.config-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.config-list::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.config-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.config-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.config-entry {
+    background: var(--crit-bg-dark);
+    border: 1px solid var(--crit-border-light);
+    border-radius: 6px;
+    padding: 12px;
+}
+
+.config-entry.default-entry {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.entry-row {
+    display: grid;
+    grid-template-columns: 2.5fr 1.8fr 2.5fr 1.8fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.entry-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.entry-field label {
+    font-size: 0.85em;
+    font-weight: 600;
+    color: #ddd;
+}
+
+.entry-field input[type="text"],
+.entry-field select {
+    background: var(--crit-bg-input);
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 4px;
+    padding: 6px 8px;
+    transition: border-color 0.2s;
+    height: 32px;
+}
+
+.entry-field input:focus,
+.entry-field select:focus {
+    outline: none;
+    border-color: var(--crit-accent);
+    box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
+}
+
+.entry-field input[readonly] {
+    background: rgba(0, 0, 0, 0.3);
+    color: #999;
+    cursor: not-allowed;
+}
+
+.entry-field select:disabled {
+    background: rgba(0, 0, 0, 0.3);
+    color: #999;
+    cursor: not-allowed;
+}
+
+.entry-field select option {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+}
+
+/* Adversary Drop Zone */
+.adversary-drop-zone {
+    background: var(--crit-bg-input);
+    border: 2px dashed #666;
+    border-radius: 4px;
+    padding: 6px 8px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.adversary-drop-zone.drag-over {
+    border-color: var(--crit-accent);
+    background: rgba(255, 100, 0, 0.1);
+}
+
+.adversary-drop-zone .placeholder {
+    color: #888;
+    font-size: 0.9em;
+    font-style: italic;
+}
+
+.adversary-drop-zone .adversary-name {
+    color: #fff;
+    font-weight: 600;
+}
+
+.clear-adversary-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 80, 80, 0.2) !important;
+    border: 1px solid rgba(255, 80, 80, 0.4) !important;
+    color: #ff6666 !important;
+    padding: 2px 6px !important;
+    border-radius: 3px;
+    font-size: 0.75em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.clear-adversary-btn:hover {
+    background: rgba(255, 80, 80, 0.3) !important;
+    border-color: #ff6666 !important;
+    color: #ff4444 !important;
+}
+
+/* Action Buttons */
+.entry-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.action-btn,
+.delete-entry-btn {
+    background: linear-gradient(to bottom, #3a3a3a, #2b2b2b) !important;
+    border: 1px solid #444 !important;
+    color: #aaa !important;
+    padding: 6px 8px !important;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9em;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background: linear-gradient(to bottom, var(--crit-accent), #d55400) !important;
+    border-color: var(--crit-accent) !important;
+    color: #fff !important;
+    box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
+}
+
+.delete-entry-btn {
+    background: linear-gradient(to bottom, #4a2020, #2b1515) !important;
+    border-color: #662020 !important;
+    color: #ff6666 !important;
+    min-width: 32px;
+    height: 32px;
+}
+
+.delete-entry-btn:hover {
+    background: linear-gradient(to bottom, #662020, #4a2020) !important;
+    border-color: #ff6666 !important;
+    color: #ff4444 !important;
+    box-shadow: 0 0 6px rgba(255, 100, 100, 0.4) !important;
+}
+
+.dh-crit-config-modal .form-footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--crit-border-light);
+    display: flex;
+    gap: 8px;
+}
+
+.dh-crit-config-modal .form-footer button {
+    flex: 1;
+    background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
+    border: 1px solid #111;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    color: #f0f0f0;
+    padding: 10px 0;
+    transition: all 0.2s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.dh-crit-config-modal .form-footer button:hover {
+    background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
+    color: #fff;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.add-entry-btn {
+    background: linear-gradient(to bottom, #2a4a2a, #1b2b1b) !important;
+    border-color: #2a5a2a !important;
+    color: #66ff66 !important;
+}
+
+.add-entry-btn:hover {
+    background: linear-gradient(to bottom, #3a5a3a, #2a4a2a) !important;
+    border-color: #66ff66 !important;
+    color: #44ff44 !important;
+}
+
+/* Enhanced Adversary Drop Zone Styles */
+.adversary-drop-zone {
+    cursor: pointer;
+    position: relative;
+}
+
+.adversary-drop-zone:hover {
+    border-color: #888;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.adversary-drop-zone .adversary-name {
+    flex: 1;
+    text-align: left;
+    padding-right: 24px;
+}
+
+.adversary-drop-zone .clear-adversary-btn {
+    flex-shrink: 0;
 }

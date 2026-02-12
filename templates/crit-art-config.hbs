@@ -1,92 +1,39 @@
 <div class="d-flex flex-column gap-2 dh-crit-art-config">
-    <nav class="tabs" data-group="primary">
-        <a class="item{{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">Player Character</a>
-        <a class="item{{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">Adversary</a>
-    </nav>
+    <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for criticals.</p>
 
-    <section class="content">
-        {{!-- Player Character Tab --}}
-        <div class="tab {{#if (eq state.activeTab 'pc')}} active{{/if}}" data-tab="pc">
-            <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for Duality (PC) criticals.</p>
-
-                <div class="form-group">
-                    <label>Image</label>
-                    <div class="form-fields">
-                        <file-picker style="flex: 1;" type="imagevideo" name="pc.imagePath" value="{{config.pc.imagePath}}" placeholder="path/to/art.webp"></file-picker>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Offset X (px)</label>
-                    <div class="form-fields">
-                        <input type="range" class="range-slider" name="pc.offsetX" value="{{config.pc.offsetX}}" min="-600" max="600" step="10">
-                        <span class="range-value">{{config.pc.offsetX}}</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Offset Y (px)</label>
-                    <div class="form-fields">
-                        <input type="range" class="range-slider" name="pc.offsetY" value="{{config.pc.offsetY}}" min="-300" max="300" step="10">
-                        <span class="range-value">{{config.pc.offsetY}}</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Size</label>
-                    <div class="form-fields">
-                        <select name="pc.artSize">
-                            {{#each sizes as |label key|}}
-                            <option value="{{key}}" {{#if (eq ../config.pc.artSize key)}}selected{{/if}}>{{label}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <div class="form-group">
+        <label>Image</label>
+        <div class="form-fields">
+            <file-picker style="flex: 1;" type="imagevideo" name="imagePath" value="{{config.imagePath}}" placeholder="path/to/art.webp"></file-picker>
         </div>
+    </div>
 
-        {{!-- Adversary Tab --}}
-        <div class="tab {{#if (eq state.activeTab 'adversary')}} active{{/if}}" data-tab="adversary">
-            <div class="tab-content-wrapper">
-                <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for Adversary (GM) criticals.</p>
-
-                <div class="form-group">
-                    <label>Image</label>
-                    <div class="form-fields">
-                        <file-picker style="flex: 1;" type="imagevideo" name="adversary.imagePath" value="{{config.adversary.imagePath}}" placeholder="path/to/art.webp"></file-picker>
-                    </div>
-                </div>
-
-                 <div class="form-group">
-                    <label>Offset X (px)</label>
-                    <div class="form-fields">
-                        <input type="range" class="range-slider" name="adversary.offsetX" value="{{config.adversary.offsetX}}" min="-600" max="600" step="10">
-                        <span class="range-value">{{config.adversary.offsetX}}</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Offset Y (px)</label>
-                    <div class="form-fields">
-                        <input type="range" class="range-slider" name="adversary.offsetY" value="{{config.adversary.offsetY}}" min="-300" max="300" step="10">
-                        <span class="range-value">{{config.adversary.offsetY}}</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Size</label>
-                    <div class="form-fields">
-                        <select name="adversary.artSize">
-                            {{#each sizes as |label key|}}
-                            <option value="{{key}}" {{#if (eq ../config.adversary.artSize key)}}selected{{/if}}>{{label}}</option>
-                            {{/each}}
-                        </select>
-                    </div>
-                </div>
-            </div>
+    <div class="form-group">
+        <label>Offset X (px)</label>
+        <div class="form-fields">
+            <input type="range" class="range-slider" name="offsetX" value="{{config.offsetX}}" min="-600" max="600" step="10">
+            <span class="range-value">{{config.offsetX}}</span>
         </div>
-    </section>
+    </div>
+
+    <div class="form-group">
+        <label>Offset Y (px)</label>
+        <div class="form-fields">
+            <input type="range" class="range-slider" name="offsetY" value="{{config.offsetY}}" min="-300" max="300" step="10">
+            <span class="range-value">{{config.offsetY}}</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Size</label>
+        <div class="form-fields">
+            <select name="artSize">
+                {{#each sizes as |label key|}}
+                <option value="{{key}}" {{#if (eq ../config.artSize key)}}selected{{/if}}>{{label}}</option>
+                {{/each}}
+            </select>
+        </div>
+    </div>
 
     <div class="form-footer">
         <button type="button" class="crit-preview-btn">

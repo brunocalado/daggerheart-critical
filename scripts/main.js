@@ -5,6 +5,8 @@ import { CritSoundConfig } from "./crit-sound-config.js";
 import { CritArtConfig } from "./crit-art-config.js";
 import { CritUserConfig } from "./crit-user-config.js";
 import { CritFX } from "./crit-fx.js";
+import { CriticalConfigurationModal } from "./critical-config-modal.js";
+import { CriticalSettingsManager } from "./critical-settings-manager.js";
 
 const MODULE_ID = "daggerheart-critical";
 
@@ -23,53 +25,21 @@ function isDSNActive() {
 
 Hooks.once("init", () => {
 
-    // --- Critical Text Settings ---
-    game.settings.registerMenu(MODULE_ID, "critTextMenu", {
-        name: "Critical Text",
-        label: "Configure Text",
-        hint: "Customize text appearance, size, color, and animation. You can use image.",
-        icon: "fas fa-font",
-        type: CritTextConfig,
-        restricted: true
+    // Register Handlebars helpers
+    Handlebars.registerHelper("eq", function(a, b) {
+        return a === b;
     });
 
-    // --- Visual FX Settings ---
-    game.settings.registerMenu(MODULE_ID, "critFXMenu", {
-        name: "Critical FX",
-        label: "Configure Visual FX",
-        hint: "Visual effect to play on critical hits.",
-        icon: "fas fa-bolt",
-        type: CritConfig,
-        restricted: true
-    });
+    // Register critical configurations settings
+    CriticalSettingsManager.registerSettings();
 
-    // --- Sound Settings ---
-    game.settings.registerMenu(MODULE_ID, "critSoundMenu", {
-        name: "Critical Sound",
-        label: "Configure Sound",
-        hint: "Sound effects played on critical hits.",
-        icon: "fas fa-music",
-        type: CritSoundConfig,
-        restricted: true
-    });
-
-    // --- Critical Art Settings ---
-    game.settings.registerMenu(MODULE_ID, "critArtMenu", {
-        name: "Critical Art",
-        label: "Configure Art",
-        hint: "Configure per-player artwork displayed behind the critical text.",
-        icon: "fas fa-palette",
-        type: CritArtConfig,
-        restricted: true
-    });
-
-    // --- Per-User Override Settings ---
-    game.settings.registerMenu(MODULE_ID, "critUserOverridesMenu", {
-        name: "Per-User Overrides",
-        label: "Per-User Overrides",
-        hint: "Customize text, FX, sound and art for individual players. Overrides default PC settings.",
-        icon: "fas fa-users-cog",
-        type: CritUserConfig,
+    // --- Configure Criticals Menu ---
+    game.settings.registerMenu(MODULE_ID, "critConfigModal", {
+        name: "Configure Criticals",
+        label: "Configure Criticals",
+        hint: "Centralized interface to manage all critical configurations for players and adversaries.",
+        icon: "fas fa-cog",
+        type: CriticalConfigurationModal,
         restricted: true
     });
 
@@ -78,10 +48,14 @@ Hooks.once("init", () => {
         config: false,
         type: Object,
         default: {
-            dualityEnabled: true,
-            adversaryEnabled: true,
-            dualitySoundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`,
-            adversarySoundPath: `modules/${MODULE_ID}/assets/sfx/adv-critical-tension-impact.mp3`
+            duality: {
+                enabled: true,
+                soundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`
+            },
+            adversary: {
+                enabled: true,
+                soundPath: `modules/${MODULE_ID}/assets/sfx/adv-critical-tension-impact.mp3`
+            }
         }
     });
 
@@ -159,6 +133,11 @@ Hooks.once("init", () => {
     });
 });
 
+Hooks.once("ready", async () => {
+    // Initialize default critical configurations
+    await CriticalSettingsManager.initializeDefaults();
+});
+
 Hooks.on("createChatMessage", (message) => {
     if (game.system.id !== "daggerheart") return;
 
@@ -216,33 +195,88 @@ function detectCritType(message, rollData) {
 function triggerCriticalEffect(message, type) {
     const userColor = message.author?.color?.toString() || "#ffffff";
     const authorId = message.author?.id;
+    const rollType = message.system?.roll?.type; // "action" or "reaction"
+    const actorUuid = message.speaker?.actor;
 
-    // Check for per-user override (PC/duality only)
-    let userOverride = null;
-    if (type === "duality" && authorId) {
-        const overrides = game.settings.get(MODULE_ID, "critUserOverrides");
-        userOverride = overrides[authorId] || null;
+    // Get all configurations
+    const configurations = CriticalSettingsManager.getConfigurations();
+
+    // Find matching configuration
+    let matchedConfig = null;
+    
+    if (type === "duality") {
+        // Player Character: match by userId AND rollType
+        // Filter configurations that match the user
+        const userConfigs = configurations.filter(c => 
+            c.type === "Player Character" && 
+            c.userId === authorId
+        );
+        
+        // Find the most specific match for the rollType
+        matchedConfig = userConfigs.find(c => c.getRollTypes().includes(rollType));
+        
+        // Fallback to default Player Character if it matches the rollType
+        if (!matchedConfig) {
+            matchedConfig = configurations.find(c => 
+                c.id === "default-player-character" &&
+                c.getRollTypes().includes(rollType)
+            );
+        }
+    } else if (type === "adversary") {
+        // Adversary: match by adversaryId (actor UUID) AND rollType
+        if (actorUuid) {
+            const adversaryConfigs = configurations.filter(c => 
+                c.type === "Adversary" && 
+                c.adversaryId === actorUuid
+            );
+            
+            // Find the most specific match for the rollType
+            matchedConfig = adversaryConfigs.find(c => c.getRollTypes().includes(rollType));
+        }
+        
+        // Fallback to default Adversary if it matches the rollType
+        if (!matchedConfig) {
+            matchedConfig = configurations.find(c => 
+                c.id === "default-adversary" &&
+                c.getRollTypes().includes(rollType)
+            );
+        }
     }
 
-    // Renders the visual (text override passed to overlay)
+    // If no matching configuration found, skip effect
+    if (!matchedConfig) {
+        logDebug("No matching configuration found for type:", type, "rollType:", rollType);
+        return;
+    }
+
+    logDebug("Using configuration:", matchedConfig.name, "for type:", type);
+
+    // Get settings for the matched configuration
+    const configSettings = game.settings.get(MODULE_ID, "critConfigSettings");
+    const entrySettings = configSettings[matchedConfig.id] || {};
+
+    // Fallback to global settings if no config-specific settings
+    const configKey = (type === "duality") ? "pc" : "adversary";
+    const globalTextSettings = game.settings.get(MODULE_ID, "critTextSettings");
+    const globalFxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+    const globalSoundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+    const globalArtSettings = game.settings.get(MODULE_ID, "critArtSettings");
+
+    const textConfig = entrySettings.text || globalTextSettings[configKey] || null;
+    const fxConfig = entrySettings.fx || globalFxSettings[configKey];
+    const soundConfig = entrySettings.sound || globalSoundSettings[type === "adversary" ? "adversary" : "duality"];
+    const artConfig = entrySettings.art || globalArtSettings[configKey] || null;
+
+    // Renders the visual
     new CritOverlay({
         type,
         userColor,
         authorId,
-        configOverride: userOverride?.text || null,
-        artOverride: userOverride?.art || null
+        configOverride: textConfig,
+        artOverride: artConfig
     }).render(true);
 
     // Triggers configured Visual FX
-    const configKey = (type === "duality") ? "pc" : "adversary";
-    let fxConfig;
-    if (userOverride?.fx) {
-        fxConfig = userOverride.fx;
-    } else {
-        const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
-        fxConfig = fxSettings[configKey];
-    }
-
     if (fxConfig && fxConfig.type !== "none") {
         const fx = new CritFX();
         switch (fxConfig.type) {
@@ -254,18 +288,13 @@ function triggerCriticalEffect(message, type) {
         }
     }
 
-    // Selects sound based on type
-    let soundEnabled, soundPath;
-    if (userOverride?.sound) {
-        soundEnabled = userOverride.sound.enabled !== false;
-        soundPath = userOverride.sound.soundPath;
-    } else {
-        const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-        soundEnabled = (type === "adversary") ? soundSettings.adversaryEnabled : soundSettings.dualityEnabled;
-        soundPath = (type === "adversary") ? soundSettings.adversarySoundPath : soundSettings.dualitySoundPath;
-    }
-
-    if (soundEnabled && soundPath) {
-        foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, false);
+    // Play sound
+    if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+        foundry.audio.AudioHelper.play({ 
+            src: soundConfig.soundPath, 
+            volume: 0.8, 
+            autoplay: true, 
+            loop: false 
+        }, false);
     }
 }

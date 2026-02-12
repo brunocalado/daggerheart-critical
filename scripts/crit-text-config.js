@@ -1,5 +1,6 @@
 import { CritOverlay } from "./crit-overlay.js";
 import { CritFX } from "./crit-fx.js";
+import { CriticalSettingsManager } from "./critical-settings-manager.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const MODULE_ID = "daggerheart-critical";
@@ -7,6 +8,7 @@ const MODULE_ID = "daggerheart-critical";
 export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
         super(options);
+        this.configId = options.configId || null;
         this.tabState = {
             activeTab: "pc"
         };
@@ -25,35 +27,31 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     async _prepareContext(options) {
-        const settings = game.settings.get("daggerheart-critical", "critTextSettings");
+        // Get config-specific settings if configId is provided
+        let configSettings = null;
+        if (this.configId) {
+            configSettings = CriticalSettingsManager.getConfigSettings(this.configId, "text");
+        }
+        
+        // Fallback to global settings if no config-specific settings
+        if (!configSettings) {
+            const settings = game.settings.get("daggerheart-critical", "critTextSettings");
+            configSettings = settings.pc || {};
+        }
+
         const config = foundry.utils.mergeObject({
-            pc: {
-                content: "CRITICAL",
-                fontFamily: "Bangers",
-                fontSize: "normal",
-                letterSpacing: "normal",
-                color: "#ffcc00",
-                backgroundColor: "#000000",
-                fill: "none",
-                usePlayerColor: false,
-                useImage: false,
-                imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
-                imageSize: "normal"
-            },
-            adversary: {
-                content: "CRITICAL",
-                fontFamily: "Bangers",
-                fontSize: "normal",
-                letterSpacing: "normal",
-                color: "#ff0000",
-                backgroundColor: "#000000",
-                fill: "none",
-                usePlayerColor: false,
-                useImage: false,
-                imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
-                imageSize: "normal"
-            }
-        }, settings);
+            content: "CRITICAL",
+            fontFamily: "Bangers",
+            fontSize: "normal",
+            letterSpacing: "normal",
+            color: "#ffcc00",
+            backgroundColor: "#000000",
+            fill: "none",
+            usePlayerColor: false,
+            useImage: false,
+            imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
+            imageSize: "normal"
+        }, configSettings);
 
         return {
             config,
@@ -93,66 +91,42 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 normal: "Normal",
                 large: "Large",
                 "extra-large": "Extra Large"
-            },
-            state: this.tabState
+            }
         };
     }
 
     _onRender(context, options) {
-        // Tab click handlers
-        this.element.querySelectorAll(".tabs a").forEach(tab => {
-            tab.addEventListener("click", event => {
-                event.preventDefault();
-                const activeTab = event.currentTarget.dataset.tab;
-
-                this.element.querySelectorAll(".tabs a").forEach(t => t.classList.remove("active"));
-                event.currentTarget.classList.add("active");
-
-                this.element.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-                this.element.querySelector(`.tab[data-tab="${activeTab}"]`)?.classList.add("active");
-
-                this.tabState.activeTab = activeTab;
-            });
-        });
-
         // Toggle color picker visibility based on usePlayerColor checkbox
-        this.element.querySelectorAll("input[name$='.usePlayerColor']").forEach(checkbox => {
-            checkbox.addEventListener("change", (event) => {
-                const key = event.target.name.split('.')[0];
-                const colorGroup = this.element.querySelector(`.${key}-color-group`);
-                if (colorGroup) {
-                    colorGroup.style.display = event.target.checked ? "none" : "";
-                }
-            });
+        this.element.querySelector("input[name='usePlayerColor']")?.addEventListener("change", (event) => {
+            const colorGroup = this.element.querySelector(".color-group");
+            if (colorGroup) {
+                colorGroup.style.display = event.target.checked ? "none" : "";
+            }
         });
 
         // Toggle image/text groups based on useImage checkbox
-        this.element.querySelectorAll("input[name$='.useImage']").forEach(checkbox => {
-            checkbox.addEventListener("change", (event) => {
-                const key = event.target.name.split('.')[0];
-                const imageGroup = this.element.querySelector(`.${key}-image-group`);
-                const textGroup = this.element.querySelector(`.${key}-text-group`);
-                if (imageGroup) {
-                    imageGroup.style.display = event.target.checked ? "" : "none";
-                }
-                if (textGroup) {
-                    textGroup.style.display = event.target.checked ? "none" : "";
-                }
-            });
+        this.element.querySelector("input[name='useImage']")?.addEventListener("change", (event) => {
+            const imageGroup = this.element.querySelector(".image-group");
+            const textGroup = this.element.querySelector(".text-group");
+            if (imageGroup) {
+                imageGroup.style.display = event.target.checked ? "" : "none";
+            }
+            if (textGroup) {
+                textGroup.style.display = event.target.checked ? "none" : "";
+            }
         });
 
         // Preview button
         this.element.querySelector(".crit-preview-btn")?.addEventListener("click", async (event) => {
             event.preventDefault();
-            const activeTab = this.tabState.activeTab; // "pc" or "adversary"
-            const type = activeTab === "pc" ? "duality" : "adversary";
+            const type = "duality";
 
             // Read current text values from the form
             const formData = new foundry.applications.ux.FormDataExtended(this.element);
             const object = foundry.utils.expandObject(formData.object);
-            object[activeTab].usePlayerColor ??= false;
-            object[activeTab].useImage ??= false;
-            const textConfig = object[activeTab];
+            object.usePlayerColor ??= false;
+            object.useImage ??= false;
+            const textConfig = object;
 
             // Trigger overlay with current form text settings
             const userColor = game.user.color?.toString() || "#ffffff";
@@ -160,7 +134,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
             // Trigger saved FX
             const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
-            const fxConfig = fxSettings[activeTab];
+            const fxConfig = fxSettings.pc;
             if (fxConfig && fxConfig.type !== "none") {
                 const fx = new CritFX();
                 switch (fxConfig.type) {
@@ -173,24 +147,36 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
             // Play sound
             const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-            const soundEnabled = (type === "adversary") ? soundSettings.adversaryEnabled : soundSettings.dualityEnabled;
-            if (soundEnabled) {
-                const soundPath = (type === "adversary") ? soundSettings.adversarySoundPath : soundSettings.dualitySoundPath;
-                if (soundPath) {
-                    foundry.audio.AudioHelper.play({ src: soundPath, volume: 0.8, autoplay: true, loop: false }, true);
-                }
+            const soundConfig = soundSettings.duality;
+            if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+                foundry.audio.AudioHelper.play({ 
+                    src: soundConfig.soundPath, 
+                    volume: 0.8, 
+                    autoplay: true, 
+                    loop: false 
+                }, true);
             }
-
         });
     }
 
     static async formHandler(event, form, formData) {
         const object = foundry.utils.expandObject(formData.object);
         // Checkboxes not submitted when unchecked, ensure defaults
-        object.pc.usePlayerColor ??= false;
-        object.adversary.usePlayerColor ??= false;
-        object.pc.useImage ??= false;
-        object.adversary.useImage ??= false;
-        await game.settings.set("daggerheart-critical", "critTextSettings", object);
+        object.usePlayerColor ??= false;
+        object.useImage ??= false;
+        
+        // Get the configId from the form's app instance
+        const app = form.closest(".window-app")?._app;
+        const configId = app?.configId;
+        
+        if (configId) {
+            // Save to config-specific settings
+            await CriticalSettingsManager.saveConfigSettings(configId, "text", object);
+        } else {
+            // Fallback to global settings
+            const settings = game.settings.get("daggerheart-critical", "critTextSettings");
+            settings.pc = object;
+            await game.settings.set("daggerheart-critical", "critTextSettings", settings);
+        }
     }
 }
