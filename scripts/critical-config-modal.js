@@ -303,6 +303,14 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                 
                 const config = new CriticalConfiguration(value);
                 
+                // Force static names for default entries
+                if (config.isDefault) {
+                    const staticName = CriticalSettingsManager.getDefaultName(config.id);
+                    if (staticName) {
+                        config.name = staticName;
+                    }
+                }
+                
                 // Validate (skip validation for defaults)
                 if (!config.isDefault) {
                     const errors = ConfigurationValidator.validateConfiguration(config);

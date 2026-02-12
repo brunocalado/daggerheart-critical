@@ -3,6 +3,10 @@ import { CriticalConfiguration } from "./critical-data-model.js";
 const MODULE_ID = "daggerheart-critical";
 const SETTINGS_KEY = "criticalConfigurations";
 
+// Static names for default entries
+const DEFAULT_PC_NAME = "Default Player Character";
+const DEFAULT_ADV_NAME = "Default Adversary";
+
 /**
  * Settings Integration Manager
  * Manages critical configurations in Foundry VTT module settings
@@ -91,7 +95,7 @@ export class CriticalSettingsManager {
         if (!hasDefaultPC) {
             const defaultPC = new CriticalConfiguration({
                 id: "default-player-character",
-                name: "Default Player Character",
+                name: DEFAULT_PC_NAME,
                 type: "Player Character",
                 target: "Action and Reaction",
                 userId: "all",
@@ -106,7 +110,7 @@ export class CriticalSettingsManager {
         if (!hasDefaultAdv) {
             const defaultAdv = new CriticalConfiguration({
                 id: "default-adversary",
-                name: "Default Adversary",
+                name: DEFAULT_ADV_NAME,
                 type: "Adversary",
                 target: "Action and Reaction",
                 adversaryId: "all",
@@ -123,6 +127,17 @@ export class CriticalSettingsManager {
         if (!hasDefaultPC || !hasDefaultAdv) {
             await this.saveConfigurations(configs);
         }
+    }
+    
+    /**
+     * Gets the static name for a default entry
+     * @param {string} id - The default entry ID
+     * @returns {string}
+     */
+    static getDefaultName(id) {
+        if (id === "default-player-character") return DEFAULT_PC_NAME;
+        if (id === "default-adversary") return DEFAULT_ADV_NAME;
+        return null;
     }
 
     /**

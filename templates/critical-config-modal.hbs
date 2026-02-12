@@ -12,13 +12,27 @@
                 <div class="entry-row">
                     <!-- Hidden fields -->
                     <input type="hidden" name="config_{{config.id}}.id" value="{{config.id}}">
+                    <input type="hidden" name="config_{{config.id}}.type" value="{{config.type}}">
                     <input type="hidden" name="config_{{config.id}}.isDefault" value="{{config.isDefault}}">
                     <input type="hidden" name="config_{{config.id}}.createdAt" value="{{config.createdAt}}">
                     <input type="hidden" name="config_{{config.id}}.target" value="Action and Reaction">
+                    {{#if (eq config.type "Player Character")}}
+                    <input type="hidden" name="config_{{config.id}}.userId" value="{{config.userId}}">
+                    {{else}}
+                    <input type="hidden" name="config_{{config.id}}.adversaryId" value="{{config.adversaryId}}">
+                    {{/if}}
 
-                    <!-- Name as Label -->
+                    <!-- Name as Label (static text) -->
                     <div class="entry-field name-field">
-                        <label class="config-name-label">{{config.name}}</label>
+                        <label class="config-name-label">
+                            {{#if (eq config.id "default-player-character")}}
+                                Default Player Character
+                            {{else if (eq config.id "default-adversary")}}
+                                Default Adversary
+                            {{else}}
+                                {{config.name}}
+                            {{/if}}
+                        </label>
                     </div>
 
                     <!-- Action Buttons -->
