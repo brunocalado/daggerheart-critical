@@ -140,6 +140,19 @@ Hooks.once("ready", async () => {
 Hooks.on("createChatMessage", (message) => {
     if (game.system.id !== "daggerheart") return;
 
+    // Debug: Log all system messages
+    if (message.system && game.settings.get(MODULE_ID, 'debugmode')) {
+        console.log("==========");
+        console.log("DH-CRIT DEBUG | Chat Message Object:", message);
+        console.log("DH-CRIT DEBUG | Key Fields:");
+        console.log("  - isCritical:", message.system?.roll?.isCritical);
+        console.log("  - type:", message.type);
+        console.log("  - system.roll.type:", message.system?.roll?.type);
+        console.log("  - author.isGM:", message.author?.isGM);
+        console.log("  - speaker.actor:", message.speaker?.actor);
+        console.log("==========");
+    }
+
     const dhRoll = message.system?.roll;
     if (!dhRoll) return;
 
@@ -154,6 +167,7 @@ Hooks.on("createChatMessage", (message) => {
             triggerCriticalEffect(message, type);
         }
     }
+
 });
 
 Hooks.on("diceSoNiceRollComplete", (messageId) => {
@@ -180,15 +194,13 @@ Hooks.on("diceSoNiceRollComplete", (messageId) => {
 });
 
 function detectCritType(message, rollData) {
-    const dice = rollData.dice || [];
-    const hasD12 = dice.some(d => d.faces === 12 || (d.formula && d.formula.includes("d12")));
-    const hasD20 = dice.some(d => d.faces === 20 || (d.formula && d.formula.includes("d20")));
-
-    if (hasD20) return "adversary";
-    if (hasD12) return "duality";
+    const rollType = message.type;
     
-    // Fallback by user if the die is not clear
-    return message.author.isGM ? "adversary" : "duality";
+    if (rollType === "adversaryRoll") return "adversary";
+    if (rollType === "dualityRoll") return "duality";
+    
+    // Fallback (should not happen in normal gameplay)
+    return "duality";
 }
 
 async function triggerCriticalEffect(message, type) {
@@ -287,11 +299,11 @@ async function triggerCriticalEffect(message, type) {
             }
         }
         
-        // If no specific match, try "all adversaries" (empty adversaryId, non-default)
+        // If no specific match, try "all adversaries" (adversaryId "all" or empty, non-default)
         if (!matchedConfig) {
             matchedConfig = configurations.find(c => 
                 c.type === "Adversary" && 
-                (!c.adversaryId || c.adversaryId === "") &&
+                (!c.adversaryId || c.adversaryId === "" || c.adversaryId === "all") &&
                 !c.isDefault &&
                 c.getRollTypes().includes(rollType)
             );
