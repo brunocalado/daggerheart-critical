@@ -197,6 +197,9 @@ function triggerCriticalEffect(message, type) {
     const rollType = message.system?.roll?.type; // "action" or "reaction"
     const actorUuid = message.speaker?.actor;
 
+    logDebug("=== Triggering Critical Effect ===");
+    logDebug("Type:", type, "| Author ID:", authorId, "| Roll Type:", rollType);
+
     // Get all configurations
     const configurations = CriticalSettingsManager.getConfigurations();
 
@@ -206,24 +209,32 @@ function triggerCriticalEffect(message, type) {
     if (type === "duality") {
         // Player Character: match by userId AND rollType
         // Filter configurations that match the user (specific user or "all")
+        // Exclude default if there are custom configs
         const userConfigs = configurations.filter(c => 
             c.type === "Player Character" && 
             (c.userId === authorId || c.userId === "all")
         );
         
+        logDebug("Found user configs:", userConfigs.map(c => ({ id: c.id, name: c.name, userId: c.userId, target: c.target, isDefault: c.isDefault })));
+        
         // Prioritize specific user match over "all"
-        // First try to find specific user match
+        // First try to find specific user match (non-default)
         matchedConfig = userConfigs.find(c => 
             c.userId === authorId && 
+            !c.isDefault &&
             c.getRollTypes().includes(rollType)
         );
         
-        // If no specific match, try "all"
+        logDebug("Specific user match:", matchedConfig ? matchedConfig.name : "none");
+        
+        // If no specific match, try "all" (non-default)
         if (!matchedConfig) {
             matchedConfig = userConfigs.find(c => 
                 c.userId === "all" && 
+                !c.isDefault &&
                 c.getRollTypes().includes(rollType)
             );
+            logDebug("All user match:", matchedConfig ? matchedConfig.name : "none");
         }
         
         // Fallback to default Player Character if it matches the rollType
@@ -232,6 +243,7 @@ function triggerCriticalEffect(message, type) {
                 c.id === "default-player-character" &&
                 c.getRollTypes().includes(rollType)
             );
+            logDebug("Default match:", matchedConfig ? matchedConfig.name : "none");
         }
     } else if (type === "adversary") {
         // Adversary: match by adversaryId (actor UUID) AND rollType
