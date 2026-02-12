@@ -23,10 +23,11 @@
                            {{#if config.isDefault}}readonly{{/if}}>
                 </div>
 
+                {{#unless config.isDefault}}
                 <!-- Type -->
                 <div class="entry-field type-field">
                     <label>Type</label>
-                    <select name="config_{{config.id}}.type" {{#if config.isDefault}}disabled{{/if}}>
+                    <select name="config_{{config.id}}.type">
                         <option value="Player Character" {{#if (eq config.type "Player Character")}}selected{{/if}}>Player Character</option>
                         <option value="Adversary" {{#if (eq config.type "Adversary")}}selected{{/if}}>Adversary</option>
                     </select>
@@ -36,37 +37,27 @@
                 <div class="entry-field selection-field">
                     {{#if (eq config.type "Player Character")}}
                         <label>User</label>
-                        {{#if config.isDefault}}
-                            <input type="text" value="All" readonly>
-                            <input type="hidden" name="config_{{config.id}}.userId" value="all">
-                        {{else}}
-                            <select name="config_{{config.id}}.userId" data-current-user="{{config.userId}}">
-                                <option value="">Select User...</option>
-                                {{#each @root.nonGMUsers as |user|}}
-                                <option value="{{user.id}}">
-                                    {{user.name}}
-                                </option>
-                                {{/each}}
-                            </select>
-                        {{/if}}
+                        <select name="config_{{config.id}}.userId" data-current-user="{{config.userId}}">
+                            <option value="">Select User...</option>
+                            {{#each @root.nonGMUsers as |user|}}
+                            <option value="{{user.id}}">
+                                {{user.name}}
+                            </option>
+                            {{/each}}
+                        </select>
                     {{else}}
                         <label>Adversary</label>
-                        {{#if config.isDefault}}
-                            <input type="text" value="All" readonly>
-                            <input type="hidden" name="config_{{config.id}}.adversaryId" value="all">
-                        {{else}}
-                            <div class="adversary-drop-zone" data-config-id="{{config.id}}">
-                                {{#if config.adversaryId}}
-                                    <span class="adversary-name">{{#if config.adversaryName}}{{config.adversaryName}}{{else}}{{config.adversaryId}}{{/if}}</span>
-                                    <button type="button" class="clear-adversary-btn" data-id="{{config.id}}">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                {{else}}
-                                    <span class="placeholder">Drag an Adversary here</span>
-                                {{/if}}
-                            </div>
-                            <input type="hidden" name="config_{{config.id}}.adversaryId" value="{{config.adversaryId}}">
-                        {{/if}}
+                        <div class="adversary-drop-zone" data-config-id="{{config.id}}">
+                            {{#if config.adversaryId}}
+                                <span class="adversary-name">{{#if config.adversaryName}}{{config.adversaryName}}{{else}}{{config.adversaryId}}{{/if}}</span>
+                                <button type="button" class="clear-adversary-btn" data-id="{{config.id}}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            {{else}}
+                                <span class="placeholder">Drag an Adversary here</span>
+                            {{/if}}
+                        </div>
+                        <input type="hidden" name="config_{{config.id}}.adversaryId" value="{{config.adversaryId}}">
                     {{/if}}
                 </div>
 
@@ -79,6 +70,10 @@
                         <option value="Only Reaction" {{#if (eq config.target "Only Reaction")}}selected{{/if}}>Only Reaction</option>
                     </select>
                 </div>
+                {{else}}
+                <!-- Hidden fields for default entries -->
+                <input type="hidden" name="config_{{config.id}}.target" value="Action and Reaction">
+                {{/unless}}
 
                 <!-- Action Buttons -->
                 <div class="entry-actions">
