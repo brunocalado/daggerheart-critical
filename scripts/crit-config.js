@@ -122,9 +122,10 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
                 const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
                 if (soundPath) {
+                    const volume = (soundConfig.volume ?? 90) / 100;
                     foundry.audio.AudioHelper.play({ 
                         src: soundPath, 
-                        volume: 0.8, 
+                        volume: volume, 
                         autoplay: true, 
                         loop: false 
                     }, true);

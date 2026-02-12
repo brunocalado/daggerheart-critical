@@ -3,7 +3,7 @@
     <input type="hidden" name="_configId" value="{{configId}}">
     {{/if}}
     
-    <p class="notes"><i class="fas fa-info-circle"></i> Configure sound effects for critical hits. To adjust the volume, each user must customize the sound by going to the Playlists directory and adjusting the "Interface" slider.</p>
+    <p class="notes"><i class="fas fa-info-circle"></i> Configure sound effects for critical hits.</p>
 
     <div class="form-group sound-enable-row">
         <label><i class="fas fa-volume-up"></i> Enable Sound</label>
@@ -35,6 +35,14 @@
             </div>
         </div>
         <p class="field-hint">{{#if config.multiSound}}Folder containing audio files. A random sound will be played.{{else}}Audio played when a critical occurs.{{/if}}</p>
+
+        <div class="form-group">
+            <label>Volume (%)</label>
+            <div class="form-fields">
+                <input type="range" class="range-slider" name="volume" value="{{#if config.volume}}{{config.volume}}{{else}}90{{/if}}" min="0" max="100" step="5">
+                <span class="range-value">{{#if config.volume}}{{config.volume}}{{else}}90{{/if}}</span>
+            </div>
+        </div>
     </div>
 
     <div class="form-footer">

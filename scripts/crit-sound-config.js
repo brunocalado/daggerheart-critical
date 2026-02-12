@@ -43,7 +43,8 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const config = foundry.utils.mergeObject({
             enabled: true,
             multiSound: false,
-            soundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`
+            soundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`,
+            volume: 90
         }, configSettings);
 
         return { 
@@ -78,6 +79,14 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             }
         });
 
+        // Volume slider sync
+        this.element.querySelector("input[name='volume']")?.addEventListener("input", (event) => {
+            const valueDisplay = this.element.querySelector(".form-group:has(input[name='volume']) .range-value");
+            if (valueDisplay) {
+                valueDisplay.textContent = event.target.value;
+            }
+        });
+
         // Preview button
         this.element.querySelector(".crit-preview-btn")?.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -91,9 +100,10 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             if (object.enabled && object.soundPath) {
                 const soundPath = await CritSoundConfig.getSoundPath(object);
                 if (soundPath) {
+                    const volume = (object.volume ?? 90) / 100;
                     foundry.audio.AudioHelper.play({ 
                         src: soundPath, 
-                        volume: 0.8, 
+                        volume: volume, 
                         autoplay: true, 
                         loop: false 
                     }, true);
