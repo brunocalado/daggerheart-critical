@@ -17,16 +17,30 @@
     </div>
 
     <div class="sound-group" {{#unless config.enabled}}style="display:none"{{/unless}}>
-        <div class="form-group">
-            <label>Sound Path</label>
+        <div class="form-group multi-sound-row">
+            <label><i class="fas fa-folder"></i> Multi Sound</label>
             <div class="form-fields">
-                <file-picker style="flex: 1;" type="audio" name="soundPath" value="{{config.soundPath}}" placeholder="modules/daggerheart-critical/assets/sfx/pc-orchestral-win.mp3"></file-picker>
+                <label class="slide-toggle">
+                    <input type="checkbox" name="multiSound" {{#if config.multiSound}}checked{{/if}}>
+                    <span class="slider"></span>
+                </label>
+                <span class="hint">Enable to use a folder with multiple sounds (plays random).</span>
             </div>
         </div>
-        <p class="field-hint">Audio played when a critical occurs.</p>
+
+        <div class="form-group">
+            <label>{{#if config.multiSound}}Folder Path{{else}}Sound Path{{/if}}</label>
+            <div class="form-fields">
+                <file-picker style="flex: 1;" type="{{#if config.multiSound}}folder{{else}}audio{{/if}}" name="soundPath" value="{{config.soundPath}}" placeholder="modules/daggerheart-critical/assets/sfx/pc-orchestral-win.mp3"></file-picker>
+            </div>
+        </div>
+        <p class="field-hint">{{#if config.multiSound}}Folder containing audio files. A random sound will be played.{{else}}Audio played when a critical occurs.{{/if}}</p>
     </div>
 
     <div class="form-footer">
+        <button type="button" class="crit-preview-btn">
+            <i class="fas fa-play"></i> Preview
+        </button>
         <button type="submit">
             <i class="fas fa-save"></i> Save Changes
         </button>

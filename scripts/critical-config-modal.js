@@ -304,12 +304,15 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
 
         // Play sound
         if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
-            foundry.audio.AudioHelper.play({ 
-                src: soundConfig.soundPath, 
-                volume: 0.8, 
-                autoplay: true, 
-                loop: false 
-            }, true);
+            const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+            if (soundPath) {
+                foundry.audio.AudioHelper.play({ 
+                    src: soundPath, 
+                    volume: 0.8, 
+                    autoplay: true, 
+                    loop: false 
+                }, true);
+            }
         }
     }
 

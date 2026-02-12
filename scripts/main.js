@@ -191,7 +191,7 @@ function detectCritType(message, rollData) {
     return message.author.isGM ? "adversary" : "duality";
 }
 
-function triggerCriticalEffect(message, type) {
+async function triggerCriticalEffect(message, type) {
     const userColor = message.author?.color?.toString() || "#ffffff";
     const authorId = message.author?.id;
     const rollType = message.system?.roll?.type; // "action" or "reaction"
@@ -355,11 +355,14 @@ function triggerCriticalEffect(message, type) {
 
     // Play sound
     if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
-        foundry.audio.AudioHelper.play({ 
-            src: soundConfig.soundPath, 
-            volume: 0.8, 
-            autoplay: true, 
-            loop: false 
-        }, false);
+        const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+        if (soundPath) {
+            foundry.audio.AudioHelper.play({ 
+                src: soundPath, 
+                volume: 0.8, 
+                autoplay: true, 
+                loop: false 
+            }, false);
+        }
     }
 }

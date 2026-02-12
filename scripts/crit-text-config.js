@@ -1,6 +1,7 @@
 import { CritOverlay } from "./crit-overlay.js";
 import { CritFX } from "./crit-fx.js";
 import { CriticalSettingsManager } from "./critical-settings-manager.js";
+import { CritSoundConfig } from "./crit-sound-config.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const MODULE_ID = "daggerheart-critical";
@@ -156,12 +157,15 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
             const soundConfig = soundSettings.duality;
             if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
-                foundry.audio.AudioHelper.play({ 
-                    src: soundConfig.soundPath, 
-                    volume: 0.8, 
-                    autoplay: true, 
-                    loop: false 
-                }, true);
+                const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+                if (soundPath) {
+                    foundry.audio.AudioHelper.play({ 
+                        src: soundPath, 
+                        volume: 0.8, 
+                        autoplay: true, 
+                        loop: false 
+                    }, true);
+                }
             }
         });
     }
