@@ -7,7 +7,7 @@ export class CriticalConfiguration {
         this.id = data.id || foundry.utils.randomID();
         this.name = data.name || "New Critical";
         this.type = data.type || "Player Character";
-        this.target = data.target || "Action and Reaction";
+        this.triggerType = data.triggerType || "Action and Reaction";
         this.userId = data.userId || "all";
         this.adversaryId = data.adversaryId || null;
         this.isDefault = data.isDefault || false;
@@ -26,8 +26,17 @@ export class CriticalConfiguration {
             errors.push("Type must be 'Player Character' or 'Adversary'");
         }
         
-        if (!["Action and Reaction", "Only Action", "Only Reaction"].includes(this.target)) {
-            errors.push("Target must be one of: Action and Reaction, Only Action, Only Reaction");
+        const validTriggers = ["Action and Reaction", "Only Action", "Only Reaction"];
+        if (this.type === "Adversary") {
+            validTriggers.push("Fumble");
+        }
+        
+        if (!validTriggers.includes(this.triggerType)) {
+            errors.push(`Trigger Type must be one of: ${validTriggers.join(", ")}`);
+        }
+        
+        if (this.type === "Player Character" && this.triggerType === "Fumble") {
+            errors.push("Fumble trigger type is only available for Adversaries");
         }
         
         return errors;
@@ -42,7 +51,7 @@ export class CriticalConfiguration {
             id: this.id,
             name: this.name,
             type: this.type,
-            target: this.target,
+            triggerType: this.triggerType,
             userId: this.userId,
             adversaryId: this.adversaryId,
             isDefault: this.isDefault,
@@ -61,15 +70,16 @@ export class CriticalConfiguration {
     }
 
     /**
-     * Maps target type to system.roll.type values
+     * Maps trigger type to system.roll.type values
      * @returns {string[]}
      */
     getRollTypes() {
         const mapping = {
             "Action and Reaction": ["action", "reaction"],
             "Only Action": ["action"],
-            "Only Reaction": ["reaction"]
+            "Only Reaction": ["reaction"],
+            "Fumble": ["fumble"]
         };
-        return mapping[this.target] || ["action", "reaction"];
+        return mapping[this.triggerType] || ["action", "reaction"];
     }
 }

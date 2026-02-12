@@ -15,7 +15,7 @@
                     <input type="hidden" name="config_{{config.id}}.type" value="{{config.type}}">
                     <input type="hidden" name="config_{{config.id}}.isDefault" value="{{config.isDefault}}">
                     <input type="hidden" name="config_{{config.id}}.createdAt" value="{{config.createdAt}}">
-                    <input type="hidden" name="config_{{config.id}}.target" value="Action and Reaction">
+                    <input type="hidden" name="config_{{config.id}}.triggerType" value="Action and Reaction">
                     {{#if (eq config.type "Player Character")}}
                     <input type="hidden" name="config_{{config.id}}.userId" value="{{config.userId}}">
                     {{else}}
@@ -105,13 +105,16 @@
                     {{/if}}
                 </div>
 
-                <!-- Target -->
-                <div class="entry-field target-field">
-                    <label>Target</label>
-                    <select name="config_{{config.id}}.target">
-                        <option value="Action and Reaction" {{#if (eq config.target "Action and Reaction")}}selected{{/if}}>Action and Reaction</option>
-                        <option value="Only Action" {{#if (eq config.target "Only Action")}}selected{{/if}}>Only Action</option>
-                        <option value="Only Reaction" {{#if (eq config.target "Only Reaction")}}selected{{/if}}>Only Reaction</option>
+                <!-- Trigger Type -->
+                <div class="entry-field trigger-type-field">
+                    <label>Trigger Type</label>
+                    <select name="config_{{config.id}}.triggerType" class="trigger-type-select" data-config-type="{{config.type}}">
+                        <option value="Action and Reaction" {{#if (eq config.triggerType "Action and Reaction")}}selected{{/if}}>Action and Reaction</option>
+                        <option value="Only Action" {{#if (eq config.triggerType "Only Action")}}selected{{/if}}>Only Action</option>
+                        <option value="Only Reaction" {{#if (eq config.triggerType "Only Reaction")}}selected{{/if}}>Only Reaction</option>
+                        {{#if (eq config.type "Adversary")}}
+                        <option value="Fumble" {{#if (eq config.triggerType "Fumble")}}selected{{/if}}>Fumble</option>
+                        {{/if}}
                     </select>
                 </div>
 

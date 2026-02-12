@@ -97,7 +97,7 @@ export class CriticalSettingsManager {
                 id: "default-player-character",
                 name: DEFAULT_PC_NAME,
                 type: "Player Character",
-                target: "Action and Reaction",
+                triggerType: "Action and Reaction",
                 userId: "all",
                 isDefault: true
             });
@@ -112,7 +112,7 @@ export class CriticalSettingsManager {
                 id: "default-adversary",
                 name: DEFAULT_ADV_NAME,
                 type: "Adversary",
-                target: "Action and Reaction",
+                triggerType: "Action and Reaction",
                 adversaryId: "all",
                 isDefault: true
             });

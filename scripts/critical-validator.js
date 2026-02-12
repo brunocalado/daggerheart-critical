@@ -31,14 +31,26 @@ export class ConfigurationValidator {
     }
 
     /**
-     * Validates target field
-     * @param {string} target
+     * Validates trigger type field
+     * @param {string} triggerType
+     * @param {string} type - The configuration type (Player Character or Adversary)
      * @returns {string|null} Error message or null if valid
      */
-    static validateTarget(target) {
-        if (!["Action and Reaction", "Only Action", "Only Reaction"].includes(target)) {
-            return "Target must be one of: Action and Reaction, Only Action, Only Reaction";
+    static validateTriggerType(triggerType, type) {
+        const validTriggers = ["Action and Reaction", "Only Action", "Only Reaction"];
+        
+        if (type === "Adversary") {
+            validTriggers.push("Fumble");
         }
+        
+        if (!validTriggers.includes(triggerType)) {
+            return `Trigger Type must be one of: ${validTriggers.join(", ")}`;
+        }
+        
+        if (type === "Player Character" && triggerType === "Fumble") {
+            return "Fumble trigger type is only available for Adversaries";
+        }
+        
         return null;
     }
 
@@ -87,8 +99,8 @@ export class ConfigurationValidator {
         const typeError = this.validateType(config.type);
         if (typeError) errors.push(typeError);
 
-        const targetError = this.validateTarget(config.target);
-        if (targetError) errors.push(targetError);
+        const triggerTypeError = this.validateTriggerType(config.triggerType, config.type);
+        if (triggerTypeError) errors.push(triggerTypeError);
 
         const pcError = this.validatePlayerCharacterEntry(config);
         if (pcError) errors.push(pcError);

@@ -148,6 +148,7 @@ Hooks.on("createChatMessage", (message) => {
         console.log("  - isCritical:", message.system?.roll?.isCritical);
         console.log("  - type:", message.type);
         console.log("  - system.roll.type:", message.system?.roll?.type);
+        console.log("  - system.roll.dice[0].total:", message.system?.roll?.dice?.[0]?.total);
         console.log("  - author.isGM:", message.author?.isGM);
         console.log("  - speaker.actor:", message.speaker?.actor);
         console.log("==========");
@@ -156,15 +157,31 @@ Hooks.on("createChatMessage", (message) => {
     const dhRoll = message.system?.roll;
     if (!dhRoll) return;
 
+    // Detect critical hits
     if (dhRoll.isCritical === true) {
         logDebug("Critical confirmed!");
         const type = detectCritType(message, dhRoll);
 
         if (isDSNActive()) {
             logDebug("Dice So Nice active — deferring effect for message", message.id);
-            pendingCriticals.set(message.id, type);
+            pendingCriticals.set(message.id, { type, triggerType: dhRoll.type });
         } else {
-            triggerCriticalEffect(message, type);
+            triggerCriticalEffect(message, type, dhRoll.type);
+        }
+    }
+    
+    // Detect fumbles (adversary rolls 1 on d20)
+    if (message.type === "adversaryRoll" && dhRoll.isCritical === false) {
+        const diceTotal = dhRoll.dice?.[0]?.total;
+        if (diceTotal === 1) {
+            logDebug("Fumble detected!");
+            
+            if (isDSNActive()) {
+                logDebug("Dice So Nice active — deferring fumble effect for message", message.id);
+                pendingCriticals.set(message.id, { type: "adversary", triggerType: "fumble" });
+            } else {
+                triggerCriticalEffect(message, "adversary", "fumble");
+            }
         }
     }
 
@@ -173,10 +190,10 @@ Hooks.on("createChatMessage", (message) => {
 Hooks.on("diceSoNiceRollComplete", (messageId) => {
     if (!pendingCriticals.has(messageId)) return;
 
-    const type = pendingCriticals.get(messageId);
+    const pending = pendingCriticals.get(messageId);
     pendingCriticals.delete(messageId);
 
-    // Re-validate: retrieve the message and confirm it's still a critical
+    // Re-validate: retrieve the message
     const message = game.messages.get(messageId);
     if (!message) {
         logDebug("DSN complete — message not found:", messageId);
@@ -184,13 +201,25 @@ Hooks.on("diceSoNiceRollComplete", (messageId) => {
     }
 
     const dhRoll = message.system?.roll;
-    if (!dhRoll?.isCritical) {
-        logDebug("DSN complete — re-validation failed, not a critical:", messageId);
+    if (!dhRoll) {
+        logDebug("DSN complete — no roll data:", messageId);
         return;
     }
 
-    logDebug("DSN complete — triggering critical effect for message", messageId);
-    triggerCriticalEffect(message, type);
+    // Re-validate based on trigger type
+    if (pending.triggerType === "fumble") {
+        // Fumble validation
+        if (message.type === "adversaryRoll" && dhRoll.dice?.[0]?.total === 1) {
+            logDebug("DSN complete — triggering fumble effect for message", messageId);
+            triggerCriticalEffect(message, pending.type, "fumble");
+        }
+    } else {
+        // Critical validation
+        if (dhRoll.isCritical) {
+            logDebug("DSN complete — triggering critical effect for message", messageId);
+            triggerCriticalEffect(message, pending.type, pending.triggerType);
+        }
+    }
 });
 
 function detectCritType(message, rollData) {
@@ -203,14 +232,13 @@ function detectCritType(message, rollData) {
     return "duality";
 }
 
-async function triggerCriticalEffect(message, type) {
+async function triggerCriticalEffect(message, type, triggerType) {
     const userColor = message.author?.color?.toString() || "#ffffff";
     const authorId = message.author?.id;
-    const rollType = message.system?.roll?.type; // "action" or "reaction"
     const actorUuid = message.speaker?.actor;
 
     logDebug("=== Triggering Critical Effect ===");
-    logDebug("Type:", type, "| Author ID:", authorId, "| Roll Type:", rollType);
+    logDebug("Type:", type, "| Author ID:", authorId, "| Trigger Type:", triggerType);
 
     // Get all configurations
     const configurations = CriticalSettingsManager.getConfigurations();
@@ -219,22 +247,19 @@ async function triggerCriticalEffect(message, type) {
     let matchedConfig = null;
     
     if (type === "duality") {
-        // Player Character: match by userId AND rollType
-        // Filter configurations that match the user (specific user or "all")
-        // Exclude default if there are custom configs
+        // Player Character: match by userId AND triggerType
         const userConfigs = configurations.filter(c => 
             c.type === "Player Character" && 
             (c.userId === authorId || c.userId === "all")
         );
         
-        logDebug("Found user configs:", userConfigs.map(c => ({ id: c.id, name: c.name, userId: c.userId, target: c.target, isDefault: c.isDefault })));
+        logDebug("Found user configs:", userConfigs.map(c => ({ id: c.id, name: c.name, userId: c.userId, triggerType: c.triggerType, isDefault: c.isDefault })));
         
         // Prioritize specific user match over "all"
-        // First try to find specific user match (non-default)
         matchedConfig = userConfigs.find(c => 
             c.userId === authorId && 
             !c.isDefault &&
-            c.getRollTypes().includes(rollType)
+            c.getRollTypes().includes(triggerType)
         );
         
         logDebug("Specific user match:", matchedConfig ? matchedConfig.name : "none");
@@ -244,42 +269,41 @@ async function triggerCriticalEffect(message, type) {
             matchedConfig = userConfigs.find(c => 
                 c.userId === "all" && 
                 !c.isDefault &&
-                c.getRollTypes().includes(rollType)
+                c.getRollTypes().includes(triggerType)
             );
             logDebug("All user match:", matchedConfig ? matchedConfig.name : "none");
         }
         
-        // Fallback to default Player Character if it matches the rollType
+        // Fallback to default Player Character if it matches the triggerType
         if (!matchedConfig) {
             matchedConfig = configurations.find(c => 
                 c.id === "default-player-character" &&
-                c.getRollTypes().includes(rollType)
+                c.getRollTypes().includes(triggerType)
             );
             logDebug("Default match:", matchedConfig ? matchedConfig.name : "none");
         }
     } else if (type === "adversary") {
-        // Adversary: match by adversaryId (actor UUID) AND rollType
+        // Adversary: match by adversaryId (actor UUID) AND triggerType
         // Priority: specific adversary > all adversaries > default
         
         logDebug("Actor UUID from speaker:", actorUuid);
         
         // First, try to find a specific adversary match (non-default)
         if (actorUuid) {
-            // Log all adversary configurations for debugging
             const adversaryConfigs = configurations.filter(c => c.type === "Adversary");
             logDebug("All adversary configs:", adversaryConfigs.map(c => ({ 
                 id: c.id, 
                 name: c.name, 
                 adversaryId: c.adversaryId,
                 isDefault: c.isDefault,
-                target: c.target
+                triggerType: c.triggerType
             })));
             
             matchedConfig = configurations.find(c => 
                 c.type === "Adversary" && 
                 c.adversaryId === actorUuid &&
                 !c.isDefault &&
-                c.getRollTypes().includes(rollType)
+                c.getRollTypes().includes(triggerType)
             );
             logDebug("Specific adversary match:", matchedConfig ? matchedConfig.name : "none");
             
@@ -294,7 +318,7 @@ async function triggerCriticalEffect(message, type) {
                     if (matches) {
                         logDebug("Found match with UUID comparison:", c.adversaryId, "vs", actorUuid);
                     }
-                    return matches && c.getRollTypes().includes(rollType);
+                    return matches && c.getRollTypes().includes(triggerType);
                 });
             }
         }
@@ -305,16 +329,16 @@ async function triggerCriticalEffect(message, type) {
                 c.type === "Adversary" && 
                 (!c.adversaryId || c.adversaryId === "" || c.adversaryId === "all") &&
                 !c.isDefault &&
-                c.getRollTypes().includes(rollType)
+                c.getRollTypes().includes(triggerType)
             );
             logDebug("All adversaries match:", matchedConfig ? matchedConfig.name : "none");
         }
         
-        // Fallback to default Adversary if it matches the rollType
+        // Fallback to default Adversary if it matches the triggerType
         if (!matchedConfig) {
             matchedConfig = configurations.find(c => 
                 c.id === "default-adversary" &&
-                c.getRollTypes().includes(rollType)
+                c.getRollTypes().includes(triggerType)
             );
             logDebug("Default adversary match:", matchedConfig ? matchedConfig.name : "none");
         }
@@ -322,7 +346,7 @@ async function triggerCriticalEffect(message, type) {
 
     // If no matching configuration found, skip effect
     if (!matchedConfig) {
-        logDebug("No matching configuration found for type:", type, "rollType:", rollType);
+        logDebug("No matching configuration found for type:", type, "triggerType:", triggerType);
         return;
     }
 

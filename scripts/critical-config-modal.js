@@ -97,7 +97,7 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
             });
         });
 
-        // Type change handlers - re-render to show/hide user/adversary fields
+        // Type change handlers - re-render to show/hide user/adversary fields and update trigger type options
         this.element.querySelectorAll("select[name$='.type']").forEach(select => {
             select.addEventListener("change", async (event) => {
                 const configId = event.target.name.match(/config_(.+)\.type/)[1];
@@ -112,6 +112,10 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                     if (newType === "Player Character") {
                         config.adversaryId = "";
                         config.userId = config.userId || "all";
+                        // Reset trigger type if it was Fumble
+                        if (config.triggerType === "Fumble") {
+                            config.triggerType = "Action and Reaction";
+                        }
                     } else {
                         config.userId = "";
                         config.adversaryId = config.adversaryId || "";
