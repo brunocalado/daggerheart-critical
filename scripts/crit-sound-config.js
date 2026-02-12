@@ -10,12 +10,18 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     static DEFAULT_OPTIONS = {
-        id: "daggerheart-crit-sound-config",
         tag: "form",
         window: { title: "Critical Sound Configuration" },
         position: { width: 500, height: "auto" },
         form: { handler: CritSoundConfig.formHandler, closeOnSubmit: true }
     };
+
+    get id() {
+        // Generate unique ID based on configId
+        return this.configId 
+            ? `daggerheart-crit-sound-config-${this.configId}`
+            : "daggerheart-crit-sound-config";
+    }
 
     static get PARTS() {
         return { content: { template: "modules/daggerheart-critical/templates/crit-sound-config.hbs" } };
@@ -39,7 +45,10 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             soundPath: `modules/${MODULE_ID}/assets/sfx/pc-orchestral-win.mp3`
         }, configSettings);
 
-        return { config };
+        return { 
+            config,
+            configId: this.configId // Pass configId to template
+        };
     }
 
     _onRender(context, options) {
@@ -54,18 +63,26 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const object = foundry.utils.expandObject(formData.object);
         object.enabled ??= false;
         
-        // Get the configId from the form's app instance
-        const app = form.closest(".window-app")?._app;
-        const configId = app?.configId;
+        // Get configId from hidden field in form
+        const configId = object._configId;
+        delete object._configId; // Remove from saved data
         
         if (configId) {
             // Save to config-specific settings
             await CriticalSettingsManager.saveConfigSettings(configId, "sound", object);
+            ui.notifications.info("Sound configuration saved for this entry");
+            
+            // Trigger refresh of main config modal if it's open
+            const mainModal = Object.values(ui.windows).find(w => w.id === "daggerheart-critical-config-modal");
+            if (mainModal) {
+                mainModal.render();
+            }
         } else {
             // Fallback to global settings
             const settings = game.settings.get(MODULE_ID, "critSoundSettings");
             settings.duality = object;
             await game.settings.set(MODULE_ID, "critSoundSettings", settings);
+            ui.notifications.info("Global sound configuration saved");
         }
     }
 }

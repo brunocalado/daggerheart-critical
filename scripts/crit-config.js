@@ -13,12 +13,18 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     static DEFAULT_OPTIONS = {
-        id: "daggerheart-crit-config",
         tag: "form",
         window: { title: "Critical FX Configuration" },
         position: { width: 500, height: "auto" },
         form: { handler: CritConfig.formHandler, closeOnSubmit: true }
     };
+
+    get id() {
+        // Generate unique ID based on configId
+        return this.configId 
+            ? `daggerheart-crit-config-${this.configId}`
+            : "daggerheart-crit-config";
+    }
 
     static get PARTS() {
         return { content: { template: "modules/daggerheart-critical/templates/crit-config.hbs" } };
@@ -54,6 +60,7 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
         return {
             config,
+            configId: this.configId, // Pass configId to template
             effects: {
                 none: "None",
                 shake: "Screen Shake",
@@ -126,18 +133,26 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const object = foundry.utils.expandObject(formData.object);
         object.options ??= {};
         
-        // Get the configId from the form's app instance
-        const app = form.closest(".window-app")?._app;
-        const configId = app?.configId;
+        // Get configId from hidden field in form
+        const configId = object._configId;
+        delete object._configId; // Remove from saved data
         
         if (configId) {
             // Save to config-specific settings
             await CriticalSettingsManager.saveConfigSettings(configId, "fx", object);
+            ui.notifications.info("FX configuration saved for this entry");
+            
+            // Trigger refresh of main config modal if it's open
+            const mainModal = Object.values(ui.windows).find(w => w.id === "daggerheart-critical-config-modal");
+            if (mainModal) {
+                mainModal.render();
+            }
         } else {
             // Fallback to global settings
             const settings = game.settings.get("daggerheart-critical", "critFXSettings");
             settings.pc = object;
             await game.settings.set("daggerheart-critical", "critFXSettings", settings);
+            ui.notifications.info("Global FX configuration saved");
         }
     }
 }

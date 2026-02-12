@@ -241,24 +241,31 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
         const type = config.type === "Player Character" ? "duality" : "adversary";
         const userColor = game.user.color?.toString() || "#ffffff";
 
-        // Get saved settings for this type
-        const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
-        const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
-        const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-        const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+        // Get config-specific settings
+        const configSettings = game.settings.get(MODULE_ID, "critConfigSettings");
+        const entrySettings = configSettings[config.id] || {};
 
+        // Fallback to global settings if no config-specific settings
         const configKey = type === "duality" ? "pc" : "adversary";
+        const globalTextSettings = game.settings.get(MODULE_ID, "critTextSettings");
+        const globalFxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+        const globalSoundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+        const globalArtSettings = game.settings.get(MODULE_ID, "critArtSettings");
+
+        const textConfig = entrySettings.text || globalTextSettings[configKey] || null;
+        const fxConfig = entrySettings.fx || globalFxSettings[configKey];
+        const soundConfig = entrySettings.sound || globalSoundSettings[type === "adversary" ? "adversary" : "duality"];
+        const artConfig = entrySettings.art || globalArtSettings[configKey] || null;
 
         // Trigger overlay
         new CritOverlay({
             type,
             userColor,
-            configOverride: textSettings[configKey],
-            artOverride: artSettings[configKey]
+            configOverride: textConfig,
+            artOverride: artConfig
         }).render(true);
 
         // Trigger FX
-        const fxConfig = fxSettings[configKey];
         if (fxConfig && fxConfig.type !== "none") {
             const fx = new CritFX();
             switch (fxConfig.type) {
@@ -270,8 +277,7 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
             }
         }
 
-        // Play sound - use new structure
-        const soundConfig = soundSettings[type === "duality" ? "duality" : "adversary"];
+        // Play sound
         if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
             foundry.audio.AudioHelper.play({ 
                 src: soundConfig.soundPath, 

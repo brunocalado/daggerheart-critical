@@ -1,4 +1,8 @@
 <div class="d-flex flex-column gap-2 dh-crit-config">
+    {{#if configId}}
+    <input type="hidden" name="_configId" value="{{configId}}">
+    {{/if}}
+    
     <p class="notes"><i class="fas fa-info-circle"></i> Configure visual effects for critical hits.</p>
     
     <div class="form-group">

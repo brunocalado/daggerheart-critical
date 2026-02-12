@@ -11,12 +11,18 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     static DEFAULT_OPTIONS = {
-        id: "daggerheart-crit-art-config",
         tag: "form",
         window: { title: "Critical Art Configuration" },
         position: { width: 500, height: "auto" },
         form: { handler: CritArtConfig.formHandler, closeOnSubmit: true }
     };
+
+    get id() {
+        // Generate unique ID based on configId
+        return this.configId 
+            ? `daggerheart-crit-art-config-${this.configId}`
+            : "daggerheart-crit-art-config";
+    }
 
     static get PARTS() {
         return { content: { template: `modules/${MODULE_ID}/templates/crit-art-config.hbs` } };
@@ -44,6 +50,7 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
         return {
             config,
+            configId: this.configId, // Pass configId to template
             sizes: {
                 "very-small": "Very Small",
                 "small": "Small",
@@ -109,18 +116,26 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         object.position = "middle";
         object.positionY = "middle";
 
-        // Get the configId from the form's app instance
-        const app = form.closest(".window-app")?._app;
-        const configId = app?.configId;
+        // Get configId from hidden field in form
+        const configId = object._configId;
+        delete object._configId; // Remove from saved data
 
         if (configId) {
             // Save to config-specific settings
             await CriticalSettingsManager.saveConfigSettings(configId, "art", object);
+            ui.notifications.info("Art configuration saved for this entry");
+            
+            // Trigger refresh of main config modal if it's open
+            const mainModal = Object.values(ui.windows).find(w => w.id === "daggerheart-critical-config-modal");
+            if (mainModal) {
+                mainModal.render();
+            }
         } else {
             // Fallback to global settings
             const settings = game.settings.get(MODULE_ID, "critArtSettings");
             settings.pc = object;
             await game.settings.set(MODULE_ID, "critArtSettings", settings);
+            ui.notifications.info("Global art configuration saved");
         }
     }
 }

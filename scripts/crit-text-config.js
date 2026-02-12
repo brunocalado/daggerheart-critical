@@ -15,12 +15,18 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     static DEFAULT_OPTIONS = {
-        id: "daggerheart-crit-text-config",
         tag: "form",
         window: { title: "Critical Text Configuration" },
         position: { width: 500, height: "auto" },
         form: { handler: CritTextConfig.formHandler, closeOnSubmit: true }
     };
+
+    get id() {
+        // Generate unique ID based on configId
+        return this.configId 
+            ? `daggerheart-crit-text-config-${this.configId}`
+            : "daggerheart-crit-text-config";
+    }
 
     static get PARTS() {
         return { content: { template: "modules/daggerheart-critical/templates/crit-text-config.hbs" } };
@@ -55,6 +61,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
 
         return {
             config,
+            configId: this.configId, // Pass configId to template
             fonts: {
                 "Bangers": "Bangers",
                 "Black Ops One": "Black Ops One",
@@ -165,18 +172,26 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         object.usePlayerColor ??= false;
         object.useImage ??= false;
         
-        // Get the configId from the form's app instance
-        const app = form.closest(".window-app")?._app;
-        const configId = app?.configId;
+        // Get configId from hidden field in form
+        const configId = object._configId;
+        delete object._configId; // Remove from saved data
         
         if (configId) {
             // Save to config-specific settings
             await CriticalSettingsManager.saveConfigSettings(configId, "text", object);
+            ui.notifications.info("Text configuration saved for this entry");
+            
+            // Trigger refresh of main config modal if it's open
+            const mainModal = Object.values(ui.windows).find(w => w.id === "daggerheart-critical-config-modal");
+            if (mainModal) {
+                mainModal.render();
+            }
         } else {
             // Fallback to global settings
             const settings = game.settings.get("daggerheart-critical", "critTextSettings");
             settings.pc = object;
             await game.settings.set("daggerheart-critical", "critTextSettings", settings);
+            ui.notifications.info("Global text configuration saved");
         }
     }
 }

@@ -1,4 +1,8 @@
 <div class="d-flex flex-column gap-2 dh-crit-text-config">
+    {{#if configId}}
+    <input type="hidden" name="_configId" value="{{configId}}">
+    {{/if}}
+    
     <p class="notes"><i class="fas fa-info-circle"></i> Configure critical text appearance.</p>
 
     <div class="form-group use-image-row">

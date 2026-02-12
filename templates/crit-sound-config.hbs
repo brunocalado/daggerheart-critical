@@ -1,4 +1,8 @@
 <div class="d-flex flex-column gap-2 dh-crit-sound-config">
+    {{#if configId}}
+    <input type="hidden" name="_configId" value="{{configId}}">
+    {{/if}}
+    
     <p class="notes"><i class="fas fa-info-circle"></i> Configure sound effects for critical hits. To adjust the volume, each user must customize the sound by going to the Playlists directory and adjusting the "Interface" slider.</p>
 
     <div class="form-group sound-enable-row">

@@ -98,6 +98,9 @@ export class CriticalSettingsManager {
                 isDefault: true
             });
             configs.unshift(defaultPC);
+            
+            // Migrate global PC settings to default entry
+            await this.migrateGlobalSettingsToDefault("default-player-character", "pc");
         }
         
         if (!hasDefaultAdv) {
@@ -112,11 +115,48 @@ export class CriticalSettingsManager {
             // Insert after default PC
             const pcIndex = configs.findIndex(c => c.id === "default-player-character");
             configs.splice(pcIndex + 1, 0, defaultAdv);
+            
+            // Migrate global adversary settings to default entry
+            await this.migrateGlobalSettingsToDefault("default-adversary", "adversary");
         }
         
         if (!hasDefaultPC || !hasDefaultAdv) {
             await this.saveConfigurations(configs);
         }
+    }
+
+    /**
+     * Migrates global settings to a default entry
+     * @param {string} configId - The default entry ID
+     * @param {string} globalKey - The key in global settings (pc or adversary)
+     * @returns {Promise<void>}
+     */
+    static async migrateGlobalSettingsToDefault(configId, globalKey) {
+        const allSettings = game.settings.get(MODULE_ID, "critConfigSettings");
+        
+        // Skip if already migrated
+        if (allSettings[configId]) {
+            return;
+        }
+        
+        // Get global settings
+        const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
+        const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+        const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+        const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+        
+        // Determine sound key (duality for pc, adversary for adversary)
+        const soundKey = globalKey === "pc" ? "duality" : "adversary";
+        
+        // Copy global settings to default entry
+        allSettings[configId] = {
+            text: textSettings[globalKey] || null,
+            fx: fxSettings[globalKey] || null,
+            sound: soundSettings[soundKey] || null,
+            art: artSettings[globalKey] || null
+        };
+        
+        await game.settings.set(MODULE_ID, "critConfigSettings", allSettings);
     }
 
     /**
