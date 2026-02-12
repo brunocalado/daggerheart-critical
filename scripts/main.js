@@ -205,14 +205,26 @@ function triggerCriticalEffect(message, type) {
     
     if (type === "duality") {
         // Player Character: match by userId AND rollType
-        // Filter configurations that match the user
+        // Filter configurations that match the user (specific user or "all")
         const userConfigs = configurations.filter(c => 
             c.type === "Player Character" && 
-            c.userId === authorId
+            (c.userId === authorId || c.userId === "all")
         );
         
-        // Find the most specific match for the rollType
-        matchedConfig = userConfigs.find(c => c.getRollTypes().includes(rollType));
+        // Prioritize specific user match over "all"
+        // First try to find specific user match
+        matchedConfig = userConfigs.find(c => 
+            c.userId === authorId && 
+            c.getRollTypes().includes(rollType)
+        );
+        
+        // If no specific match, try "all"
+        if (!matchedConfig) {
+            matchedConfig = userConfigs.find(c => 
+                c.userId === "all" && 
+                c.getRollTypes().includes(rollType)
+            );
+        }
         
         // Fallback to default Player Character if it matches the rollType
         if (!matchedConfig) {

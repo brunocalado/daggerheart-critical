@@ -5,9 +5,10 @@
 export class CriticalConfiguration {
     constructor(data = {}) {
         this.id = data.id || foundry.utils.randomID();
+        this.name = data.name || "New Critical";
         this.type = data.type || "Player Character";
         this.target = data.target || "Action and Reaction";
-        this.userId = data.userId || null;
+        this.userId = data.userId || "all";
         this.adversaryId = data.adversaryId || null;
         this.isDefault = data.isDefault || false;
         this.createdAt = data.createdAt || Date.now();
@@ -39,6 +40,7 @@ export class CriticalConfiguration {
     toJSON() {
         return {
             id: this.id,
+            name: this.name,
             type: this.type,
             target: this.target,
             userId: this.userId,

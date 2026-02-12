@@ -68,7 +68,7 @@
                     {{#if (eq config.type "Player Character")}}
                         <label>User</label>
                         <select name="config_{{config.id}}.userId" data-current-user="{{config.userId}}">
-                            <option value="">Select User...</option>
+                            <option value="all">All</option>
                             {{#each @root.nonGMUsers as |user|}}
                             <option value="{{user.id}}">
                                 {{user.name}}

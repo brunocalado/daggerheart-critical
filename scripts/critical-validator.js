@@ -51,6 +51,14 @@ export class ConfigurationValidator {
         if (config.type === "Player Character" && !config.userId) {
             return "Please select a user for Player Character type";
         }
+        // "all" is a valid value for userId
+        if (config.type === "Player Character" && config.userId && config.userId !== "all") {
+            // Validate that the userId exists in the game
+            const user = game.users.get(config.userId);
+            if (!user) {
+                return "Selected user does not exist";
+            }
+        }
         return null;
     }
 

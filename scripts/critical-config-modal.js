@@ -76,12 +76,10 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
     }
 
     _onRender(context, options) {
-        // Set selected users based on saved userId values
+        // Set selected users based on saved userId values (default to "all" if not set)
         this.element.querySelectorAll("select[name$='.userId'][data-current-user]").forEach(select => {
             const currentUserId = select.dataset.currentUser;
-            if (currentUserId) {
-                select.value = currentUserId;
-            }
+            select.value = currentUserId || "all";
         });
 
         // Add entry button
