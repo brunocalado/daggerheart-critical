@@ -3,7 +3,6 @@ import { CritConfig } from "./crit-config.js";
 import { CritTextConfig } from "./crit-text-config.js";
 import { CritSoundConfig } from "./crit-sound-config.js";
 import { CritArtConfig } from "./crit-art-config.js";
-import { CritUserConfig } from "./crit-user-config.js";
 import { CritFX } from "./crit-fx.js";
 import { CriticalConfigurationModal } from "./critical-config-modal.js";
 import { CriticalSettingsManager } from "./critical-settings-manager.js";

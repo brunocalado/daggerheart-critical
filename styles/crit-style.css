@@ -173,7 +173,7 @@
     background: transparent !important;
 }
 
-   but for now we reuse crit-explode to match image style.
+/* Image and video sizes - reusing crit-explode animation for consistency */
 .crit-image-small, .crit-video-small { max-height: 20vh; }
 .crit-image-normal, .crit-video-normal { max-height: 35vh; }
 .crit-image-large, .crit-video-large { max-height: 55vh; }
@@ -313,8 +313,7 @@
 .dh-crit-config,
 .dh-crit-text-config,
 .dh-crit-sound-config,
-.dh-crit-art-config,
-.dh-crit-user-config {
+.dh-crit-art-config {
     font-family: "Signika", sans-serif;
 }
 
@@ -375,8 +374,7 @@
 .dh-crit-config .notes,
 .dh-crit-text-config .notes,
 .dh-crit-sound-config .notes,
-.dh-crit-art-config .notes,
-.dh-crit-user-config .notes {
+.dh-crit-art-config .notes {
     margin-bottom: 1.5rem;
     padding: 10px 12px;
     background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
@@ -393,8 +391,7 @@
 .dh-crit-config .notes i,
 .dh-crit-text-config .notes i,
 .dh-crit-sound-config .notes i,
-.dh-crit-art-config .notes i,
-.dh-crit-user-config .notes i {
+.dh-crit-art-config .notes i {
     color: #1e90ff;
     font-size: 1.2em;
 }
@@ -403,8 +400,7 @@
 .dh-crit-config .form-group,
 .dh-crit-text-config .form-group,
 .dh-crit-sound-config .form-group,
-.dh-crit-art-config .form-group,
-.dh-crit-user-config .form-group {
+.dh-crit-art-config .form-group {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -416,8 +412,7 @@
 .dh-crit-config .form-group label,
 .dh-crit-text-config .form-group label,
 .dh-crit-sound-config .form-group label,
-.dh-crit-art-config .form-group label,
-.dh-crit-user-config .form-group label {
+.dh-crit-art-config .form-group label {
     flex: 2;
     font-weight: 600;
     color: #ddd;
@@ -426,8 +421,7 @@
 .dh-crit-config .form-group .form-fields,
 .dh-crit-text-config .form-group .form-fields,
 .dh-crit-sound-config .form-group .form-fields,
-.dh-crit-art-config .form-group .form-fields,
-.dh-crit-user-config .form-group .form-fields {
+.dh-crit-art-config .form-group .form-fields {
     flex: 3;
     display: flex;
     /*justify-content: flex-end; /* Aligns the group (button + text) to the right */
@@ -444,10 +438,7 @@
 .dh-crit-text-config select,
 .dh-crit-art-config input[type="text"],
 .dh-crit-art-config input[type="number"],
-.dh-crit-art-config select,
-.dh-crit-user-config input[type="text"],
-.dh-crit-user-config input[type="number"],
-.dh-crit-user-config select {
+.dh-crit-art-config select {
     background: var(--crit-bg-input);
     border: 1px solid #444;
     color: #fff;
@@ -462,16 +453,14 @@
 /* FIX: Dark background for Select Options */
 .dh-crit-config select option,
 .dh-crit-text-config select option,
-.dh-crit-art-config select option,
-.dh-crit-user-config select option {
+.dh-crit-art-config select option {
     background-color: #2b2b2b;
     color: #f0f0f0;
 }
 
 .dh-crit-config select,
 .dh-crit-text-config select,
-.dh-crit-art-config select,
-.dh-crit-user-config select {
+.dh-crit-art-config select {
     cursor: pointer;
     pointer-events: auto;
 }
@@ -483,9 +472,7 @@
 .dh-crit-sound-config input:focus,
 .dh-crit-sound-config select:focus,
 .dh-crit-art-config input:focus,
-.dh-crit-art-config select:focus,
-.dh-crit-user-config input:focus,
-.dh-crit-user-config select:focus {
+.dh-crit-art-config select:focus {
     outline: none;
     border-color: var(--crit-accent);
     box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
@@ -493,8 +480,7 @@
 
 /* Color Picker tweak */
 .dh-crit-config input[type="color"],
-.dh-crit-text-config input[type="color"],
-.dh-crit-user-config input[type="color"] {
+.dh-crit-text-config input[type="color"] {
     background: none;
     border: none;
     width: 40px;
@@ -505,8 +491,7 @@
 
 /* --- Range Slider --- */
 .dh-crit-config input[type="range"],
-.dh-crit-text-config input[type="range"],
-.dh-crit-user-config input[type="range"] {
+.dh-crit-text-config input[type="range"] {
     accent-color: var(--crit-accent);
     width: 100%;
 }
@@ -524,8 +509,7 @@
 /* Override .form-group label { flex: 2 } which has higher specificity */
 .dh-crit-config .form-group .form-fields .slide-toggle,
 .dh-crit-text-config .form-group .form-fields .slide-toggle,
-.dh-crit-sound-config .form-group .form-fields .slide-toggle,
-.dh-crit-user-config .form-group .form-fields .slide-toggle {
+.dh-crit-sound-config .form-group .form-fields .slide-toggle {
     flex: 0 0 50px;
 }
 
@@ -577,8 +561,7 @@ input:focus + .slider {
 
 /* Hints (Explanatory Text) */
 .dh-crit-text-config .hint,
-.dh-crit-sound-config .hint,
-.dh-crit-user-config .hint {
+.dh-crit-sound-config .hint {
     font-size: 0.85em;
     color: #b0b0b0;
     font-style: italic;
@@ -629,8 +612,7 @@ input:focus + .slider {
 .dh-crit-config .form-footer,
 .dh-crit-text-config .form-footer,
 .dh-crit-sound-config .form-footer,
-.dh-crit-art-config .form-footer,
-.dh-crit-user-config .form-footer {
+.dh-crit-art-config .form-footer {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--crit-border-light);
@@ -641,16 +623,14 @@ input:focus + .slider {
 .dh-crit-config .form-footer button,
 .dh-crit-text-config .form-footer button,
 .dh-crit-sound-config .form-footer button,
-.dh-crit-art-config .form-footer button,
-.dh-crit-user-config .form-footer button {
+.dh-crit-art-config .form-footer button {
     flex: 1;
 }
 
 .dh-crit-config button,
 .dh-crit-text-config button,
 .dh-crit-sound-config button,
-.dh-crit-art-config button,
-.dh-crit-user-config button {
+.dh-crit-art-config button {
     background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
     border: 1px solid #111;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
@@ -662,8 +642,7 @@ input:focus + .slider {
 .dh-crit-config button:hover,
 .dh-crit-text-config button:hover,
 .dh-crit-sound-config button:hover,
-.dh-crit-art-config button:hover,
-.dh-crit-user-config button:hover {
+.dh-crit-art-config button:hover {
     background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
     color: #fff;
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
@@ -703,223 +682,6 @@ input:focus + .slider {
     border: 1px solid rgba(255,255,255,0.3);
     flex-shrink: 0;
 }
-
-/* =========================================
-   Per-User Override Config Styles
-   ========================================= */
-
-/* Scrollable user list */
-.crit-user-list {
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-.crit-user-list::-webkit-scrollbar {
-    width: 8px;
-}
-.crit-user-list::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-}
-.crit-user-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
-.crit-user-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* User card */
-.crit-user-card {
-    background: var(--crit-bg-dark);
-    border: 1px solid var(--crit-border-light);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 0.8rem;
-}
-
-/* User header */
-.crit-user-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 0.8rem;
-}
-
-.crit-user-name {
-    font-weight: 700;
-    font-size: 1.05em;
-    color: #fff;
-    flex: 1;
-}
-
-/* Override badges */
-.crit-user-badges {
-    display: flex;
-    gap: 4px;
-}
-
-.crit-user-badge {
-    font-size: 0.7em;
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.badge-text {
-    background: rgba(30, 144, 255, 0.25);
-    color: #1e90ff;
-    border: 1px solid rgba(30, 144, 255, 0.5);
-}
-
-.badge-fx {
-    background: rgba(255, 100, 0, 0.25);
-    color: var(--crit-accent);
-    border: 1px solid rgba(255, 100, 0, 0.5);
-}
-
-.badge-sound {
-    background: rgba(138, 43, 226, 0.25);
-    color: #a855f7;
-    border: 1px solid rgba(138, 43, 226, 0.5);
-}
-
-.badge-art {
-    background: rgba(34, 197, 94, 0.25);
-    color: #22c55e;
-    border: 1px solid rgba(34, 197, 94, 0.5);
-}
-
-/* Toggle buttons row */
-.crit-user-toggles {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 0.4rem;
-}
-
-.dh-crit-user-config .crit-user-toggle-btn {
-    flex: 1;
-    background: linear-gradient(to bottom, #3a3a3a, #2b2b2b);
-    border: 1px solid #444;
-    color: #ccc;
-    padding: 5px 8px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-}
-
-.dh-crit-user-config .crit-user-toggle-btn:hover {
-    background: linear-gradient(to bottom, #4a4a4a, #3b3b3b);
-    border-color: var(--crit-accent);
-    color: #fff;
-}
-
-.dh-crit-user-config .crit-user-toggle-btn.expanded {
-    background: linear-gradient(to bottom, var(--crit-accent), #d55400);
-    border-color: var(--crit-accent);
-    color: #fff;
-    box-shadow: 0 0 6px rgba(255, 100, 0, 0.3);
-}
-
-/* Collapsible sections */
-.crit-user-section {
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 4px;
-    padding: 10px;
-    margin-top: 0.6rem;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.8rem;
-    padding-bottom: 0.4rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.section-header h4 {
-    margin: 0;
-    font-size: 0.95em;
-    color: #fff;
-    font-weight: 600;
-}
-
-.section-header h4 i {
-    margin-right: 4px;
-    color: var(--crit-accent);
-}
-
-/* Clear button */
-.dh-crit-user-config .crit-user-clear-btn {
-    background: transparent !important;
-    border: 1px solid rgba(255, 80, 80, 0.4) !important;
-    color: #ff6666 !important;
-    padding: 3px 8px !important;
-    border-radius: 3px;
-    font-size: 0.8em;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: none !important;
-}
-
-.dh-crit-user-config .crit-user-clear-btn:hover {
-    background: rgba(255, 80, 80, 0.15) !important;
-    border-color: #ff6666 !important;
-    color: #ff4444 !important;
-    box-shadow: none !important;
-}
-
-/* Use image / sound enable rows inside user sections */
-.dh-crit-user-config .use-image-row,
-.dh-crit-user-config .sound-enable-row {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-bottom: 1rem;
-}
-
-.dh-crit-user-config .use-image-row label i.fa-image,
-.dh-crit-user-config .sound-enable-row label i.fa-volume-up {
-    color: var(--crit-accent);
-    margin-right: 4px;
-}
-
-/* Per-user preview button */
-.dh-crit-user-config .crit-user-preview-btn {
-    flex-shrink: 0;
-    width: 28px;
-    height: 28px;
-    padding: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: linear-gradient(to bottom, #3a3a3a, #2b2b2b) !important;
-    border: 1px solid #444 !important;
-    color: #aaa !important;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.75em;
-}
-
-.dh-crit-user-config .crit-user-preview-btn:hover {
-    background: linear-gradient(to bottom, var(--crit-accent), #d55400) !important;
-    border-color: var(--crit-accent) !important;
-    color: #fff !important;
-    box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
-}
-
 
 /* =========================================
    Critical Configuration Modal Styles
