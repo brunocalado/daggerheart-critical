@@ -91,7 +91,6 @@ export class CriticalSettingsManager {
         if (!hasDefaultPC) {
             const defaultPC = new CriticalConfiguration({
                 id: "default-player-character",
-                name: "Default Player Character",
                 type: "Player Character",
                 target: "Action and Reaction",
                 userId: "all",
@@ -106,7 +105,6 @@ export class CriticalSettingsManager {
         if (!hasDefaultAdv) {
             const defaultAdv = new CriticalConfiguration({
                 id: "default-adversary",
-                name: "Default Adversary",
                 type: "Adversary",
                 target: "Action and Reaction",
                 adversaryId: "all",
