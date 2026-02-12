@@ -77,10 +77,25 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
 
     _onRender(context, options) {
         // Set selected users based on saved userId values (default to "all" if not set)
+        // This must run BEFORE restoring pending form state to avoid overwriting user selections
         this.element.querySelectorAll("select[name$='.userId'][data-current-user]").forEach(select => {
             const currentUserId = select.dataset.currentUser;
             select.value = currentUserId || "all";
         });
+
+        // Restore pending form state if it exists (from addEntry or other operations)
+        // This runs AFTER the default userId setting so it can override with user selections
+        if (this._pendingFormState) {
+            this._restoreFormState(this._pendingFormState);
+            this._pendingFormState = null;
+        }
+
+        // Restore scroll position if it was saved
+        if (this._savedScrollPosition !== undefined) {
+            const scrollableElement = this.element.querySelector('.window-content') || this.element;
+            scrollableElement.scrollTop = this._savedScrollPosition;
+            this._savedScrollPosition = undefined;
+        }
 
         // Add entry button
         this.element.querySelector(".add-entry-btn")?.addEventListener("click", async (event) => {
@@ -103,8 +118,30 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                 const configId = event.target.name.match(/config_(.+)\.type/)[1];
                 const newType = event.target.value;
                 
+                // Save scroll position before re-rendering
+                this._saveScrollPosition();
+                
+                // Capture current form state before re-rendering (for ALL entries)
+                const formState = this._captureFormState();
+                
                 // Update the configuration in memory before re-rendering
                 const configs = CriticalSettingsManager.getConfigurations();
+                
+                // Apply form state to ALL configs to preserve user selections
+                configs.forEach(cfg => {
+                    if (formState[cfg.id]) {
+                        // Preserve userId if it exists in form state
+                        if (formState[cfg.id].userId !== undefined) {
+                            cfg.userId = formState[cfg.id].userId;
+                        }
+                        // Preserve triggerType if it exists in form state
+                        if (formState[cfg.id].triggerType !== undefined) {
+                            cfg.triggerType = formState[cfg.id].triggerType;
+                        }
+                    }
+                });
+                
+                // Now update the specific config that changed type
                 const config = configs.find(c => c.id === configId);
                 if (config) {
                     config.type = newType;
@@ -120,9 +157,9 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                         config.userId = "";
                         config.adversaryId = config.adversaryId || "";
                     }
-                    await CriticalSettingsManager.saveConfigurations(configs);
                 }
                 
+                await CriticalSettingsManager.saveConfigurations(configs);
                 this.render();
             });
         });
@@ -204,9 +241,101 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
     }
 
     /**
+     * Saves the current scroll position before re-rendering
+     */
+    _saveScrollPosition() {
+        const scrollableElement = this.element?.querySelector('.window-content') || this.element;
+        if (scrollableElement) {
+            this._savedScrollPosition = scrollableElement.scrollTop;
+        }
+    }
+
+    /**
+     * Captures current form state from unsaved entries
+     * @returns {Object} State object keyed by config ID
+     */
+    _captureFormState() {
+        const state = {};
+        
+        // Only capture state from non-default entries (they can be edited)
+        this.element.querySelectorAll(".config-entry:not(.default-entry)").forEach(entry => {
+            const configId = entry.dataset.id;
+            if (!configId) return;
+            
+            state[configId] = {};
+            
+            // Capture type dropdown
+            const typeSelect = entry.querySelector(`select[name="config_${configId}.type"]`);
+            if (typeSelect) {
+                state[configId].type = typeSelect.value;
+            }
+            
+            // Capture userId dropdown (for Player Character type)
+            const userSelect = entry.querySelector(`select[name="config_${configId}.userId"]`);
+            if (userSelect) {
+                state[configId].userId = userSelect.value;
+            }
+            
+            // Capture triggerType dropdown
+            const triggerSelect = entry.querySelector(`select[name="config_${configId}.triggerType"]`);
+            if (triggerSelect) {
+                state[configId].triggerType = triggerSelect.value;
+            }
+            
+            // Note: adversaryId is handled via drag-and-drop and saved immediately,
+            // so we don't need to capture it here
+        });
+        
+        return state;
+    }
+
+    /**
+     * Restores form state after re-render
+     * @param {Object} state - State object from _captureFormState()
+     */
+    _restoreFormState(state) {
+        if (!state) return;
+        
+        for (const [configId, values] of Object.entries(state)) {
+            const entry = this.element.querySelector(`.config-entry[data-id="${configId}"]`);
+            if (!entry) continue; // Entry may have been deleted
+            
+            // Restore type dropdown
+            if (values.type) {
+                const typeSelect = entry.querySelector(`select[name="config_${configId}.type"]`);
+                if (typeSelect) {
+                    typeSelect.value = values.type;
+                }
+            }
+            
+            // Restore userId dropdown
+            if (values.userId) {
+                const userSelect = entry.querySelector(`select[name="config_${configId}.userId"]`);
+                if (userSelect) {
+                    userSelect.value = values.userId;
+                }
+            }
+            
+            // Restore triggerType dropdown
+            if (values.triggerType) {
+                const triggerSelect = entry.querySelector(`select[name="config_${configId}.triggerType"]`);
+                if (triggerSelect) {
+                    triggerSelect.value = values.triggerType;
+                }
+            }
+        }
+    }
+
+    /**
      * Adds new entry
      */
     async addEntry() {
+        // Save scroll position before re-rendering
+        this._saveScrollPosition();
+        
+        // Capture current form state before re-rendering
+        this._pendingFormState = this._captureFormState();
+        
         const newConfig = new CriticalConfiguration();
         await CriticalSettingsManager.addConfiguration(newConfig);
         this.render();
