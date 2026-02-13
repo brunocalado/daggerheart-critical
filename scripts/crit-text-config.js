@@ -57,7 +57,8 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             usePlayerColor: false,
             useImage: false,
             imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp",
-            imageSize: "normal"
+            imageSize: "normal",
+            duration: 0
         }, configSettings);
 
         return {
@@ -176,6 +177,13 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         // Checkboxes not submitted when unchecked, ensure defaults
         object.usePlayerColor ??= false;
         object.useImage ??= false;
+        
+        // Process duration field: convert to integer, treat empty/0 as 0
+        if (object.duration !== undefined && object.duration !== null && object.duration !== "") {
+            object.duration = parseInt(object.duration, 10) || 0;
+        } else {
+            object.duration = 0;
+        }
         
         // Get configId from hidden field in form
         const configId = object._configId;

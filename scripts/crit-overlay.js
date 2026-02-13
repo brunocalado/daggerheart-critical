@@ -56,8 +56,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" },
-            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal" }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal", duration: 0 },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "normal", letterSpacing: "normal", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal", duration: 0 }
         };
         const textConfig = this.configOverride
             ? foundry.utils.mergeObject(defaults[configKey], this.configOverride)
@@ -150,6 +150,28 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Look for a video element
         const videoElement = this.element.querySelector("video.crit-video");
 
+        // Get custom duration from config (in ms), default to 0 (use default behavior)
+        const customDuration = parseInt(context.textConfig.duration, 10) || 0;
+        
+        // Get debug setting
+        const debugEnabled = game.settings.get("daggerheart-critical", "debugmode");
+        
+        if (debugEnabled) {
+            console.log("DH-CRIT DEBUG | CritOverlay: Custom duration =", customDuration, "ms, useImage =", context.textConfig.useImage);
+        }
+
+        // Set CSS variable for animation duration
+        if (customDuration > 0) {
+            const durationInSeconds = customDuration / 1000;
+            this.element.style.setProperty('--crit-duration', `${durationInSeconds}s`);
+            if (debugEnabled) {
+                console.log("DH-CRIT DEBUG | CritOverlay: Set CSS animation duration to", durationInSeconds, "seconds");
+            }
+        }
+
+        // Store audio context to stop it when closing
+        this.audioContext = null;
+
         if (videoElement) {
             // Mute the video element so it doesn't play raw audio
             // This allows us to play the audio separately via AudioHelper (Interface Channel)
@@ -158,29 +180,76 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             // Play the audio track via Foundry's AudioHelper
             const src = videoElement.getAttribute("src");
             if (src) {
+                // Store the audio context so we can stop it later
+                this.audioContext = { src: src };
                 foundry.audio.AudioHelper.play({
                     src: src,
                     volume: 0.8,
                     autoplay: true,
                     loop: false
-                }, false); // scope=false implies interface/client-side sound
+                }, false).then(sound => {
+                    this.audioSound = sound;
+                });
             }
             
-            // Close when video ends
-            videoElement.onended = () => {
-                this.close();
-            };
+            if (customDuration > 0) {
+                // Use custom duration - close after specified time
+                if (debugEnabled) {
+                    console.log("DH-CRIT DEBUG | CritOverlay: Using custom duration for video:", customDuration, "ms");
+                }
+                setTimeout(() => {
+                    if (this.element) this.close();
+                }, customDuration);
+            } else {
+                // Close when video ends
+                if (debugEnabled) {
+                    console.log("DH-CRIT DEBUG | CritOverlay: Using video end event");
+                }
+                videoElement.onended = () => {
+                    this.close();
+                };
 
-            // Fallback safety: close after 15 seconds if video loops or hangs
-            setTimeout(() => {
-                if (this.element) this.close();
-            }, 15000);
+                // Fallback safety: close after 15 seconds if video loops or hangs
+                setTimeout(() => {
+                    if (this.element) this.close();
+                }, 15000);
+            }
 
         } else {
-            // Standard Image/Text behavior: close after 3 seconds
+            // Standard Image/Text behavior: use custom duration or default 3 seconds
+            const duration = customDuration > 0 ? customDuration : 3000;
+            if (debugEnabled) {
+                console.log("DH-CRIT DEBUG | CritOverlay: Using duration for image/text:", duration, "ms");
+            }
             setTimeout(() => {
                 this.close();
-            }, 3000);
+            }, duration);
         }
+    }
+
+    async close(options = {}) {
+        // Stop audio if it's playing
+        if (this.audioSound) {
+            try {
+                this.audioSound.stop();
+            } catch (e) {
+                // Audio might already be stopped
+            }
+        }
+        
+        // Also try to stop all sounds from the video source
+        if (this.audioContext && this.audioContext.src) {
+            try {
+                game.audio.playing.forEach(sound => {
+                    if (sound.src === this.audioContext.src) {
+                        sound.stop();
+                    }
+                });
+            } catch (e) {
+                // Ignore errors
+            }
+        }
+        
+        return super.close(options);
     }
 }

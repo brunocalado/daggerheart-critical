@@ -36,6 +36,14 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label>Duration (ms)</label>
+        <div class="form-fields">
+            <input type="number" name="duration" value="{{config.duration}}" placeholder="" min="0" step="1">
+            <span class="hint">Leave empty or 0 to use default duration.</span>
+        </div>
+    </div>
+
     <div class="text-group" {{#if config.useImage}}style="display:none"{{/if}}>
         <div class="form-group">
             <label>Text</label>

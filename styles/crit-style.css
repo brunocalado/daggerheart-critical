@@ -118,7 +118,7 @@
     text-transform: uppercase;
     line-height: 1;
     opacity: 0;
-    animation: crit-explode 3s ease-out forwards;
+    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
     padding: 20px 40px;
     border-radius: 8px;
 }
@@ -164,7 +164,7 @@
 .crit-image, 
 .crit-video {
     opacity: 0;
-    animation: crit-explode 3s ease-out forwards;
+    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
     pointer-events: none;
     object-fit: contain;
     border: none !important;
@@ -191,7 +191,7 @@
     translate: calc(-50% + var(--art-x) + var(--art-offset-x)) calc(-50% + var(--art-y) + var(--art-offset-y));
     object-fit: contain;
     opacity: 0;
-    animation: crit-explode 3s ease-out forwards;
+    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
     pointer-events: none;
     z-index: 0;
     border: none !important;
@@ -497,7 +497,10 @@
 }
 
 /* --- Modern Toggle Switch (CSS Only) --- */
-.slide-toggle {
+.dh-crit-config .slide-toggle,
+.dh-crit-text-config .slide-toggle,
+.dh-crit-sound-config .slide-toggle,
+.dh-crit-art-config .slide-toggle {
     position: relative;
     display: inline-block;
 
@@ -513,13 +516,19 @@
     flex: 0 0 50px;
 }
 
-.slide-toggle input {
+.dh-crit-config .slide-toggle input,
+.dh-crit-text-config .slide-toggle input,
+.dh-crit-sound-config .slide-toggle input,
+.dh-crit-art-config .slide-toggle input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.dh-crit-config .slider,
+.dh-crit-text-config .slider,
+.dh-crit-sound-config .slider,
+.dh-crit-art-config .slider {
     /* FIX: Fixed width of 50px */
     width: 50px;    
     position: absolute;
@@ -534,7 +543,10 @@
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
 }
 
-.slider:before {
+.dh-crit-config .slider:before,
+.dh-crit-text-config .slider:before,
+.dh-crit-sound-config .slider:before,
+.dh-crit-art-config .slider:before {
     position: absolute;
     content: "";
     height: 18px;
@@ -547,15 +559,24 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-input:checked + .slider {
+.dh-crit-config input:checked + .slider,
+.dh-crit-text-config input:checked + .slider,
+.dh-crit-sound-config input:checked + .slider,
+.dh-crit-art-config input:checked + .slider {
     background-color: var(--crit-accent);
 }
 
-input:checked + .slider:before {
+.dh-crit-config input:checked + .slider:before,
+.dh-crit-text-config input:checked + .slider:before,
+.dh-crit-sound-config input:checked + .slider:before,
+.dh-crit-art-config input:checked + .slider:before {
     transform: translateX(26px); /* Adjusted for 50px width */
 }
 
-input:focus + .slider {
+.dh-crit-config input:focus + .slider,
+.dh-crit-text-config input:focus + .slider,
+.dh-crit-sound-config input:focus + .slider,
+.dh-crit-art-config input:focus + .slider {
     box-shadow: 0 0 1px var(--crit-accent);
 }
 
@@ -649,14 +670,14 @@ input:focus + .slider {
 }
 
 /* --- Critical Art Config: Player List (scrollable) --- */
-.crit-art-player-list {
+.dh-crit-art-config .crit-art-player-list {
     max-height: 400px;
     overflow-y: auto;
     padding-right: 4px;
 }
 
 /* --- Critical Art Config: Player Cards --- */
-.crit-art-player-card {
+.dh-crit-art-config .crit-art-player-card {
     background: var(--crit-bg-dark);
     border: 1px solid var(--crit-border-light);
     border-radius: 6px;
@@ -664,7 +685,7 @@ input:focus + .slider {
     margin-bottom: 0.5rem;
 }
 
-.crit-art-player-header {
+.dh-crit-art-config .crit-art-player-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -674,7 +695,7 @@ input:focus + .slider {
     color: #fff;
 }
 
-.crit-art-color-dot {
+.dh-crit-art-config .crit-art-color-dot {
     display: inline-block;
     width: 12px;
     height: 12px;
@@ -710,7 +731,7 @@ input:focus + .slider {
     font-size: 1.2em;
 }
 
-.config-list {
+.dh-crit-config-modal .config-list {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
@@ -720,76 +741,76 @@ input:focus + .slider {
     padding-right: 8px;
 }
 
-.default-entries-container {
+.dh-crit-config-modal .default-entries-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     margin-bottom: 0.8rem;
 }
 
-.config-list::-webkit-scrollbar {
+.dh-crit-config-modal .config-list::-webkit-scrollbar {
     width: 8px;
 }
 
-.config-list::-webkit-scrollbar-track {
+.dh-crit-config-modal .config-list::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 4px;
 }
 
-.config-list::-webkit-scrollbar-thumb {
+.dh-crit-config-modal .config-list::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
 }
 
-.config-list::-webkit-scrollbar-thumb:hover {
+.dh-crit-config-modal .config-list::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
-.config-entry {
+.dh-crit-config-modal .config-entry {
     background: var(--crit-bg-dark);
     border: 1px solid var(--crit-border-light);
     border-radius: 6px;
     padding: 12px;
 }
 
-.config-entry.default-entry {
+.dh-crit-config-modal .config-entry.default-entry {
     background: linear-gradient(90deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
     border-color: rgba(255, 215, 0, 0.3);
 }
 
-.entry-row {
+.dh-crit-config-modal .entry-row {
     display: grid;
     grid-template-columns: 2.5fr 1.8fr 2.5fr 1.8fr auto;
     gap: 12px;
     align-items: end;
 }
 
-.default-entry .entry-row {
+.dh-crit-config-modal .default-entry .entry-row {
     grid-template-columns: 1fr auto;
     gap: 8px;
 }
 
-.entry-field {
+.dh-crit-config-modal .entry-field {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-.entry-field label {
+.dh-crit-config-modal .entry-field label {
     font-size: 0.85em;
     font-weight: 600;
     color: #ddd;
 }
 
-.entry-field .config-name-label {
+.dh-crit-config-modal .entry-field .config-name-label {
     font-size: 1.1em;
     font-weight: 700;
     color: #fff;
     padding: 6px 0;
 }
 
-.entry-field input[type="text"],
-.entry-field select {
+.dh-crit-config-modal .entry-field input[type="text"],
+.dh-crit-config-modal .entry-field select {
     background: var(--crit-bg-input);
     border: 1px solid #444;
     color: #fff;
@@ -799,32 +820,32 @@ input:focus + .slider {
     height: 32px;
 }
 
-.entry-field input:focus,
-.entry-field select:focus {
+.dh-crit-config-modal .entry-field input:focus,
+.dh-crit-config-modal .entry-field select:focus {
     outline: none;
     border-color: var(--crit-accent);
     box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
 }
 
-.entry-field input[readonly] {
+.dh-crit-config-modal .entry-field input[readonly] {
     background: rgba(0, 0, 0, 0.3);
     color: #999;
     cursor: not-allowed;
 }
 
-.entry-field select:disabled {
+.dh-crit-config-modal .entry-field select:disabled {
     background: rgba(0, 0, 0, 0.3);
     color: #999;
     cursor: not-allowed;
 }
 
-.entry-field select option {
+.dh-crit-config-modal .entry-field select option {
     background-color: #2b2b2b;
     color: #f0f0f0;
 }
 
 /* Adversary Drop Zone */
-.adversary-drop-zone {
+.dh-crit-config-modal .adversary-drop-zone {
     background: var(--crit-bg-input);
     border: 2px dashed #666;
     border-radius: 4px;
@@ -837,23 +858,23 @@ input:focus + .slider {
     position: relative;
 }
 
-.adversary-drop-zone.drag-over {
+.dh-crit-config-modal .adversary-drop-zone.drag-over {
     border-color: var(--crit-accent);
     background: rgba(255, 100, 0, 0.1);
 }
 
-.adversary-drop-zone .placeholder {
+.dh-crit-config-modal .adversary-drop-zone .placeholder {
     color: #888;
     font-size: 0.9em;
     font-style: italic;
 }
 
-.adversary-drop-zone .adversary-name {
+.dh-crit-config-modal .adversary-drop-zone .adversary-name {
     color: #fff;
     font-weight: 600;
 }
 
-.clear-adversary-btn {
+.dh-crit-config-modal .clear-adversary-btn {
     position: absolute;
     right: 4px;
     top: 50%;
@@ -868,21 +889,21 @@ input:focus + .slider {
     transition: all 0.2s;
 }
 
-.clear-adversary-btn:hover {
+.dh-crit-config-modal .clear-adversary-btn:hover {
     background: rgba(255, 80, 80, 0.3) !important;
     border-color: #ff6666 !important;
     color: #ff4444 !important;
 }
 
 /* Action Buttons */
-.entry-actions {
+.dh-crit-config-modal .entry-actions {
     display: flex;
     gap: 4px;
     align-items: center;
 }
 
-.action-btn,
-.delete-entry-btn {
+.dh-crit-config-modal .action-btn,
+.dh-crit-config-modal .delete-entry-btn {
     background: linear-gradient(to bottom, #3a3a3a, #2b2b2b) !important;
     border: 1px solid #444 !important;
     color: #aaa !important;
@@ -898,14 +919,14 @@ input:focus + .slider {
     justify-content: center;
 }
 
-.action-btn:hover {
+.dh-crit-config-modal .action-btn:hover {
     background: linear-gradient(to bottom, var(--crit-accent), #d55400) !important;
     border-color: var(--crit-accent) !important;
     color: #fff !important;
     box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
 }
 
-.delete-entry-btn {
+.dh-crit-config-modal .delete-entry-btn {
     background: linear-gradient(to bottom, #4a2020, #2b1515) !important;
     border-color: #662020 !important;
     color: #ff6666 !important;
@@ -913,7 +934,7 @@ input:focus + .slider {
     height: 32px;
 }
 
-.delete-entry-btn:hover {
+.dh-crit-config-modal .delete-entry-btn:hover {
     background: linear-gradient(to bottom, #662020, #4a2020) !important;
     border-color: #ff6666 !important;
     color: #ff4444 !important;
@@ -946,35 +967,35 @@ input:focus + .slider {
     box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
 }
 
-.add-entry-btn {
+.dh-crit-config-modal .add-entry-btn {
     background: linear-gradient(to bottom, #2a4a2a, #1b2b1b) !important;
     border-color: #2a5a2a !important;
     color: #66ff66 !important;
 }
 
-.add-entry-btn:hover {
+.dh-crit-config-modal .add-entry-btn:hover {
     background: linear-gradient(to bottom, #3a5a3a, #2a4a2a) !important;
     border-color: #66ff66 !important;
     color: #44ff44 !important;
 }
 
 /* Enhanced Adversary Drop Zone Styles */
-.adversary-drop-zone {
+.dh-crit-config-modal .adversary-drop-zone {
     cursor: pointer;
     position: relative;
 }
 
-.adversary-drop-zone:hover {
+.dh-crit-config-modal .adversary-drop-zone:hover {
     border-color: #888;
     background: rgba(255, 255, 255, 0.05);
 }
 
-.adversary-drop-zone .adversary-name {
+.dh-crit-config-modal .adversary-drop-zone .adversary-name {
     flex: 1;
     text-align: left;
     padding-right: 24px;
 }
 
-.adversary-drop-zone .clear-adversary-btn {
+.dh-crit-config-modal .adversary-drop-zone .clear-adversary-btn {
     flex-shrink: 0;
 }
