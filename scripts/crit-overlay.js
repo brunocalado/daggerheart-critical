@@ -56,8 +56,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal", duration: 0 },
-            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/molten_voltage.webp", imageSize: "normal", duration: 0 }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp", imageSize: "large", duration: 0 },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp", imageSize: "large", duration: 0 }
         };
         const textConfig = this.configOverride
             ? foundry.utils.mergeObject(defaults[configKey], this.configOverride)

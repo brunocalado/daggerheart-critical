@@ -109,8 +109,8 @@ Hooks.once("init", () => {
                 fill: "none",
                 usePlayerColor: false,
                 useImage: false,
-                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/molten_voltage.webp`,
-                imageSize: "normal"
+                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/arcane_strike.webp`,
+                imageSize: "large"
             },
             adversary: {
                 content: "CRITICAL!",
@@ -122,8 +122,8 @@ Hooks.once("init", () => {
                 fill: "none",
                 usePlayerColor: false,
                 useImage: false,
-                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/molten_voltage.webp`,
-                imageSize: "normal"
+                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/arcane_strike.webp`,
+                imageSize: "large"
             }
         }
     });
