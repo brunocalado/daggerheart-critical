@@ -16,33 +16,6 @@ export class CriticalConfiguration {
     }
 
     /**
-     * Validates the configuration
-     * @returns {string[]} Array of error messages (empty if valid)
-     */
-    validate() {
-        const errors = [];
-        
-        if (!["Player Character", "Adversary"].includes(this.type)) {
-            errors.push("Type must be 'Player Character' or 'Adversary'");
-        }
-        
-        const validTriggers = ["Action and Reaction", "Only Action", "Only Reaction"];
-        if (this.type === "Adversary") {
-            validTriggers.push("Fumble");
-        }
-        
-        if (!validTriggers.includes(this.triggerType)) {
-            errors.push(`Trigger Type must be one of: ${validTriggers.join(", ")}`);
-        }
-        
-        if (this.type === "Player Character" && this.triggerType === "Fumble") {
-            errors.push("Fumble trigger type is only available for Adversaries");
-        }
-        
-        return errors;
-    }
-
-    /**
      * Converts to JSON-serializable object
      * @returns {Object}
      */

@@ -10,9 +10,6 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
     constructor(options = {}) {
         super(options);
         this.configId = options.configId || null;
-        this.tabState = {
-            activeTab: "pc"
-        };
     }
 
     static DEFAULT_OPTIONS = {
