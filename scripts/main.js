@@ -102,8 +102,8 @@ Hooks.once("init", () => {
             pc: {
                 content: "CRITICAL!",
                 fontFamily: "Bangers",
-                fontSize: "normal",
-                letterSpacing: "normal",
+                fontSize: "large",
+                letterSpacing: "wide",
                 color: "#ffcc00",
                 backgroundColor: "#000000",
                 fill: "none",
@@ -115,8 +115,8 @@ Hooks.once("init", () => {
             adversary: {
                 content: "CRITICAL!",
                 fontFamily: "Bangers",
-                fontSize: "normal",
-                letterSpacing: "normal",
+                fontSize: "large",
+                letterSpacing: "wide",
                 color: "#ff0000",
                 backgroundColor: "#000000",
                 fill: "none",

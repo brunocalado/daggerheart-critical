@@ -46,8 +46,8 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         const config = foundry.utils.mergeObject({
             content: "CRITICAL",
             fontFamily: "Bangers",
-            fontSize: "normal",
-            letterSpacing: "normal",
+            fontSize: "large",
+            letterSpacing: "wide",
             color: "#ffcc00",
             backgroundColor: "#000000",
             fill: "none",
