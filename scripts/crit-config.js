@@ -55,6 +55,17 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             this.tempType = null;
         }
 
+        if (config.type === "shake") {
+            config.options.duration ??= 600;
+        }
+        if (config.type === "shatter") {
+            config.options.count ??= 300;
+        }
+        if (config.type === "pulsate") {
+            config.options.duration ??= 600;
+            config.options.iterations ??= 4;
+            config.options.intensity ??= 2;
+        }
         if (config.type === "border" && !config.options.color) {
             config.options.color = "#ff0000";
         }

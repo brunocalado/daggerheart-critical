@@ -55,7 +55,7 @@ export class CritFX {
         if (this.shakeInterval) clearInterval(this.shakeInterval);
         const mag = options.intensity === "extreme" ? 20 : options.intensity === "mild" ? 3 : 10;
         const start = Date.now();
-        const dur = options.duration || 500;
+        const dur = options.duration || 600;
         this.shakeInterval = setInterval(() => {
             if (Date.now() - start >= dur) { 
                 clearInterval(this.shakeInterval); 
@@ -70,7 +70,7 @@ export class CritFX {
 
     GlassShatter(options = {}) {
         this.initialize();
-        const count = options.count || 200;
+        const count = options.count || 300;
         const screenW = window.innerWidth;
         const screenH = window.innerHeight;
 
@@ -143,7 +143,7 @@ export class CritFX {
         this.initialize();
         document.body.style.animation = 'none'; void document.body.offsetHeight;
         document.body.style.setProperty('--cfx-pulse-scale', 1 + (0.02 * (options.intensity || 2)));
-        document.body.style.animation = `cfx-pulse-anim ${options.duration || 1000}ms ease-in-out ${options.iterations || 5}`;
+        document.body.style.animation = `cfx-pulse-anim ${options.duration || 600}ms ease-in-out ${options.iterations || 4}`;
     }
 
     Confetti(options = {}) {
