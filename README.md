@@ -8,38 +8,17 @@
 
 Watch a video demo: [Youtube](https://youtu.be/y5GEFZrrJ58)
 
-## What is it?
+## Make Every Critical Legendary
 
-**Make every Critical Hit feel legendary.**
+Don't let a massive success be just another line of text. **Critical** transforms your Daggerheart sessions with visceral screen effects and cinematic audio. Feel the weight of every Hope & Fear match and every Adversary crit.
 
-This module adds visceral impact to your Daggerheart sessions in Foundry VTT. When a player or GM rolls a critical success, the screen reacts with immersive visual effects and sound, amplifying the tension and excitement of the moment.
+### ✨ Features
 
-## Why use this?
-
-In a narrative game like Daggerheart, a Critical Success is a major story beat. It shouldn't just be a text notification in the chat. This module ensures that everyone at the table *feels* the impact when the dice roll high.
-
-## 🚀 Key Features
-
-* **💥 Dynamic Visual FX:** Choose from a suite of powerful, screen-spanning visual effects:
-    * **Glass Shatter:** The screen cracks and shards fly—perfect for a devastating blow.
-    * **Screen Shake:** A physical rumble that sells the weight and force of an action.
-    * **Pulsate:** A rhythmic visual heartbeat for moments of intense magical or psychic power.
-    * **Energy Border:** A glowing, colored border that pulses and constricts the screen.
-    * **Fine-Tune Everything:** Control the intensity, duration, and color of each effect to perfectly match the action on screen.
-
-* **🔊 Cinematic Audio:** Automatically trigger custom sound effects to give crits their own auditory signature.
-    * **Asymmetric Sound Design:** Assign different sounds for Player and GM criticals. Celebrate player victories with a heroic fanfare while a GM's crit is met with a terrifying horror sting.
-    * **Bring Your Own Sounds:** Comes with ready-to-use SFX, or easily upload your own `.mp3` or `.ogg` files.
-
-* **⚔️ Duality vs. Adversary:**
-    * **For Players (Duality Dice):** Triggers when the Hope & Fear dice match.
-    * **For GMs (Adversary Rolls):** Triggers on a d20 critical.
-
-* **✨ Customizable Critical:** Display a stylish "CRITICAL!".
-    * **Personalize It:** Easily change the overlay text, font,animation or use a custom image to fit your game's unique aesthetic.
-
-* **👤 Per-User Configuration:**
-    * **GM Controlled Customization:** The GM can configure visual and sound effects individually for each player.
+*   **Visual Impact:** From shattering glass to pulsing energy borders, the screen reacts to the drama of the dice.
+*   **Dynamic Audio:** Heroic fanfares for players and terrifying stings for the GM.
+*   **Smart Triggers:** Automatically detects Duality Dice matches (Players) and d20 crits (GM).
+*   **Total Customization:** Change animations, sounds, colors, and fonts to match your table's vibe.
+*   **Per-Player Settings:** Tailor the experience so every player feels unique.
 
 ## 🚀 Installation
 
