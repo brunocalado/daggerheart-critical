@@ -98,151 +98,153 @@
     display: flex !important;
     align-items: center;
     justify-content: center;
-}
 
-/* Content container */
-.crit-splash-container {
-    position: relative;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+    /* Content container */
+    & .crit-splash-container {
+        position: relative;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 
-/* Main Text */
-.crit-title {
-    font-family: "Bangers", sans-serif;
-    font-size: 8rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    line-height: 1;
-    opacity: 0;
-    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
-    padding: 20px 40px;
-    border-radius: 8px;
-}
+    /* Main Text */
+    & .crit-title {
+        font-family: "Bangers", sans-serif;
+        font-size: 8rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        line-height: 1;
+        opacity: 0;
+        animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
+        padding: 20px 40px;
+        border-radius: 8px;
+    }
 
-/* --- Fill Modes --- */
+    /* --- Fill Modes --- */
 
-/* Box: text in a padded box (default) */
-.crit-fill-box .crit-title {
-    display: inline-block;
-}
+    /* Box: text in a padded box (default) */
+    & .crit-fill-box .crit-title {
+        display: inline-block;
+    }
 
-/* Band: full width horizontal band */
-.crit-fill-band {
-    width: 100vw;
-    flex-direction: row;
-}
-.crit-fill-band .crit-title {
-    width: 100%;
-    border-radius: 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    /* Band: full width horizontal band */
+    & .crit-fill-band {
+        width: 100vw;
+        flex-direction: row;
 
-/* Full: entire screen filled */
-.crit-fill-full {
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-}
-.crit-fill-full .crit-title {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 0;
-    background-color: transparent !important;
-}
+        & .crit-title {
+            width: 100%;
+            border-radius: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
 
-/* --- Critical Image & Video Mode --- */
-.crit-image, 
-.crit-video {
-    opacity: 0;
-    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
-    pointer-events: none;
-    object-fit: contain;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-}
+    /* Full: entire screen filled */
+    & .crit-fill-full {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
 
-/* Image and video sizes - reusing crit-explode animation for consistency */
-.crit-image-small, .crit-video-small { max-height: 20vh; }
-.crit-image-normal, .crit-video-normal { max-height: 35vh; }
-.crit-image-large, .crit-video-large { max-height: 55vh; }
-.crit-image-extra-large, .crit-video-extra-large { max-height: 75vh; }
+        & .crit-title {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0;
+            background-color: transparent !important;
+        }
+    }
 
-/* --- Critical Art (Player Artwork behind text) --- */
-.crit-art {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    --art-x: 0px;
-    --art-y: 0px;
-    --art-offset-x: 0px;
-    --art-offset-y: 0px;
-    translate: calc(-50% + var(--art-x) + var(--art-offset-x)) calc(-50% + var(--art-y) + var(--art-offset-y));
-    object-fit: contain;
-    opacity: 0;
-    animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
-    pointer-events: none;
-    z-index: 0;
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
-}
+    /* --- Critical Image & Video Mode --- */
+    & .crit-image, 
+    & .crit-video {
+        opacity: 0;
+        animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
+        pointer-events: none;
+        object-fit: contain;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
 
-.crit-title,
-.crit-image,
-.crit-video {
-    z-index: 1;
-    position: relative;
-}
+    /* Image and video sizes - reusing crit-explode animation for consistency */
+    & .crit-image-small, & .crit-video-small { max-height: 20vh; }
+    & .crit-image-normal, & .crit-video-normal { max-height: 35vh; }
+    & .crit-image-large, & .crit-video-large { max-height: 55vh; }
+    & .crit-image-extra-large, & .crit-video-extra-large { max-height: 75vh; }
 
-/* Art Sizes */
-.crit-art-size-very-small { max-height: 20vh; }
-.crit-art-size-small { max-height: 35vh; }
-.crit-art-size-normal { max-height: 55vh; }
-.crit-art-size-large { max-height: 80vh; }
+    /* --- Critical Art (Player Artwork behind text) --- */
+    & .crit-art {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        --art-x: 0px;
+        --art-y: 0px;
+        --art-offset-x: 0px;
+        --art-offset-y: 0px;
+        translate: calc(-50% + var(--art-x) + var(--art-offset-x)) calc(-50% + var(--art-y) + var(--art-offset-y));
+        object-fit: contain;
+        opacity: 0;
+        animation: crit-explode var(--crit-duration, 3s) ease-out forwards;
+        pointer-events: none;
+        z-index: 0;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
 
-/* Horizontal Positions (X axis) */
-.crit-art-left-out { --art-x: -40vw; }
-.crit-art-left { --art-x: -20vw; }
-.crit-art-middle { --art-x: 0px; }
-.crit-art-right { --art-x: 20vw; }
-.crit-art-right-out { --art-x: 40vw; }
+    & .crit-title,
+    & .crit-image,
+    & .crit-video {
+        z-index: 1;
+        position: relative;
+    }
 
-/* Vertical Positions (Y axis) */
-.crit-art-y-top-out { --art-y: -35vh; }
-.crit-art-y-top { --art-y: -15vh; }
-.crit-art-y-middle { --art-y: 0px; }
-.crit-art-y-bottom { --art-y: 15vh; }
-.crit-art-y-bottom-out { --art-y: 35vh; }
+    /* Art Sizes */
+    & .crit-art-size-very-small { max-height: 20vh; }
+    & .crit-art-size-small { max-height: 35vh; }
+    & .crit-art-size-normal { max-height: 55vh; }
+    & .crit-art-size-large { max-height: 80vh; }
 
-/* --- Styles by Type --- */
+    /* Horizontal Positions (X axis) */
+    & .crit-art-left-out { --art-x: -40vw; }
+    & .crit-art-left { --art-x: -20vw; }
+    & .crit-art-middle { --art-x: 0px; }
+    & .crit-art-right { --art-x: 20vw; }
+    & .crit-art-right-out { --art-x: 40vw; }
 
-/* Duality (Gold) - text-shadow only, color comes from settings */
-.duality-style .crit-title {
-    text-shadow:
-        0 0 10px currentColor,
-        0 0 20px rgba(0, 0, 0, 0.5),
-        4px 4px 0px #000;
-}
+    /* Vertical Positions (Y axis) */
+    & .crit-art-y-top-out { --art-y: -35vh; }
+    & .crit-art-y-top { --art-y: -15vh; }
+    & .crit-art-y-middle { --art-y: 0px; }
+    & .crit-art-y-bottom { --art-y: 15vh; }
+    & .crit-art-y-bottom-out { --art-y: 35vh; }
 
-/* Adversary (Red) - text-shadow only, color comes from settings */
-.adversary-style .crit-title {
-    text-shadow:
-        0 0 10px currentColor,
-        0 0 20px rgba(0, 0, 0, 0.5),
-        4px 4px 0px #000;
+    /* --- Styles by Type --- */
+
+    /* Duality (Gold) - text-shadow only, color comes from settings */
+    & .duality-style .crit-title {
+        text-shadow:
+            0 0 10px currentColor,
+            0 0 20px rgba(0, 0, 0, 0.5),
+            4px 4px 0px #000;
+    }
+
+    /* Adversary (Red) - text-shadow only, color comes from settings */
+    & .adversary-style .crit-title {
+        text-shadow:
+            0 0 10px currentColor,
+            0 0 20px rgba(0, 0, 0, 0.5),
+            4px 4px 0px #000;
+    }
 }
 
 /* --- Animations --- */
@@ -280,11 +282,11 @@
     transition: border 0.3s ease;
     display: none;
     --cfx-border-rgb: 255, 0, 0;
-}
 
-#dh-crit-fx-border.active {
-    display: block;
-    animation: cfx-pulse-border 2s infinite;
+    &.active {
+        display: block;
+        animation: cfx-pulse-border 2s infinite;
+    }
 }
 
 .cfx-shard-realistic {
@@ -315,393 +317,311 @@
 .dh-crit-sound-config,
 .dh-crit-art-config {
     font-family: "Signika", sans-serif;
+
+    /* --- Tabs --- */
+    & .tabs {
+        border-bottom: 2px solid var(--crit-border-light);
+        margin-bottom: 1rem;
+
+        & a {
+            position: relative;
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            color: #b0b0b0;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
+
+            &:hover {
+                color: #ffffff;
+                background: rgba(255, 255, 255, 0.05);
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            }
+
+            &.active {
+                color: #ffffff;
+                background: var(--crit-bg-dark);
+                border-bottom: 3px solid var(--crit-accent);
+            }
+        }
+    }
+
+    /* --- Tab Content --- */
+    & .tab {
+        display: none;
+        animation: fadein 0.3s ease-in-out;
+
+        &.active { display: block; }
+    }
+
+    /* --- Notes Box --- */
+    & .notes {
+        margin-bottom: 1.5rem;
+        padding: 10px 12px;
+        background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
+        border-left: 4px solid #1e90ff;
+        border-radius: 4px;
+        color: #e0e0e0;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 0.8em;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+
+        & i {
+            color: #1e90ff;
+            font-size: 1.2em;
+        }
+    }
+
+    /* --- Form Groups (Modern Layout) --- */
+    & .form-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.03);
+
+        & label {
+            flex: 2;
+            font-weight: 600;
+            color: #ddd;
+        }
+
+        & .form-fields {
+            flex: 3;
+            display: flex;
+            /*justify-content: flex-end; /* Aligns the group (button + text) to the right */
+            align-items: center;
+            gap: 0; /* Gap removed because we will use margin on the hint */
+        }
+    }
+
+    /* Inputs styling */
+    & input[type="text"],
+    & input[type="number"],
+    & select {
+        background: var(--crit-bg-input);
+        border: 1px solid #444;
+        color: #fff;
+        border-radius: 4px;
+        padding: 4px 8px;
+        transition: border-color 0.2s;
+        height: 28px;
+        flex: 1;
+        max-width: 100%;
+
+        &:focus {
+            outline: none;
+            border-color: var(--crit-accent);
+            box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
+        }
+    }
+
+    /* FIX: Dark background for Select Options */
+    & select option {
+        background-color: #2b2b2b;
+        color: #f0f0f0;
+    }
+
+    & select {
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+    /* Color Picker tweak */
+    & input[type="color"] {
+        background: none;
+        border: none;
+        width: 40px;
+        height: 30px;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    /* --- Range Slider --- */
+    & input[type="range"] {
+        accent-color: var(--crit-accent);
+        width: 100%;
+    }
+
+    /* --- Modern Toggle Switch (CSS Only) --- */
+    & .slide-toggle {
+        position: relative;
+        display: inline-block;
+
+        flex: 0 0 50px;
+        height: 24px;
+        margin-right: 0;
+
+        & input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    }
+
+    /* Override .form-group label { flex: 2 } which has higher specificity */
+    & .form-group .form-fields .slide-toggle {
+        flex: 0 0 50px;
+    }
+
+    & .slider {
+        /* FIX: Fixed width of 50px */
+        width: 50px;    
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #555;
+        transition: .3s;
+        border-radius: 24px;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+
+        &:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+    }
+
+    & input:checked + .slider {
+        background-color: var(--crit-accent);
+
+        &:before {
+            transform: translateX(26px); /* Adjusted for 50px width */
+        }
+    }
+
+    & input:focus + .slider {
+        box-shadow: 0 0 1px var(--crit-accent);
+    }
+
+    /* Footer Buttons */
+    & .form-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--crit-border-light);
+        display: flex;
+        gap: 8px;
+
+        & button {
+            flex: 1;
+        }
+    }
+
+    & button {
+        background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
+        border: 1px solid #111;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        color: #f0f0f0;
+        padding: 8px 0;
+        transition: all 0.2s;
+
+        &:hover {
+            background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+        }
+    }
 }
 
-/* --- Tabs --- */
-.dh-crit-config .tabs,
-.dh-crit-text-config .tabs,
-.dh-crit-art-config .tabs {
-    border-bottom: 2px solid var(--crit-border-light);
-    margin-bottom: 1rem;
+/* Specific Config Overrides/Additions */
+.dh-crit-text-config,
+.dh-crit-sound-config {
+    & .hint {
+        font-size: 0.85em;
+        color: #b0b0b0;
+        font-style: italic;
+        line-height: 1.2;
+        text-align: left; /* Aligns text to the left (near the button) */
+        margin-left: 10px; /* Space between button and text */
+        flex: 1; /* Occupies remaining space */
+    }
 }
 
-.dh-crit-config .tabs a,
-.dh-crit-text-config .tabs a,
-.dh-crit-art-config .tabs a {
-    position: relative;
-    padding: 8px 20px;
-    border: none;
-    background: transparent;
-    color: #b0b0b0;
-    transition: all 0.2s ease;
-    font-weight: 600;
-    border-radius: 4px 4px 0 0;
+.dh-crit-text-config {
+    & .use-image-row {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 1rem;
+
+        & label i.fa-image {
+            color: var(--crit-accent);
+            margin-right: 4px;
+        }
+    }
 }
 
-.dh-crit-config .tabs a:hover,
-.dh-crit-text-config .tabs a:hover,
-.dh-crit-art-config .tabs a:hover {
-    color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+.dh-crit-sound-config {
+    & .sound-enable-row {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        padding: 8px 12px;
+        margin-bottom: 1rem;
+
+        & label i.fa-volume-up {
+            color: var(--crit-accent);
+            margin-right: 4px;
+        }
+    }
+
+    & .field-hint {
+        font-size: 0.85em;
+        color: #b0b0b0;
+        font-style: italic;
+        margin: -0.4rem 0 1rem 0;
+        padding-left: 2px;
+    }
 }
 
-.dh-crit-config .tabs a.active,
-.dh-crit-text-config .tabs a.active,
-.dh-crit-art-config .tabs a.active {
-    color: #ffffff;
-    background: var(--crit-bg-dark);
-    border-bottom: 3px solid var(--crit-accent);
-}
+.dh-crit-art-config {
+    & .crit-art-player-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 4px;
+    }
 
-/* --- Tab Content --- */
-.dh-crit-config .tab,
-.dh-crit-text-config .tab,
-.dh-crit-art-config .tab {
-    display: none;
-    animation: fadein 0.3s ease-in-out;
-}
-.dh-crit-config .tab.active,
-.dh-crit-text-config .tab.active,
-.dh-crit-art-config .tab.active { display: block; }
+    & .crit-art-player-card {
+        background: var(--crit-bg-dark);
+        border: 1px solid var(--crit-border-light);
+        border-radius: 6px;
+        padding: 10px 12px;
+        margin-bottom: 0.5rem;
+    }
 
-@keyframes fadein {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    & .crit-art-player-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0.6rem;
+        font-weight: 700;
+        font-size: 1.05em;
+        color: #fff;
+    }
 
-/* --- Notes Box --- */
-.dh-crit-config .notes,
-.dh-crit-text-config .notes,
-.dh-crit-sound-config .notes,
-.dh-crit-art-config .notes {
-    margin-bottom: 1.5rem;
-    padding: 10px 12px;
-    background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
-    border-left: 4px solid #1e90ff;
-    border-radius: 4px;
-    color: #e0e0e0;
-    font-size: 0.95em;
-    display: flex;
-    align-items: center;
-    gap: 0.8em;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.dh-crit-config .notes i,
-.dh-crit-text-config .notes i,
-.dh-crit-sound-config .notes i,
-.dh-crit-art-config .notes i {
-    color: #1e90ff;
-    font-size: 1.2em;
-}
-
-/* --- Form Groups (Modern Layout) --- */
-.dh-crit-config .form-group,
-.dh-crit-text-config .form-group,
-.dh-crit-sound-config .form-group,
-.dh-crit-art-config .form-group {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.8rem;
-    padding: 4px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-}
-
-.dh-crit-config .form-group label,
-.dh-crit-text-config .form-group label,
-.dh-crit-sound-config .form-group label,
-.dh-crit-art-config .form-group label {
-    flex: 2;
-    font-weight: 600;
-    color: #ddd;
-}
-
-.dh-crit-config .form-group .form-fields,
-.dh-crit-text-config .form-group .form-fields,
-.dh-crit-sound-config .form-group .form-fields,
-.dh-crit-art-config .form-group .form-fields {
-    flex: 3;
-    display: flex;
-    /*justify-content: flex-end; /* Aligns the group (button + text) to the right */
-    align-items: center;
-    gap: 0; /* Gap removed because we will use margin on the hint */
-}
-
-/* Inputs styling */
-.dh-crit-config input[type="text"],
-.dh-crit-config input[type="number"],
-.dh-crit-config select,
-.dh-crit-text-config input[type="text"],
-.dh-crit-text-config input[type="number"],
-.dh-crit-text-config select,
-.dh-crit-art-config input[type="text"],
-.dh-crit-art-config input[type="number"],
-.dh-crit-art-config select {
-    background: var(--crit-bg-input);
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 4px;
-    padding: 4px 8px;
-    transition: border-color 0.2s;
-    height: 28px;
-    flex: 1;
-    max-width: 100%;
-}
-
-/* FIX: Dark background for Select Options */
-.dh-crit-config select option,
-.dh-crit-text-config select option,
-.dh-crit-art-config select option {
-    background-color: #2b2b2b;
-    color: #f0f0f0;
-}
-
-.dh-crit-config select,
-.dh-crit-text-config select,
-.dh-crit-art-config select {
-    cursor: pointer;
-    pointer-events: auto;
-}
-
-.dh-crit-config input:focus,
-.dh-crit-config select:focus,
-.dh-crit-text-config input:focus,
-.dh-crit-text-config select:focus,
-.dh-crit-sound-config input:focus,
-.dh-crit-sound-config select:focus,
-.dh-crit-art-config input:focus,
-.dh-crit-art-config select:focus {
-    outline: none;
-    border-color: var(--crit-accent);
-    box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
-}
-
-/* Color Picker tweak */
-.dh-crit-config input[type="color"],
-.dh-crit-text-config input[type="color"] {
-    background: none;
-    border: none;
-    width: 40px;
-    height: 30px;
-    padding: 0;
-    cursor: pointer;
-}
-
-/* --- Range Slider --- */
-.dh-crit-config input[type="range"],
-.dh-crit-text-config input[type="range"] {
-    accent-color: var(--crit-accent);
-    width: 100%;
-}
-
-/* --- Modern Toggle Switch (CSS Only) --- */
-.dh-crit-config .slide-toggle,
-.dh-crit-text-config .slide-toggle,
-.dh-crit-sound-config .slide-toggle,
-.dh-crit-art-config .slide-toggle {
-    position: relative;
-    display: inline-block;
-
-    flex: 0 0 50px;
-    height: 24px;
-    margin-right: 0;
-}
-
-/* Override .form-group label { flex: 2 } which has higher specificity */
-.dh-crit-config .form-group .form-fields .slide-toggle,
-.dh-crit-text-config .form-group .form-fields .slide-toggle,
-.dh-crit-sound-config .form-group .form-fields .slide-toggle {
-    flex: 0 0 50px;
-}
-
-.dh-crit-config .slide-toggle input,
-.dh-crit-text-config .slide-toggle input,
-.dh-crit-sound-config .slide-toggle input,
-.dh-crit-art-config .slide-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.dh-crit-config .slider,
-.dh-crit-text-config .slider,
-.dh-crit-sound-config .slider,
-.dh-crit-art-config .slider {
-    /* FIX: Fixed width of 50px */
-    width: 50px;    
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #555;
-    transition: .3s;
-    border-radius: 24px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.dh-crit-config .slider:before,
-.dh-crit-text-config .slider:before,
-.dh-crit-sound-config .slider:before,
-.dh-crit-art-config .slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.dh-crit-config input:checked + .slider,
-.dh-crit-text-config input:checked + .slider,
-.dh-crit-sound-config input:checked + .slider,
-.dh-crit-art-config input:checked + .slider {
-    background-color: var(--crit-accent);
-}
-
-.dh-crit-config input:checked + .slider:before,
-.dh-crit-text-config input:checked + .slider:before,
-.dh-crit-sound-config input:checked + .slider:before,
-.dh-crit-art-config input:checked + .slider:before {
-    transform: translateX(26px); /* Adjusted for 50px width */
-}
-
-.dh-crit-config input:focus + .slider,
-.dh-crit-text-config input:focus + .slider,
-.dh-crit-sound-config input:focus + .slider,
-.dh-crit-art-config input:focus + .slider {
-    box-shadow: 0 0 1px var(--crit-accent);
-}
-
-/* Hints (Explanatory Text) */
-.dh-crit-text-config .hint,
-.dh-crit-sound-config .hint {
-    font-size: 0.85em;
-    color: #b0b0b0;
-    font-style: italic;
-    line-height: 1.2;
-    text-align: left; /* Aligns text to the left (near the button) */
-    margin-left: 10px; /* Space between button and text */
-    flex: 1; /* Occupies remaining space */
-}
-
-/* --- Use Image Row --- */
-.dh-crit-text-config .use-image-row {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-bottom: 1rem;
-}
-
-.dh-crit-text-config .use-image-row label i.fa-image {
-    color: var(--crit-accent);
-    margin-right: 4px;
-}
-
-/* --- Sound Enable Row --- */
-.dh-crit-sound-config .sound-enable-row {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-bottom: 1rem;
-}
-
-.dh-crit-sound-config .sound-enable-row label i.fa-volume-up {
-    color: var(--crit-accent);
-    margin-right: 4px;
-}
-
-/* --- Field Hint (below file picker) --- */
-.dh-crit-sound-config .field-hint {
-    font-size: 0.85em;
-    color: #b0b0b0;
-    font-style: italic;
-    margin: -0.4rem 0 1rem 0;
-    padding-left: 2px;
-}
-
-/* Footer Buttons */
-.dh-crit-config .form-footer,
-.dh-crit-text-config .form-footer,
-.dh-crit-sound-config .form-footer,
-.dh-crit-art-config .form-footer {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--crit-border-light);
-    display: flex;
-    gap: 8px;
-}
-
-.dh-crit-config .form-footer button,
-.dh-crit-text-config .form-footer button,
-.dh-crit-sound-config .form-footer button,
-.dh-crit-art-config .form-footer button {
-    flex: 1;
-}
-
-.dh-crit-config button,
-.dh-crit-text-config button,
-.dh-crit-sound-config button,
-.dh-crit-art-config button {
-    background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
-    border: 1px solid #111;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    color: #f0f0f0;
-    padding: 8px 0;
-    transition: all 0.2s;
-}
-
-.dh-crit-config button:hover,
-.dh-crit-text-config button:hover,
-.dh-crit-sound-config button:hover,
-.dh-crit-art-config button:hover {
-    background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
-    color: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-}
-
-/* --- Critical Art Config: Player List (scrollable) --- */
-.dh-crit-art-config .crit-art-player-list {
-    max-height: 400px;
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-/* --- Critical Art Config: Player Cards --- */
-.dh-crit-art-config .crit-art-player-card {
-    background: var(--crit-bg-dark);
-    border: 1px solid var(--crit-border-light);
-    border-radius: 6px;
-    padding: 10px 12px;
-    margin-bottom: 0.5rem;
-}
-
-.dh-crit-art-config .crit-art-player-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 0.6rem;
-    font-weight: 700;
-    font-size: 1.05em;
-    color: #fff;
-}
-
-.dh-crit-art-config .crit-art-color-dot {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.3);
-    flex-shrink: 0;
+    & .crit-art-color-dot {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.3);
+        flex-shrink: 0;
+    }
 }
 
 /* =========================================
@@ -710,292 +630,280 @@
 
 .dh-crit-config-modal {
     font-family: "Signika", sans-serif;
-}
 
-.dh-crit-config-modal .notes {
-    margin-bottom: 1.5rem;
-    padding: 10px 12px;
-    background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
-    border-left: 4px solid #1e90ff;
-    border-radius: 4px;
-    color: #e0e0e0;
-    font-size: 0.95em;
-    display: flex;
-    align-items: center;
-    gap: 0.8em;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
+    & .notes {
+        margin-bottom: 1.5rem;
+        padding: 10px 12px;
+        background: linear-gradient(90deg, rgba(30, 144, 255, 0.15), rgba(30, 144, 255, 0.05));
+        border-left: 4px solid #1e90ff;
+        border-radius: 4px;
+        color: #e0e0e0;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        gap: 0.8em;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 
-.dh-crit-config-modal .notes i {
-    color: #1e90ff;
-    font-size: 1.2em;
-}
+        & i {
+            color: #1e90ff;
+            font-size: 1.2em;
+        }
+    }
 
-.dh-crit-config-modal .config-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
-    max-height: 500px;
-    overflow-y: auto;
-    padding-right: 8px;
-}
+    & .config-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+        max-height: 500px;
+        overflow-y: auto;
+        padding-right: 8px;
 
-.dh-crit-config-modal .default-entries-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 0.8rem;
-}
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
 
-.dh-crit-config-modal .config-list::-webkit-scrollbar {
-    width: 8px;
-}
+        &::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
 
-.dh-crit-config-modal .config-list::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-}
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
 
-.dh-crit-config-modal .config-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-}
+            &:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
+        }
+    }
 
-.dh-crit-config-modal .config-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
+    & .default-entries-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 0.8rem;
+    }
 
-.dh-crit-config-modal .config-entry {
-    background: var(--crit-bg-dark);
-    border: 1px solid var(--crit-border-light);
-    border-radius: 6px;
-    padding: 12px;
-}
+    & .config-entry {
+        background: var(--crit-bg-dark);
+        border: 1px solid var(--crit-border-light);
+        border-radius: 6px;
+        padding: 12px;
 
-.dh-crit-config-modal .config-entry.default-entry {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
-    border-color: rgba(255, 215, 0, 0.3);
-}
+        &.default-entry {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.08), rgba(255, 215, 0, 0.02));
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+    }
 
-.dh-crit-config-modal .entry-row {
-    display: grid;
-    grid-template-columns: 2.5fr 1.8fr 2.5fr 1.8fr auto;
-    gap: 12px;
-    align-items: end;
-}
+    & .entry-row {
+        display: grid;
+        grid-template-columns: 2.5fr 1.8fr 2.5fr 1.8fr auto;
+        gap: 12px;
+        align-items: end;
+    }
 
-.dh-crit-config-modal .default-entry .entry-row {
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-}
+    & .default-entry .entry-row {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+    }
 
-.dh-crit-config-modal .entry-field {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
+    & .entry-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
 
-.dh-crit-config-modal .entry-field label {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: #ddd;
-}
+        & label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #ddd;
+        }
 
-.dh-crit-config-modal .entry-field .config-name-label {
-    font-size: 1.1em;
-    font-weight: 700;
-    color: #fff;
-    padding: 6px 0;
-}
+        & .config-name-label {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #fff;
+            padding: 6px 0;
+        }
 
-.dh-crit-config-modal .entry-field input[type="text"],
-.dh-crit-config-modal .entry-field select {
-    background: var(--crit-bg-input);
-    border: 1px solid #444;
-    color: #fff;
-    border-radius: 4px;
-    padding: 6px 8px;
-    transition: border-color 0.2s;
-    height: 32px;
-}
+        & input[type="text"],
+        & select {
+            background: var(--crit-bg-input);
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            padding: 6px 8px;
+            transition: border-color 0.2s;
+            height: 32px;
 
-.dh-crit-config-modal .entry-field input:focus,
-.dh-crit-config-modal .entry-field select:focus {
-    outline: none;
-    border-color: var(--crit-accent);
-    box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
-}
+            &:focus {
+                outline: none;
+                border-color: var(--crit-accent);
+                box-shadow: 0 0 5px rgba(255, 100, 0, 0.3);
+            }
+        }
 
-.dh-crit-config-modal .entry-field input[readonly] {
-    background: rgba(0, 0, 0, 0.3);
-    color: #999;
-    cursor: not-allowed;
-}
+        & input[readonly] {
+            background: rgba(0, 0, 0, 0.3);
+            color: #999;
+            cursor: not-allowed;
+        }
 
-.dh-crit-config-modal .entry-field select:disabled {
-    background: rgba(0, 0, 0, 0.3);
-    color: #999;
-    cursor: not-allowed;
-}
+        & select:disabled {
+            background: rgba(0, 0, 0, 0.3);
+            color: #999;
+            cursor: not-allowed;
+        }
 
-.dh-crit-config-modal .entry-field select option {
-    background-color: #2b2b2b;
-    color: #f0f0f0;
-}
+        & select option {
+            background-color: #2b2b2b;
+            color: #f0f0f0;
+        }
+    }
 
-/* Adversary Drop Zone */
-.dh-crit-config-modal .adversary-drop-zone {
-    background: var(--crit-bg-input);
-    border: 2px dashed #666;
-    border-radius: 4px;
-    padding: 6px 8px;
-    min-height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    position: relative;
-}
+    /* Adversary Drop Zone */
+    & .adversary-drop-zone {
+        background: var(--crit-bg-input);
+        border: 2px dashed #666;
+        border-radius: 4px;
+        padding: 6px 8px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        position: relative;
+        cursor: pointer;
 
-.dh-crit-config-modal .adversary-drop-zone.drag-over {
-    border-color: var(--crit-accent);
-    background: rgba(255, 100, 0, 0.1);
-}
+        &.drag-over {
+            border-color: var(--crit-accent);
+            background: rgba(255, 100, 0, 0.1);
+        }
 
-.dh-crit-config-modal .adversary-drop-zone .placeholder {
-    color: #888;
-    font-size: 0.9em;
-    font-style: italic;
-}
+        & .placeholder {
+            color: #888;
+            font-size: 0.9em;
+            font-style: italic;
+        }
 
-.dh-crit-config-modal .adversary-drop-zone .adversary-name {
-    color: #fff;
-    font-weight: 600;
-}
+        & .adversary-name {
+            color: #fff;
+            font-weight: 600;
+            flex: 1;
+            text-align: left;
+            padding-right: 24px;
+        }
 
-.dh-crit-config-modal .clear-adversary-btn {
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 80, 80, 0.2) !important;
-    border: 1px solid rgba(255, 80, 80, 0.4) !important;
-    color: #ff6666 !important;
-    padding: 2px 6px !important;
-    border-radius: 3px;
-    font-size: 0.75em;
-    cursor: pointer;
-    transition: all 0.2s;
-}
+        & .clear-adversary-btn {
+            position: absolute;
+            right: 4px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 80, 80, 0.2) !important;
+            border: 1px solid rgba(255, 80, 80, 0.4) !important;
+            color: #ff6666 !important;
+            padding: 2px 6px !important;
+            border-radius: 3px;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
 
-.dh-crit-config-modal .clear-adversary-btn:hover {
-    background: rgba(255, 80, 80, 0.3) !important;
-    border-color: #ff6666 !important;
-    color: #ff4444 !important;
-}
+            &:hover {
+                background: rgba(255, 80, 80, 0.3) !important;
+                border-color: #ff6666 !important;
+                color: #ff4444 !important;
+            }
+        }
 
-/* Action Buttons */
-.dh-crit-config-modal .entry-actions {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-}
+        &:hover {
+            border-color: #888;
+            background: rgba(255, 255, 255, 0.05);
+        }
+    }
 
-.dh-crit-config-modal .action-btn,
-.dh-crit-config-modal .delete-entry-btn {
-    background: linear-gradient(to bottom, #3a3a3a, #2b2b2b) !important;
-    border: 1px solid #444 !important;
-    color: #aaa !important;
-    padding: 6px 8px !important;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9em;
-    min-width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    /* Action Buttons */
+    & .entry-actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+    }
 
-.dh-crit-config-modal .action-btn:hover {
-    background: linear-gradient(to bottom, var(--crit-accent), #d55400) !important;
-    border-color: var(--crit-accent) !important;
-    color: #fff !important;
-    box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
-}
+    & .action-btn,
+    & .delete-entry-btn {
+        background: linear-gradient(to bottom, #3a3a3a, #2b2b2b) !important;
+        border: 1px solid #444 !important;
+        color: #aaa !important;
+        padding: 6px 8px !important;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 0.9em;
+        min-width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-.dh-crit-config-modal .delete-entry-btn {
-    background: linear-gradient(to bottom, #4a2020, #2b1515) !important;
-    border-color: #662020 !important;
-    color: #ff6666 !important;
-    min-width: 32px;
-    height: 32px;
-}
+    & .action-btn:hover {
+        background: linear-gradient(to bottom, var(--crit-accent), #d55400) !important;
+        border-color: var(--crit-accent) !important;
+        color: #fff !important;
+        box-shadow: 0 0 6px rgba(255, 100, 0, 0.4) !important;
+    }
 
-.dh-crit-config-modal .delete-entry-btn:hover {
-    background: linear-gradient(to bottom, #662020, #4a2020) !important;
-    border-color: #ff6666 !important;
-    color: #ff4444 !important;
-    box-shadow: 0 0 6px rgba(255, 100, 100, 0.4) !important;
-}
+    & .delete-entry-btn {
+        background: linear-gradient(to bottom, #4a2020, #2b1515) !important;
+        border-color: #662020 !important;
+        color: #ff6666 !important;
+        min-width: 32px;
+        height: 32px;
 
-.dh-crit-config-modal .form-footer {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--crit-border-light);
-    display: flex;
-    gap: 8px;
-}
+        &:hover {
+            background: linear-gradient(to bottom, #662020, #4a2020) !important;
+            border-color: #ff6666 !important;
+            color: #ff4444 !important;
+            box-shadow: 0 0 6px rgba(255, 100, 100, 0.4) !important;
+        }
+    }
 
-.dh-crit-config-modal .form-footer button {
-    flex: 1;
-    background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
-    border: 1px solid #111;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    color: #f0f0f0;
-    padding: 10px 0;
-    transition: all 0.2s;
-    border-radius: 4px;
-    cursor: pointer;
-}
+    & .form-footer {
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--crit-border-light);
+        display: flex;
+        gap: 8px;
 
-.dh-crit-config-modal .form-footer button:hover {
-    background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
-    color: #fff;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
-}
+        & button {
+            flex: 1;
+            background: linear-gradient(to bottom, #4a4a4a, #2b2b2b);
+            border: 1px solid #111;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            color: #f0f0f0;
+            padding: 10px 0;
+            transition: all 0.2s;
+            border-radius: 4px;
+            cursor: pointer;
 
-.dh-crit-config-modal .add-entry-btn {
-    background: linear-gradient(to bottom, #2a4a2a, #1b2b1b) !important;
-    border-color: #2a5a2a !important;
-    color: #66ff66 !important;
-}
+            &:hover {
+                background: linear-gradient(to bottom, #5a5a5a, #3b3b3b);
+                color: #fff;
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+            }
+        }
+    }
 
-.dh-crit-config-modal .add-entry-btn:hover {
-    background: linear-gradient(to bottom, #3a5a3a, #2a4a2a) !important;
-    border-color: #66ff66 !important;
-    color: #44ff44 !important;
-}
+    & .add-entry-btn {
+        background: linear-gradient(to bottom, #2a4a2a, #1b2b1b) !important;
+        border-color: #2a5a2a !important;
+        color: #66ff66 !important;
 
-/* Enhanced Adversary Drop Zone Styles */
-.dh-crit-config-modal .adversary-drop-zone {
-    cursor: pointer;
-    position: relative;
-}
-
-.dh-crit-config-modal .adversary-drop-zone:hover {
-    border-color: #888;
-    background: rgba(255, 255, 255, 0.05);
-}
-
-.dh-crit-config-modal .adversary-drop-zone .adversary-name {
-    flex: 1;
-    text-align: left;
-    padding-right: 24px;
-}
-
-.dh-crit-config-modal .adversary-drop-zone .clear-adversary-btn {
-    flex-shrink: 0;
+        &:hover {
+            background: linear-gradient(to bottom, #3a5a3a, #2a4a2a) !important;
+            border-color: #66ff66 !important;
+            color: #44ff44 !important;
+        }
+    }
 }
