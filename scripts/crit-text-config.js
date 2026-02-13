@@ -67,9 +67,13 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 "Cinzel Decorative": "Cinzel Decorative",
                 "Creepster": "Creepster",
                 "Eater": "Eater",
+                "Luckiest Guy": "Luckiest Guy",
                 "MedievalSharp": "MedievalSharp",
                 "Metal Mania": "Metal Mania",
                 "Nosifer": "Nosifer",
+                "Pirata One": "Pirata One",
+                "Press Start 2P": "Press Start 2P",
+                "Rye": "Rye",
                 "Shojumaru": "Shojumaru",
                 "Special Elite": "Special Elite",
                 "Signika": "Signika"

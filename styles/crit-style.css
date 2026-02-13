@@ -39,6 +39,14 @@
 }
 
 @font-face {
+    font-family: "Luckiest Guy";
+    src: url("../fonts/LuckiestGuy-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
     font-family: "MedievalSharp";
     src: url("../fonts/MedievalSharp-Regular.woff2") format("woff2");
     font-weight: 400;
@@ -57,6 +65,30 @@
 @font-face {
     font-family: "Nosifer";
     src: url("../fonts/Nosifer-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Pirata One";
+    src: url("../fonts/PirataOne-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Press Start 2P";
+    src: url("../fonts/PressStart2P-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Rye";
+    src: url("../fonts/Rye-Regular.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
