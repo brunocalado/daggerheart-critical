@@ -43,12 +43,20 @@ export class ConfigurationValidator {
             validTriggers.push("Fumble");
         }
         
+        if (type === "Player Character") {
+            validTriggers.push("Level Up");
+        }
+        
         if (!validTriggers.includes(triggerType)) {
             return `Trigger Type must be one of: ${validTriggers.join(", ")}`;
         }
         
         if (type === "Player Character" && triggerType === "Fumble") {
             return "Fumble trigger type is only available for Adversaries";
+        }
+        
+        if (type === "Adversary" && triggerType === "Level Up") {
+            return "Level Up trigger type is only available for Player Characters";
         }
         
         return null;

@@ -149,13 +149,17 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                     if (newType === "Player Character") {
                         config.adversaryId = "";
                         config.userId = config.userId || "all";
-                        // Reset trigger type if it was Fumble
+                        // Reset trigger type if it was Fumble (Fumble is only valid for Adversary)
                         if (config.triggerType === "Fumble") {
                             config.triggerType = "Action and Reaction";
                         }
                     } else {
                         config.userId = "";
                         config.adversaryId = config.adversaryId || "";
+                        // Reset trigger type if it was Level Up (Level Up is only valid for Player Character)
+                        if (config.triggerType === "Level Up") {
+                            config.triggerType = "Action and Reaction";
+                        }
                     }
                 }
                 
@@ -435,7 +439,7 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
             }
         }
 
-        // Play sound
+        // Play sound (local only - for the user configuring)
         if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
             const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
             if (soundPath) {
@@ -445,7 +449,7 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                     volume: volume, 
                     autoplay: true, 
                     loop: false 
-                }, true);
+                }, true); // true = local playback only
             }
         }
     }

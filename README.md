@@ -17,6 +17,7 @@ Don't let a massive success be just another line of text. **Critical** transform
 *   **Visual Impact:** From shattering glass to pulsing energy borders, the screen reacts to the drama of the dice.
 *   **Dynamic Audio:** Heroic fanfares for players and terrifying stings for the GM.
 *   **Smart Triggers:** Automatically detects Duality Dice matches (Players) and d20 crits (GM).
+*   **Level Up Celebrations:** Trigger animations when player characters gain a level.
 *   **Total Customization:** Change animations, sounds, colors, and fonts to match your table's vibe.
 *   **Per-Player Settings:** Tailor the experience so every player feels unique.
 

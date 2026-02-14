@@ -51,7 +51,8 @@ export class CriticalConfiguration {
             "Action and Reaction": ["action", "reaction"],
             "Only Action": ["action"],
             "Only Reaction": ["reaction"],
-            "Fumble": ["fumble"]
+            "Fumble": ["fumble"],
+            "Level Up": ["levelup"] // Special trigger, not roll-based
         };
         return mapping[this.triggerType] || ["action", "reaction"];
     }

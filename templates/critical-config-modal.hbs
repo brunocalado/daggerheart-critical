@@ -115,6 +115,9 @@
                         {{#if (eq config.type "Adversary")}}
                         <option value="Fumble" {{#if (eq config.triggerType "Fumble")}}selected{{/if}}>Fumble</option>
                         {{/if}}
+                        {{#if (eq config.type "Player Character")}}
+                        <option value="Level Up" {{#if (eq config.triggerType "Level Up")}}selected{{/if}}>Level Up</option>
+                        {{/if}}
                     </select>
                 </div>
 

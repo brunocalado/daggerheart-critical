@@ -26,6 +26,13 @@ Hooks.once("init", () => {
         return a === b;
     });
 
+    Handlebars.registerHelper("ne", function(a, b) {
+        return a !== b;
+    });
+
+    // Pre-load overlay template to avoid async fetch on first render
+    loadTemplates(["modules/daggerheart-critical/templates/crit-splash.hbs"]);
+
     // Register critical configurations settings
     CriticalSettingsManager.registerSettings();
 
@@ -132,6 +139,9 @@ Hooks.once("init", () => {
 Hooks.once("ready", async () => {
     // Initialize default critical configurations
     await CriticalSettingsManager.initializeDefaults();
+    
+    // Initialize level up monitoring
+    initializeLevelUpMonitoring();
 });
 
 Hooks.on("createChatMessage", (message) => {
@@ -396,6 +406,198 @@ async function triggerCriticalEffect(message, type, triggerType) {
                 volume: volume, 
                 autoplay: true, 
                 loop: false 
+            }, false);
+        }
+    }
+}
+
+
+/**
+ * Initialize Level Up monitoring for Player Characters
+ */
+function initializeLevelUpMonitoring() {
+    logDebug("Initializing Level Up monitoring...");
+
+    // Debounce set to prevent duplicate triggers from multiple updateActor events
+    const recentLevelUps = new Set();
+
+    Hooks.on("updateActor", (actor, changes, options, userId) => {
+        // Check if levelData was updated - the structure is changes.system.levelData.level
+        if (!changes.system?.levelData?.level) return;
+
+        // Get the updated values from the actor (after the update)
+        const currentLevel = actor.system.levelData.level.current;
+        const changedLevel = actor.system.levelData.level.changed;
+
+        logDebug("Level data update detected:", {
+            actorName: actor.name,
+            actorId: actor.id,
+            currentLevel,
+            changedLevel,
+            userId,
+            changes: changes.system.levelData
+        });
+
+        // Check if actor leveled up (changed > current)
+        if (changedLevel > currentLevel) {
+            // Debounce: prevent duplicate triggers for the same actor/level
+            const debounceKey = `${actor.id}-${changedLevel}`;
+            if (recentLevelUps.has(debounceKey)) {
+                logDebug("Skipping duplicate level up trigger for:", actor.name);
+                return;
+            }
+            recentLevelUps.add(debounceKey);
+            setTimeout(() => recentLevelUps.delete(debounceKey), 5000);
+
+            logDebug("Level up detected for actor:", actor.name);
+            handleLevelUp(actor, userId);
+        }
+    });
+}
+
+/**
+ * Handle level up event for an actor
+ * @param {Actor} actor - The actor that leveled up
+ * @param {string} userId - The user ID who triggered the update
+ */
+async function handleLevelUp(actor, userId) {
+    logDebug("=== Handling Level Up ===");
+    logDebug("Actor:", actor.name, "| User ID:", userId);
+    
+    // Get all configurations
+    const configurations = CriticalSettingsManager.getConfigurations();
+    
+    // Find matching Level Up configurations for Player Character
+    const levelUpConfigs = configurations.filter(c => 
+        c.type === "Player Character" && 
+        c.triggerType === "Level Up"
+    );
+    
+    logDebug("Found Level Up configs:", levelUpConfigs.map(c => ({ 
+        id: c.id, 
+        name: c.name, 
+        userId: c.userId 
+    })));
+    
+    // Find users that have this actor linked
+    const linkedUsers = game.users.filter(u => {
+        if (u.isGM) return false; // Skip GMs
+        const linkedActor = u.character;
+        return linkedActor && linkedActor.id === actor.id;
+    });
+    
+    logDebug("Linked users:", linkedUsers.map(u => ({ id: u.id, name: u.name })));
+    
+    // Process each linked user
+    for (const user of linkedUsers) {
+        // Find matching configuration for this user
+        let matchedConfig = null;
+        
+        // Priority: specific user match > "all" users > default
+        matchedConfig = levelUpConfigs.find(c => 
+            c.userId === user.id && !c.isDefault
+        );
+        
+        if (!matchedConfig) {
+            matchedConfig = levelUpConfigs.find(c => 
+                c.userId === "all" && !c.isDefault
+            );
+        }
+        
+        if (!matchedConfig) {
+            matchedConfig = levelUpConfigs.find(c => 
+                c.id === "default-player-character" && 
+                c.triggerType === "Level Up"
+            );
+        }
+        
+        if (!matchedConfig) {
+            logDebug("No matching Level Up config found for user:", user.name);
+            continue;
+        }
+        
+        logDebug("Using config:", matchedConfig.name, "for user:", user.name);
+        
+        // Trigger effect only for this specific user
+        await triggerLevelUpEffect(user, matchedConfig);
+    }
+}
+
+/**
+ * Trigger level up effect for a specific user
+ * @param {User} user - The user to show the effect to
+ * @param {CriticalConfiguration} config - The configuration to use
+ */
+async function triggerLevelUpEffect(user, config) {
+    logDebug("triggerLevelUpEffect called for user:", user.name, "| Current game.user:", game.user.name);
+    
+    // Only show effect to the specific user (client-side check)
+    if (game.user.id !== user.id) {
+        logDebug("Skipping effect - not the target user");
+        return;
+    }
+    
+    logDebug("Triggering Level Up effect for user:", user.name);
+    
+    const userColor = user.color?.toString() || "#ffffff";
+    
+    // Get settings for the matched configuration
+    const configSettings = game.settings.get(MODULE_ID, "critConfigSettings") || {};
+    const entrySettings = configSettings[config.id] || {};
+    
+    // Fallback to global PC settings if no config-specific settings
+    const globalTextSettings = game.settings.get(MODULE_ID, "critTextSettings");
+    const globalFxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+    const globalSoundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+    const globalArtSettings = game.settings.get(MODULE_ID, "critArtSettings");
+    
+    const textConfig = entrySettings.text || globalTextSettings.pc || null;
+    const fxConfig = entrySettings.fx || globalFxSettings.pc;
+    const soundConfig = entrySettings.sound || globalSoundSettings.duality;
+    const artConfig = entrySettings.art || globalArtSettings.pc || null;
+    
+    logDebug("Level Up effect config:", {
+        textConfig,
+        fxConfig,
+        soundConfig,
+        artConfig,
+        userColor,
+        userId: user.id
+    });
+
+    // Render overlay first, then FX, then sound (same order as triggerCriticalEffect)
+    new CritOverlay({
+        type: "duality",
+        userColor,
+        authorId: user.id,
+        configOverride: textConfig,
+        artOverride: artConfig
+    }).render(true);
+
+    // Trigger configured Visual FX
+    if (fxConfig && fxConfig.type !== "none") {
+        logDebug("Triggering FX:", fxConfig.type);
+        const fx = new CritFX();
+        switch (fxConfig.type) {
+            case "shake": fx.ScreenShake(fxConfig.options); break;
+            case "shatter": fx.GlassShatter(fxConfig.options); break;
+            case "border": fx.ScreenBorder(fxConfig.options); break;
+            case "pulsate": fx.Pulsate(fxConfig.options); break;
+            case "confetti": fx.Confetti(fxConfig.options); break;
+        }
+    }
+
+    // Play sound
+    if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+        logDebug("Playing sound:", soundConfig.soundPath);
+        const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+        if (soundPath) {
+            const volume = (soundConfig.volume ?? 90) / 100;
+            foundry.audio.AudioHelper.play({
+                src: soundPath,
+                volume: volume,
+                autoplay: true,
+                loop: false
             }, false);
         }
     }

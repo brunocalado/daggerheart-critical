@@ -147,14 +147,20 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     _onRender(context, options) {
+        // Get debug setting
+        const debugEnabled = game.settings.get("daggerheart-critical", "debugmode");
+        
+        if (debugEnabled) {
+            console.log("DH-CRIT DEBUG | CritOverlay _onRender called");
+            console.log("DH-CRIT DEBUG | Context:", context);
+            console.log("DH-CRIT DEBUG | Element:", this.element);
+        }
+        
         // Look for a video element
         const videoElement = this.element.querySelector("video.crit-video");
 
         // Get custom duration from config (in ms), default to 0 (use default behavior)
         const customDuration = parseInt(context.textConfig.duration, 10) || 0;
-        
-        // Get debug setting
-        const debugEnabled = game.settings.get("daggerheart-critical", "debugmode");
         
         if (debugEnabled) {
             console.log("DH-CRIT DEBUG | CritOverlay: Custom duration =", customDuration, "ms, useImage =", context.textConfig.useImage);
