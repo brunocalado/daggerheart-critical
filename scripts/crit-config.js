@@ -127,9 +127,18 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 }
             }
 
-            // Play sound
-            const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-            const soundConfig = soundSettings.duality;
+            // Play sound - get config-specific settings if configId is provided
+            let soundConfig = null;
+            if (this.configId) {
+                soundConfig = CriticalSettingsManager.getConfigSettings(this.configId, "sound");
+            }
+            
+            // Fallback to global settings if no config-specific settings
+            if (!soundConfig) {
+                const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+                soundConfig = soundSettings.duality;
+            }
+            
             if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
                 const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
                 if (soundPath) {
