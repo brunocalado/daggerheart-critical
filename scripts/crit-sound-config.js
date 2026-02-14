@@ -1,4 +1,6 @@
 import { CriticalSettingsManager } from "./critical-settings-manager.js";
+import { CritOverlay } from "./crit-overlay.js";
+import { CritFX } from "./crit-fx.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 const MODULE_ID = "daggerheart-critical";
@@ -96,11 +98,61 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const object = foundry.utils.expandObject(formData.object);
             object.enabled ??= false;
             object.multiSound ??= false;
+            const soundConfig = object;
             
-            if (object.enabled && object.soundPath) {
-                const soundPath = await CritSoundConfig.getSoundPath(object);
+            const type = "duality";
+            const userColor = game.user.color?.toString() || "#ffffff";
+
+            // Get config-specific settings if configId is provided
+            let textConfig = null;
+            let fxConfig = null;
+            let artConfig = null;
+            
+            if (this.configId) {
+                textConfig = CriticalSettingsManager.getConfigSettings(this.configId, "text");
+                fxConfig = CriticalSettingsManager.getConfigSettings(this.configId, "fx");
+                artConfig = CriticalSettingsManager.getConfigSettings(this.configId, "art");
+            }
+            
+            // Fallback to global settings if no config-specific settings
+            if (!textConfig) {
+                const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
+                textConfig = textSettings.pc || {};
+            }
+            if (!fxConfig) {
+                const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+                fxConfig = fxSettings.pc || {};
+            }
+            if (!artConfig) {
+                const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+                artConfig = artSettings.pc || {};
+            }
+
+            // Trigger overlay with text and art settings
+            new CritOverlay({ 
+                type, 
+                userColor, 
+                configOverride: textConfig,
+                artOverride: artConfig
+            }).render(true);
+
+            // Trigger FX
+            if (fxConfig && fxConfig.type !== "none") {
+                const fx = new CritFX();
+                switch (fxConfig.type) {
+                    case "shake": fx.ScreenShake(fxConfig.options || {}); break;
+                    case "shatter": fx.GlassShatter(fxConfig.options || {}); break;
+                    case "border": fx.ScreenBorder(fxConfig.options || {}); break;
+                    case "pulsate": fx.Pulsate(fxConfig.options || {}); break;
+                    case "confetti": fx.Confetti(fxConfig.options || {}); break;
+                }
+            }
+            
+            // Play sound from current form values
+            if (soundConfig.enabled && soundConfig.soundPath) {
+                const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
                 if (soundPath) {
-                    const volume = (object.volume ?? 90) / 100;
+                    const volume = (soundConfig.volume ?? 90) / 100;
                     foundry.audio.AudioHelper.play({ 
                         src: soundPath, 
                         volume: volume, 
@@ -110,8 +162,6 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 } else {
                     ui.notifications.warn("No valid sound file found");
                 }
-            } else {
-                ui.notifications.warn("Sound is disabled or no path specified");
             }
         });
     }
