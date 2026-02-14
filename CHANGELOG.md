@@ -1,3 +1,6 @@
+# 0.1.2
+- Decoupled Art Size from Text Size configuration to prevent art scaling dependency on font size.
+
 # 0.1.1
 - Bug fix: Preview text was triggering a disabled sound
 - Preview sound will now trigger (text, FX, and art)
