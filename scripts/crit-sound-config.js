@@ -153,12 +153,12 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
                 if (soundPath) {
                     const volume = (soundConfig.volume ?? 90) / 100;
-                    foundry.audio.AudioHelper.play({ 
-                        src: soundPath, 
-                        volume: volume, 
-                        autoplay: true, 
-                        loop: false 
-                    }, true);
+                    foundry.audio.AudioHelper.play({
+                        src: soundPath,
+                        volume: volume,
+                        autoplay: true,
+                        loop: false
+                    }, false);
                 } else {
                     ui.notifications.warn("No valid sound file found");
                 }
