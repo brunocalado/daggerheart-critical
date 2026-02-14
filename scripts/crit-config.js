@@ -111,9 +111,27 @@ export class CritConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             const fxConfig = object;
             fxConfig.options ??= {};
 
-            // Trigger overlay (uses saved text settings)
+            // Load saved text and art settings for this config entry
             const userColor = game.user.color?.toString() || "#ffffff";
-            new CritOverlay({ type, userColor }).render(true);
+            let textConfig = null;
+            let artConfig = null;
+
+            if (this.configId) {
+                textConfig = CriticalSettingsManager.getConfigSettings(this.configId, "text");
+                artConfig = CriticalSettingsManager.getConfigSettings(this.configId, "art");
+            }
+
+            if (!textConfig) {
+                const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
+                textConfig = textSettings.pc || {};
+            }
+            if (!artConfig) {
+                const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+                artConfig = artSettings.pc || null;
+            }
+
+            // Trigger overlay with text and art settings
+            new CritOverlay({ type, userColor, configOverride: textConfig, artOverride: artConfig }).render(true);
 
             // Trigger FX from current form values
             if (fxConfig.type && fxConfig.type !== "none") {

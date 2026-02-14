@@ -138,13 +138,35 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             object.useImage ??= false;
             const textConfig = object;
 
-            // Trigger overlay with current form text settings
+            // Load saved FX, sound, and art settings for this config entry
             const userColor = game.user.color?.toString() || "#ffffff";
-            new CritOverlay({ type, userColor, configOverride: textConfig }).render(true);
+            let fxConfig = null;
+            let soundConfig = null;
+            let artConfig = null;
 
-            // Trigger saved FX
-            const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
-            const fxConfig = fxSettings.pc;
+            if (this.configId) {
+                fxConfig = CriticalSettingsManager.getConfigSettings(this.configId, "fx");
+                soundConfig = CriticalSettingsManager.getConfigSettings(this.configId, "sound");
+                artConfig = CriticalSettingsManager.getConfigSettings(this.configId, "art");
+            }
+
+            if (!fxConfig) {
+                const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+                fxConfig = fxSettings.pc || {};
+            }
+            if (!soundConfig) {
+                const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+                soundConfig = soundSettings.duality;
+            }
+            if (!artConfig) {
+                const artSettings = game.settings.get(MODULE_ID, "critArtSettings");
+                artConfig = artSettings.pc || null;
+            }
+
+            // Trigger overlay with current form text settings + saved art
+            new CritOverlay({ type, userColor, configOverride: textConfig, artOverride: artConfig }).render(true);
+
+            // Trigger FX
             if (fxConfig && fxConfig.type !== "none") {
                 const fx = new CritFX();
                 switch (fxConfig.type) {
@@ -152,19 +174,8 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     case "shatter": fx.GlassShatter(fxConfig.options || {}); break;
                     case "border": fx.ScreenBorder(fxConfig.options || {}); break;
                     case "pulsate": fx.Pulsate(fxConfig.options || {}); break;
+                    case "confetti": fx.Confetti(fxConfig.options || {}); break;
                 }
-            }
-
-            // Play sound - get config-specific settings if configId is provided
-            let soundConfig = null;
-            if (this.configId) {
-                soundConfig = CriticalSettingsManager.getConfigSettings(this.configId, "sound");
-            }
-            
-            // Fallback to global settings if no config-specific settings
-            if (!soundConfig) {
-                const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
-                soundConfig = soundSettings.duality;
             }
             
             if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {

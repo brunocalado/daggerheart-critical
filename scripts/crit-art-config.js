@@ -1,4 +1,6 @@
 import { CritOverlay } from "./crit-overlay.js";
+import { CritFX } from "./crit-fx.js";
+import { CritSoundConfig } from "./crit-sound-config.js";
 import { CriticalSettingsManager } from "./critical-settings-manager.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -75,16 +77,15 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         // Preview Button Logic
         const previewBtn = this.element.querySelector(".crit-preview-btn");
         if (previewBtn) {
-            previewBtn.addEventListener("click", (event) => {
+            previewBtn.addEventListener("click", async (event) => {
                 event.preventDefault();
                 const formData = new foundry.applications.ux.FormDataExtended(this.element);
                 const object = foundry.utils.expandObject(formData.object);
-                
-                const artData = object;
 
+                const artData = object;
                 if (!artData) return;
-                
-                // Construct override object for CritOverlay
+
+                // Construct override object for CritOverlay from current form values
                 const artOverride = {
                     imagePath: artData.imagePath,
                     position: "middle",
@@ -95,12 +96,66 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                 };
 
                 const type = "duality";
+                const userColor = game.user.color?.toString() || "#ffffff";
 
+                // Load other saved settings for this config entry
+                let textConfig = null;
+                let fxConfig = null;
+                let soundConfig = null;
+
+                if (this.configId) {
+                    textConfig = CriticalSettingsManager.getConfigSettings(this.configId, "text");
+                    fxConfig = CriticalSettingsManager.getConfigSettings(this.configId, "fx");
+                    soundConfig = CriticalSettingsManager.getConfigSettings(this.configId, "sound");
+                }
+
+                // Fallback to global settings
+                if (!textConfig) {
+                    const textSettings = game.settings.get(MODULE_ID, "critTextSettings");
+                    textConfig = textSettings.pc || {};
+                }
+                if (!fxConfig) {
+                    const fxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+                    fxConfig = fxSettings.pc || {};
+                }
+                if (!soundConfig) {
+                    const soundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+                    soundConfig = soundSettings.duality;
+                }
+
+                // Trigger overlay with text and art settings
                 new CritOverlay({
-                    type: type,
-                    artOverride: artOverride,
-                    userColor: "#ffffff"
+                    type,
+                    userColor,
+                    configOverride: textConfig,
+                    artOverride: artOverride
                 }).render(true);
+
+                // Trigger FX
+                if (fxConfig && fxConfig.type !== "none") {
+                    const fx = new CritFX();
+                    switch (fxConfig.type) {
+                        case "shake": fx.ScreenShake(fxConfig.options || {}); break;
+                        case "shatter": fx.GlassShatter(fxConfig.options || {}); break;
+                        case "border": fx.ScreenBorder(fxConfig.options || {}); break;
+                        case "pulsate": fx.Pulsate(fxConfig.options || {}); break;
+                        case "confetti": fx.Confetti(fxConfig.options || {}); break;
+                    }
+                }
+
+                // Play sound
+                if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
+                    const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+                    if (soundPath) {
+                        const volume = (soundConfig.volume ?? 90) / 100;
+                        foundry.audio.AudioHelper.play({
+                            src: soundPath,
+                            volume: volume,
+                            autoplay: true,
+                            loop: false
+                        }, false);
+                    }
+                }
             });
         }
     }

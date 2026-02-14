@@ -1,8 +1,9 @@
 # 0.1.1
-- Bug fix: Preview text would trigger a disabled sound
-- Preview sound will trigger (text, fx and art)
-- New Feature: Level Up Trigger 
-- Bug fix: Preview sound would trigger to other users
+- Bug fix: Preview text was triggering a disabled sound
+- Preview sound will now trigger (text, FX, and art)
+- New Feature: Level Up Trigger
+- Bug fix: Preview sound was triggering for other users
+- Bug fix: Preview Art and Sound will now follow the text configuration settings
 
 # 0.1.0
 First release
