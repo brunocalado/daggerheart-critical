@@ -4,6 +4,7 @@
 - New Feature: Level Up Trigger
 - Bug fix: Preview sound was triggering for other users
 - Bug fix: Preview Art and Sound will now follow the text configuration settings
+- Warning removed
 
 # 0.1.0
 First release

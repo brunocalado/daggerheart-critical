@@ -31,7 +31,7 @@ Hooks.once("init", () => {
     });
 
     // Pre-load overlay template to avoid async fetch on first render
-    loadTemplates(["modules/daggerheart-critical/templates/crit-splash.hbs"]);
+    foundry.applications.handlebars.loadTemplates(["modules/daggerheart-critical/templates/crit-splash.hbs"]);
 
     // Register critical configurations settings
     CriticalSettingsManager.registerSettings();
