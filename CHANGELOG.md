@@ -3,6 +3,7 @@
 - More font sizes
 - More image sizes
 - Art supports Video
+- Text template css improv
 
 # 0.1.1
 - Bug fix: Preview text was triggering a disabled sound

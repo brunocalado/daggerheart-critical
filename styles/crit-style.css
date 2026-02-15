@@ -593,6 +593,21 @@
 }
 
 .dh-crit-text-config {
+    & .form-row {
+        display: flex;
+        gap: 1rem;
+
+        & > .form-group {
+            flex: 1;
+            min-width: 0;
+
+            & label {
+                white-space: nowrap;
+                margin-right: 8px;
+            }
+        }
+    }
+
     & .use-image-row {
         background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent);
         border: 1px solid rgba(255, 255, 255, 0.08);
