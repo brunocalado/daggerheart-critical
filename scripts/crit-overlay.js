@@ -1,10 +1,13 @@
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const FONT_SIZE_MAP = {
-    small: "4",
+    medium: "6",
     normal: "8",
     large: "12",
-    "extra-large": "16"
+    "extra-large": "16",
+    huge: "20",
+    massive: "24",
+    giant: "28"    
 };
 
 const LETTER_SPACING_MAP = {
