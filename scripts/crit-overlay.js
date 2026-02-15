@@ -174,6 +174,56 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             console.log("DH-CRIT DEBUG | Element:", this.element);
         }
 
+        // Fix symmetric box padding for "box" fill mode
+        // Uses Canvas measureText() to get actual glyph dimensions and adjust padding
+        if (context.textConfig.fill === 'box' && !context.textConfig.useImage) {
+            const titleEl = this.element.querySelector('.crit-title');
+            if (titleEl) {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const computed = getComputedStyle(titleEl);
+                ctx.font = `${computed.fontWeight} ${computed.fontSize} ${computed.fontFamily}`;
+                ctx.letterSpacing = computed.letterSpacing;
+
+                const text = titleEl.textContent.trim();
+                const metrics = ctx.measureText(text);
+
+                // Horizontal symmetry: letter-spacing adds trailing space after the last character.
+                // text-indent adds equal space before the first character to balance it.
+                const trailingSpace = metrics.width - (metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight);
+                if (trailingSpace > 1) {
+                    titleEl.style.textIndent = `${trailingSpace}px`;
+                }
+
+                // Vertical symmetry: different fonts position glyphs differently within the line box.
+                // Measure actual glyph bounds and adjust padding for visual centering.
+                const fontSize = parseFloat(computed.fontSize);
+                const fontAscent = metrics.fontBoundingBoxAscent;
+                const fontDescent = metrics.fontBoundingBoxDescent;
+                const actualAscent = metrics.actualBoundingBoxAscent;
+                const actualDescent = metrics.actualBoundingBoxDescent;
+
+                // Half-leading model: how CSS distributes extra space in the line box
+                const halfLeading = (fontSize - (fontAscent + fontDescent)) / 2;
+                const spaceAbove = halfLeading + (fontAscent - actualAscent);
+                const spaceBelow = halfLeading + (fontDescent - actualDescent);
+
+                const basePadV = 20;
+                const vertAdj = (spaceBelow - spaceAbove) / 2;
+                titleEl.style.paddingTop = `${Math.round(basePadV + vertAdj)}px`;
+                titleEl.style.paddingBottom = `${Math.round(basePadV - vertAdj)}px`;
+
+                if (debugEnabled) {
+                    console.log("DH-CRIT DEBUG | Box symmetric padding:", {
+                        trailingSpace: Math.round(trailingSpace),
+                        vertAdj: Math.round(vertAdj),
+                        paddingTop: Math.round(basePadV + vertAdj),
+                        paddingBottom: Math.round(basePadV - vertAdj)
+                    });
+                }
+            }
+        }
+
         // Look for video elements (text and art)
         const videoElement = this.element.querySelector("video.crit-video");
         const artVideoElement = this.element.querySelector("video.crit-art");
