@@ -354,7 +354,38 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
             ui.notifications.warn("Cannot delete default configuration entries");
             return;
         }
-        
+
+        // Build a description from the entry's type and target
+        const configs = CriticalSettingsManager.getConfigurations();
+        const entry = configs.find(c => c.id === entryId);
+        let entryDesc = "this configuration";
+        if (entry) {
+            const type = entry.type || "Player Character";
+            let target = "All";
+            if (type === "Player Character" && entry.userId && entry.userId !== "all") {
+                target = game.users.get(entry.userId)?.name || entry.userId;
+            } else if (type === "Adversary" && entry.adversaryId) {
+                target = entry.adversaryName || entry.adversaryId;
+            }
+            entryDesc = `${type} — ${target}`;
+        }
+
+        const confirmed = await foundry.applications.api.DialogV2.confirm({
+            window: { title: "Delete Configuration" },
+            content: `
+                <div class="dh-crit-delete-confirm">
+                    <p><i class="fas fa-exclamation-triangle"></i> This configuration will be permanently deleted.</p>
+                    <p class="entry-name"><strong>${entryDesc}</strong></p>
+                    <p>Are you sure you want to proceed?</p>
+                </div>
+            `,
+            yes: { label: "Delete", icon: "fas fa-trash" },
+            no: { label: "Cancel", icon: "fas fa-times" },
+            rejectClose: false
+        });
+
+        if (!confirmed) return;
+
         await CriticalSettingsManager.deleteConfiguration(entryId);
         this.render();
     }

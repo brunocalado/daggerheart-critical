@@ -972,3 +972,20 @@
         }
     }
 }
+
+/* Delete Confirmation Dialog */
+.dh-crit-delete-confirm {
+    text-align: center;
+    padding: 8px 0;
+
+    & i.fa-exclamation-triangle {
+        color: #ff6666;
+        margin-right: 6px;
+    }
+
+    & .entry-name {
+        font-size: 1.1em;
+        color: #fff;
+        margin: 8px 0;
+    }
+}

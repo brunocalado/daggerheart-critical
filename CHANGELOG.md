@@ -6,6 +6,7 @@
 - Text template css improv
 - Fill mode Box fixed
 - Fill mode Full Screen fixed
+- Delete confirmation dialog
 
 # 0.1.1
 - Bug fix: Preview text was triggering a disabled sound
