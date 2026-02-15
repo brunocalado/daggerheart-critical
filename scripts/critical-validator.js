@@ -45,6 +45,7 @@ export class ConfigurationValidator {
         
         if (type === "Player Character") {
             validTriggers.push("Level Up");
+            validTriggers.push("Tag Team Open");
         }
         
         if (!validTriggers.includes(triggerType)) {
@@ -57,6 +58,10 @@ export class ConfigurationValidator {
         
         if (type === "Adversary" && triggerType === "Level Up") {
             return "Level Up trigger type is only available for Player Characters";
+        }
+
+        if (type === "Adversary" && triggerType === "Tag Team Open") {
+            return "Tag Team Open trigger type is only available for Player Characters";
         }
         
         return null;

@@ -7,6 +7,7 @@
 - Fill mode Box fixed
 - Fill mode Full Screen fixed
 - Delete confirmation dialog
+- New Feature: Tag Team Trigger
 
 # 0.1.1
 - Bug fix: Preview text was triggering a disabled sound

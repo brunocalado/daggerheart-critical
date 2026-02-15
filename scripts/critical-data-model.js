@@ -52,7 +52,8 @@ export class CriticalConfiguration {
             "Only Action": ["action"],
             "Only Reaction": ["reaction"],
             "Fumble": ["fumble"],
-            "Level Up": ["levelup"] // Special trigger, not roll-based
+            "Level Up": ["levelup"], // Special trigger, not roll-based
+            "Tag Team Open": ["tagteamopen"] // Special trigger, monitors DH TagTeamRoll setting
         };
         return mapping[this.triggerType] || ["action", "reaction"];
     }

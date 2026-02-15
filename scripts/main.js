@@ -142,6 +142,9 @@ Hooks.once("ready", async () => {
     
     // Initialize level up monitoring
     initializeLevelUpMonitoring();
+
+    // Initialize Tag Team Open monitoring
+    initializeTagTeamMonitoring();
 });
 
 Hooks.on("createChatMessage", (message) => {
@@ -590,6 +593,192 @@ async function triggerLevelUpEffect(user, config) {
     // Play sound
     if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
         logDebug("Playing sound:", soundConfig.soundPath);
+        const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
+        if (soundPath) {
+            const volume = (soundConfig.volume ?? 90) / 100;
+            foundry.audio.AudioHelper.play({
+                src: soundPath,
+                volume: volume,
+                autoplay: true,
+                loop: false
+            }, false);
+        }
+    }
+}
+
+/**
+ * Initialize Tag Team Open monitoring
+ * Watches the Daggerheart TagTeamRoll setting for changes
+ * Triggers only when: initiator.id is non-null, members has 2+, and all selected are false
+ */
+function initializeTagTeamMonitoring() {
+    logDebug("Initializing Tag Team Open monitoring...");
+
+    // Debounce set to prevent duplicate triggers for the same initiator
+    const recentTagTeams = new Set();
+
+    Hooks.on("updateSetting", (setting) => {
+        // Build the expected setting key from Daggerheart system config
+        const targetKey = `${CONFIG.DH.id}.${CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll}`;
+        if (setting.key !== targetKey) return;
+
+        // Read the current value of the setting
+        const tagTeamData = game.settings.get(CONFIG.DH.id, CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll);
+        const initiatorId = tagTeamData?.initiator?.id;
+
+        logDebug("Tag Team setting updated:", {
+            initiatorId,
+            tagTeamData
+        });
+
+        // Must have a non-null initiator
+        if (!initiatorId) return;
+
+        // Must have 2 or more members
+        const members = tagTeamData?.members;
+        if (!members || Object.keys(members).length < 2) {
+            logDebug("Tag Team skipped — fewer than 2 members");
+            return;
+        }
+
+        // All members must have selected === false (avoid false positives from member selection updates)
+        const allUnselected = Object.values(members).every(m => m.selected === false);
+        if (!allUnselected) {
+            logDebug("Tag Team skipped — one or more members already selected");
+            return;
+        }
+
+        // Debounce: prevent duplicate triggers for the same initiator
+        if (recentTagTeams.has(initiatorId)) {
+            logDebug("Skipping duplicate Tag Team Open trigger for:", initiatorId);
+            return;
+        }
+        recentTagTeams.add(initiatorId);
+        setTimeout(() => recentTagTeams.delete(initiatorId), 5000);
+
+        handleTagTeamOpen(initiatorId);
+    });
+}
+
+/**
+ * Handle Tag Team Open event
+ * @param {string} initiatorId - The actor ID of the Tag Team initiator
+ */
+async function handleTagTeamOpen(initiatorId) {
+    logDebug("=== Handling Tag Team Open ===");
+    logDebug("Initiator Actor ID:", initiatorId);
+
+    // Get all configurations
+    const configurations = CriticalSettingsManager.getConfigurations();
+
+    // Find matching Tag Team Open configurations for Player Character
+    const tagTeamConfigs = configurations.filter(c =>
+        c.type === "Player Character" &&
+        c.triggerType === "Tag Team Open"
+    );
+
+    logDebug("Found Tag Team Open configs:", tagTeamConfigs.map(c => ({
+        id: c.id,
+        name: c.name,
+        userId: c.userId
+    })));
+
+    if (tagTeamConfigs.length === 0) {
+        logDebug("No Tag Team Open configurations found");
+        return;
+    }
+
+    // Find the non-GM user whose linked actor matches the initiator
+    const linkedUser = game.users.find(u => {
+        if (u.isGM) return false;
+        return u.character?.id === initiatorId;
+    });
+
+    logDebug("Linked user for initiator:", linkedUser ? { id: linkedUser.id, name: linkedUser.name } : "none");
+
+    // Find matching configuration using the initiator's linked user
+    let matchedConfig = null;
+
+    // Priority: specific user match > "all" users > default
+    if (linkedUser) {
+        matchedConfig = tagTeamConfigs.find(c =>
+            c.userId === linkedUser.id && !c.isDefault
+        );
+    }
+
+    if (!matchedConfig) {
+        matchedConfig = tagTeamConfigs.find(c =>
+            c.userId === "all" && !c.isDefault
+        );
+    }
+
+    if (!matchedConfig) {
+        matchedConfig = tagTeamConfigs.find(c =>
+            c.id === "default-player-character" &&
+            c.triggerType === "Tag Team Open"
+        );
+    }
+
+    if (!matchedConfig) {
+        logDebug("No matching Tag Team Open config found");
+        return;
+    }
+
+    logDebug("Using config:", matchedConfig.name);
+
+    // Trigger effect for ALL connected users
+    await triggerTagTeamEffect(linkedUser, matchedConfig);
+}
+
+/**
+ * Trigger Tag Team Open effect for all connected users
+ * @param {User|null} linkedUser - The user whose actor initiated the Tag Team (used for color)
+ * @param {CriticalConfiguration} config - The configuration to use
+ */
+async function triggerTagTeamEffect(linkedUser, config) {
+    logDebug("Triggering Tag Team Open effect for all connected users");
+
+    const userColor = linkedUser?.color?.toString() || game.user.color?.toString() || "#ffffff";
+    const authorId = linkedUser?.id || game.user.id;
+
+    // Get settings for the matched configuration
+    const configSettings = game.settings.get(MODULE_ID, "critConfigSettings") || {};
+    const entrySettings = configSettings[config.id] || {};
+
+    // Fallback to global PC settings if no config-specific settings
+    const globalTextSettings = game.settings.get(MODULE_ID, "critTextSettings");
+    const globalFxSettings = game.settings.get(MODULE_ID, "critFXSettings");
+    const globalSoundSettings = game.settings.get(MODULE_ID, "critSoundSettings");
+    const globalArtSettings = game.settings.get(MODULE_ID, "critArtSettings");
+
+    const textConfig = entrySettings.text || globalTextSettings.pc || null;
+    const fxConfig = entrySettings.fx || globalFxSettings.pc;
+    const soundConfig = entrySettings.sound || globalSoundSettings.duality;
+    const artConfig = entrySettings.art || globalArtSettings.pc || null;
+
+    // Render overlay
+    new CritOverlay({
+        type: "duality",
+        userColor,
+        authorId,
+        configOverride: textConfig,
+        artOverride: artConfig
+    }).render(true);
+
+    // Trigger configured Visual FX
+    if (fxConfig && fxConfig.type !== "none") {
+        const fx = new CritFX();
+        switch (fxConfig.type) {
+            case "shake": fx.ScreenShake(fxConfig.options); break;
+            case "shatter": fx.GlassShatter(fxConfig.options); break;
+            case "border": fx.ScreenBorder(fxConfig.options); break;
+            case "pulsate": fx.Pulsate(fxConfig.options); break;
+            case "confetti": fx.Confetti(fxConfig.options); break;
+        }
+    }
+
+    // Play sound
+    if (soundConfig && soundConfig.enabled && soundConfig.soundPath) {
         const soundPath = await CritSoundConfig.getSoundPath(soundConfig);
         if (soundPath) {
             const volume = (soundConfig.volume ?? 90) / 100;

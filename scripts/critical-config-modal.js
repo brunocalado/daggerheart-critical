@@ -156,8 +156,8 @@ export class CriticalConfigurationModal extends HandlebarsApplicationMixin(Appli
                     } else {
                         config.userId = "";
                         config.adversaryId = config.adversaryId || "";
-                        // Reset trigger type if it was Level Up (Level Up is only valid for Player Character)
-                        if (config.triggerType === "Level Up") {
+                        // Reset trigger type if it was Level Up or Tag Team Open (only valid for Player Character)
+                        if (config.triggerType === "Level Up" || config.triggerType === "Tag Team Open") {
                             config.triggerType = "Action and Reaction";
                         }
                     }
