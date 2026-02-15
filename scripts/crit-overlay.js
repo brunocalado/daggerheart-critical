@@ -97,6 +97,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         let artSize = "normal";
         let artOffsetX = 0;
         let artOffsetY = 0;
+        let artDuration = 0;
 
         if (this.artOverride) {
             if (this.artOverride.imagePath) {
@@ -106,6 +107,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                 artSize = this.artOverride.artSize || "normal";
                 artOffsetX = this.artOverride.offsetX || 0;
                 artOffsetY = this.artOverride.offsetY || 0;
+                artDuration = parseInt(this.artOverride.duration, 10) || 0;
             }
         } else {
             const artSettings = game.settings.get("daggerheart-critical", "critArtSettings");
@@ -119,6 +121,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     artSize = advArt.artSize || "normal";
                     artOffsetX = advArt.offsetX || 0;
                     artOffsetY = advArt.offsetY || 0;
+                    artDuration = parseInt(advArt.duration, 10) || 0;
                 }
             } else {
                 // PC: use default PC art config
@@ -130,7 +133,17 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     artSize = pcArt.artSize || "normal";
                     artOffsetX = pcArt.offsetX || 0;
                     artOffsetY = pcArt.offsetY || 0;
+                    artDuration = parseInt(pcArt.duration, 10) || 0;
                 }
+            }
+        }
+
+        // Determine if art is a video
+        let artIsVideo = false;
+        if (artImagePath) {
+            const artExt = artImagePath.split('.').pop().toLowerCase();
+            if (artExt === "webm" || artExt === "mp4") {
+                artIsVideo = true;
             }
         }
 
@@ -141,32 +154,38 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
             isVideo,
             mediaPath,
             artImagePath,
+            artIsVideo,
             artPosition,
             artPositionY,
             artSize,
             artOffsetX,
-            artOffsetY
+            artOffsetY,
+            artDuration
         };
     }
 
     _onRender(context, options) {
         // Get debug setting
         const debugEnabled = game.settings.get("daggerheart-critical", "debugmode");
-        
+
         if (debugEnabled) {
             console.log("DH-CRIT DEBUG | CritOverlay _onRender called");
             console.log("DH-CRIT DEBUG | Context:", context);
             console.log("DH-CRIT DEBUG | Element:", this.element);
         }
-        
-        // Look for a video element
-        const videoElement = this.element.querySelector("video.crit-video");
 
-        // Get custom duration from config (in ms), default to 0 (use default behavior)
-        const customDuration = parseInt(context.textConfig.duration, 10) || 0;
-        
+        // Look for video elements (text and art)
+        const videoElement = this.element.querySelector("video.crit-video");
+        const artVideoElement = this.element.querySelector("video.crit-art");
+
+        // Get custom durations from config (in ms), default to 0 (use default behavior)
+        const textDuration = parseInt(context.textConfig.duration, 10) || 0;
+        const artDuration = parseInt(context.artDuration, 10) || 0;
+        // Use the longest configured duration
+        const customDuration = Math.max(textDuration, artDuration);
+
         if (debugEnabled) {
-            console.log("DH-CRIT DEBUG | CritOverlay: Custom duration =", customDuration, "ms, useImage =", context.textConfig.useImage);
+            console.log("DH-CRIT DEBUG | CritOverlay: Text duration =", textDuration, "ms, Art duration =", artDuration, "ms, Final =", customDuration, "ms");
         }
 
         // Set CSS variable for animation duration
@@ -180,6 +199,22 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
 
         // Store audio context to stop it when closing
         this.audioContext = null;
+
+        // Handle art video audio (muted in template, play via AudioHelper)
+        if (artVideoElement) {
+            const artSrc = artVideoElement.getAttribute("src");
+            if (artSrc) {
+                this.artAudioContext = { src: artSrc };
+                foundry.audio.AudioHelper.play({
+                    src: artSrc,
+                    volume: 0.8,
+                    autoplay: true,
+                    loop: false
+                }, false).then(sound => {
+                    this.artAudioSound = sound;
+                });
+            }
+        }
 
         if (videoElement) {
             // Mute the video element so it doesn't play raw audio
@@ -200,7 +235,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                     this.audioSound = sound;
                 });
             }
-            
+
             if (customDuration > 0) {
                 // Use custom duration - close after specified time
                 if (debugEnabled) {
@@ -224,6 +259,20 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                 }, 15000);
             }
 
+        } else if (artVideoElement && customDuration <= 0) {
+            // No text video, but art is a video — close when art video ends
+            if (debugEnabled) {
+                console.log("DH-CRIT DEBUG | CritOverlay: Using art video end event");
+            }
+            artVideoElement.onended = () => {
+                this.close();
+            };
+
+            // Fallback safety
+            setTimeout(() => {
+                if (this.element) this.close();
+            }, 15000);
+
         } else {
             // Standard Image/Text behavior: use custom duration or default 3 seconds
             const duration = customDuration > 0 ? customDuration : 3000;
@@ -237,20 +286,26 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     async close(options = {}) {
-        // Stop audio if it's playing
+        // Stop text video audio if it's playing
         if (this.audioSound) {
-            try {
-                this.audioSound.stop();
-            } catch (e) {
-                // Audio might already be stopped
-            }
+            try { this.audioSound.stop(); } catch (e) { /* already stopped */ }
         }
-        
-        // Also try to stop all sounds from the video source
-        if (this.audioContext && this.audioContext.src) {
+
+        // Stop art video audio if it's playing
+        if (this.artAudioSound) {
+            try { this.artAudioSound.stop(); } catch (e) { /* already stopped */ }
+        }
+
+        // Also try to stop all sounds from video sources
+        const srcsToStop = [
+            this.audioContext?.src,
+            this.artAudioContext?.src
+        ].filter(Boolean);
+
+        if (srcsToStop.length > 0) {
             try {
                 game.audio.playing.forEach(sound => {
-                    if (sound.src === this.audioContext.src) {
+                    if (srcsToStop.includes(sound.src)) {
                         sound.stop();
                     }
                 });
@@ -258,7 +313,7 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                 // Ignore errors
             }
         }
-        
+
         return super.close(options);
     }
 }

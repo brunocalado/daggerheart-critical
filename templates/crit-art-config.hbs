@@ -2,13 +2,24 @@
     {{#if configId}}
     <input type="hidden" name="_configId" value="{{configId}}">
     {{/if}}
-    
+
     <p class="notes"><i class="fas fa-info-circle"></i> Configure artwork displayed behind the text for criticals.</p>
 
     <div class="form-group">
-        <label>Image</label>
+        <label>Image / Video</label>
         <div class="form-fields">
             <file-picker style="flex: 1;" type="imagevideo" name="imagePath" value="{{config.imagePath}}" placeholder="path/to/art.webp"></file-picker>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Size</label>
+        <div class="form-fields">
+            <select name="artSize">
+                {{#each sizes as |label key|}}
+                <option value="{{key}}" {{#if (eq ../config.artSize key)}}selected{{/if}}>{{label}}</option>
+                {{/each}}
+            </select>
         </div>
     </div>
 
@@ -29,15 +40,13 @@
     </div>
 
     <div class="form-group">
-        <label>Size</label>
+        <label>Duration (ms)</label>
         <div class="form-fields">
-            <select name="artSize">
-                {{#each sizes as |label key|}}
-                <option value="{{key}}" {{#if (eq ../config.artSize key)}}selected{{/if}}>{{label}}</option>
-                {{/each}}
-            </select>
+            <input type="number" name="duration" value="{{config.duration}}" placeholder="" min="0" step="1">
+            <span class="hint">Leave empty or 0 to use default duration.</span>
         </div>
     </div>
+    <p class="notes"><i class="fas fa-info-circle"></i> The final overlay duration uses the highest value between the text and art durations.</p>
 
     <div class="form-footer">
         <button type="button" class="crit-preview-btn">

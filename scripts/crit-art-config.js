@@ -43,11 +43,12 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             configSettings = settings.pc || {};
         }
 
-        const config = foundry.utils.mergeObject({ 
-            imagePath: "", 
-            artSize: "normal", 
-            offsetX: 0, 
-            offsetY: 0 
+        const config = foundry.utils.mergeObject({
+            imagePath: "",
+            artSize: "normal",
+            offsetX: 0,
+            offsetY: 0,
+            duration: 0
         }, configSettings);
 
         return {
@@ -96,7 +97,8 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
                     positionY: "middle",
                     artSize: artData.artSize,
                     offsetX: Number(artData.offsetX) || 0,
-                    offsetY: Number(artData.offsetY) || 0
+                    offsetY: Number(artData.offsetY) || 0,
+                    duration: parseInt(artData.duration, 10) || 0
                 };
 
                 const type = "duality";
@@ -170,6 +172,13 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         // Ensure defaults if fields are empty
         object.offsetX = Number(object.offsetX) || 0;
         object.offsetY = Number(object.offsetY) || 0;
+
+        // Process duration field
+        if (object.duration !== undefined && object.duration !== null && object.duration !== "") {
+            object.duration = parseInt(object.duration, 10) || 0;
+        } else {
+            object.duration = 0;
+        }
 
         // Force positions to middle in the saved settings to maintain consistency
         object.position = "middle";

@@ -579,7 +579,8 @@
 
 /* Specific Config Overrides/Additions */
 .dh-crit-text-config,
-.dh-crit-sound-config {
+.dh-crit-sound-config,
+.dh-crit-art-config {
     & .hint {
         font-size: 0.85em;
         color: #b0b0b0;
