@@ -207,10 +207,14 @@
     }
 
     /* Image and video sizes - reusing crit-explode animation for consistency */
-    & .crit-image-small, & .crit-video-small { max-height: 20vh; }
+    & .crit-image-small, & .crit-video-small { max-height: 15vh; }
+    & .crit-image-medium, & .crit-video-medium { max-height: 25vh; }
     & .crit-image-normal, & .crit-video-normal { max-height: 35vh; }
-    & .crit-image-large, & .crit-video-large { max-height: 55vh; }
-    & .crit-image-extra-large, & .crit-video-extra-large { max-height: 75vh; }
+    & .crit-image-large, & .crit-video-large { max-height: 50vh; }
+    & .crit-image-extra-large, & .crit-video-extra-large { max-height: 65vh; }
+    & .crit-image-huge, & .crit-video-huge { max-height: 75vh; }
+    & .crit-image-massive, & .crit-video-massive { max-height: 85vh; }
+    & .crit-image-giant, & .crit-video-giant { max-height: 95vh; }
 
     /* --- Critical Art (Player Artwork behind text) --- */
     & .crit-art {
@@ -241,10 +245,14 @@
     }
 
     /* Art Sizes */
-    & .crit-art-size-very-small { max-height: 20vh; }
-    & .crit-art-size-small { max-height: 35vh; }
-    & .crit-art-size-normal { max-height: 55vh; }
-    & .crit-art-size-large { max-height: 80vh; }
+    & .crit-art-size-small { max-height: 15vh; }
+    & .crit-art-size-medium { max-height: 25vh; }
+    & .crit-art-size-normal { max-height: 40vh; }
+    & .crit-art-size-large { max-height: 55vh; }
+    & .crit-art-size-extra-large { max-height: 65vh; }
+    & .crit-art-size-huge { max-height: 75vh; }
+    & .crit-art-size-massive { max-height: 85vh; }
+    & .crit-art-size-giant { max-height: 95vh; }
 
     /* Horizontal Positions (X axis) */
     & .crit-art-left-out { --art-x: -40vw; }

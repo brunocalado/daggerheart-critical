@@ -54,10 +54,14 @@ export class CritArtConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             config,
             configId: this.configId, // Pass configId to template
             sizes: {
-                "very-small": "Very Small",
                 "small": "Small",
+                "medium": "Medium",
                 "normal": "Normal",
-                "large": "Large"
+                "large": "Large",
+                "extra-large": "Extra Large",
+                "huge": "Huge",
+                "massive": "Massive",
+                "giant": "Giant"
             }
         };
     }

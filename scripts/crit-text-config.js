@@ -101,9 +101,13 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             },
             imageSizes: {
                 small: "Small",
+                medium: "Medium",
                 normal: "Normal",
                 large: "Large",
-                "extra-large": "Extra Large"
+                "extra-large": "Extra Large",
+                huge: "Huge",
+                massive: "Massive",
+                giant: "Giant"
             }
         };
     }
