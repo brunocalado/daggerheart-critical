@@ -181,6 +181,8 @@
         width: 100vw;
         height: 100vh;
         border-radius: 0;
+        opacity: 0;
+        animation: crit-fill-fade var(--crit-duration, 3s) ease-out forwards;
 
         & .crit-title {
             width: 100%;
@@ -288,6 +290,13 @@
 }
 
 /* --- Animations --- */
+
+@keyframes crit-fill-fade {
+    0% { opacity: 0; }
+    5% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+}
 
 @keyframes crit-explode {
     0% { opacity: 0; transform: scale(0.1) rotate(-10deg); }

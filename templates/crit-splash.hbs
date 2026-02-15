@@ -1,4 +1,5 @@
-<div class="crit-splash-container {{typeClass}} crit-fill-{{textConfig.fill}}">
+<div class="crit-splash-container {{typeClass}} crit-fill-{{textConfig.fill}}"
+     {{#if (eq textConfig.fill 'full')}}style="background-color: {{textConfig.backgroundColor}};"{{/if}}>
     
     {{#if artImagePath}}
         {{#if artIsVideo}}
