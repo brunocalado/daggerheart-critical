@@ -1,7 +1,7 @@
 {
   "id": "daggerheart-critical",
   "title": "Daggerheart: Critical",  
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Animated Critical for Daggerheart!",  
   "compatibility": {
     "minimum": "13",

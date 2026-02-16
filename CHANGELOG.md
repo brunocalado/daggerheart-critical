@@ -1,3 +1,6 @@
+# 0.1.3
+- Tag Team will send a chat message to the players warning them.
+
 # 0.1.2
 - Decoupled Art Size from Text Size configuration to prevent art scaling dependency on font size.
 - More font sizes

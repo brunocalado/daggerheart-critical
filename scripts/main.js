@@ -728,6 +728,120 @@ async function handleTagTeamOpen(initiatorId) {
 
     // Trigger effect for ALL connected users
     await triggerTagTeamEffect(linkedUser, matchedConfig);
+
+    // Send Tag Team whispers to team members
+    await sendTagTeamWhispers();
+}
+
+/**
+ * Send Tag Team whispers to all team members
+ * Sends a private chat message to users whose actors are in the Tag Team members list
+ * Only runs on GM client to avoid duplicate messages
+ */
+async function sendTagTeamWhispers() {
+    // Only GM creates the messages to avoid duplicates from multiple clients
+    if (!game.user.isGM) {
+        logDebug("Tag Team whisper: Skipping (not GM client)");
+        return;
+    }
+
+    logDebug("=== Sending Tag Team Whispers ===");
+
+    // Get the Tag Team data
+    const tagTeamData = game.settings.get(CONFIG.DH.id, CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll);
+    const members = tagTeamData?.members || {};
+
+    logDebug("Tag Team members:", Object.keys(members));
+    logDebug("Full Tag Team data:", tagTeamData);
+
+    // Get all actor identifiers from members
+    const memberActorIds = Object.keys(members);
+
+    if (memberActorIds.length === 0) {
+        logDebug("No members in Tag Team");
+        return;
+    }
+
+    // Find users whose linked actors are in the Tag Team members list
+    const targetUsers = [];
+    for (const user of game.users) {
+        if (user.isGM) continue; // Skip GMs
+
+        const linkedActor = user.character;
+        if (!linkedActor) continue;
+
+        logDebug("Checking user:", {
+            userId: user.id,
+            userName: user.name,
+            actorId: linkedActor.id,
+            actorUuid: linkedActor.uuid
+        });
+
+        // Check if this actor's ID or UUID is in the Tag Team members list
+        if (memberActorIds.includes(linkedActor.id) || memberActorIds.includes(linkedActor.uuid)) {
+            targetUsers.push(user);
+            logDebug("Found Tag Team member user:", { userId: user.id, userName: user.name, actorId: linkedActor.id, actorUuid: linkedActor.uuid });
+        }
+    }
+
+    logDebug("Target users for whisper:", targetUsers.map(u => ({ id: u.id, name: u.name })));
+
+    // Send whisper to each target user
+    for (const user of targetUsers) {
+        try {
+            const message = await ChatMessage.create({
+                speaker: ChatMessage.getSpeaker({ alias: "Tag Team" }),
+                content: `
+            <div style="
+                background-color: #1a1a1a;
+                border: 2px solid #c5a059;
+                border-radius: 6px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.6);
+                padding: 12px;
+                color: #f0f0f0;
+                font-family: 'Cinzel', serif;
+                margin-bottom: 5px;
+            ">
+                <!-- Header -->
+                <header style="
+                    border-bottom: 1px solid rgba(197, 160, 89, 0.5);
+                    padding-bottom: 8px;
+                    margin-bottom: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                ">
+                    <h3 style="
+                        margin: 0;
+                        color: #c5a059;
+                        font-size: 1.4em;
+                        text-transform: uppercase;
+                        text-shadow: 1px 1px 2px black;
+                        border: none;
+                    ">Tag Team</h3>
+                </header>
+
+                <!-- Main Content -->
+                <div style="
+                    font-family: 'Signika', sans-serif;
+                    font-size: 1.1em;
+                    color: #f0f0f0;
+                    text-align: center;
+                    padding: 10px 0;
+                ">
+                    Make a roll from your character sheet now!
+                </div>
+            </div>
+            `,
+                whisper: [user.id]
+            });
+
+            logDebug("Tag Team whisper sent to user:", user.name, "| Message ID:", message?.id);
+        } catch (error) {
+            console.error("Error creating Tag Team whisper for user", user.name, ":", error);
+            logDebug("ERROR sending whisper to", user.name, ":", error.message);
+        }
+    }
 }
 
 /**
