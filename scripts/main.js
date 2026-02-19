@@ -614,8 +614,8 @@ async function triggerLevelUpEffect(user, config) {
 function initializeTagTeamMonitoring() {
     logDebug("Initializing Tag Team Open monitoring...");
 
-    // Debounce set to prevent duplicate triggers for the same initiator
-    const recentTagTeams = new Set();
+    // Session signature to prevent duplicate triggers (lost on F5)
+    let lastTriggeredSignature = "";
 
     Hooks.on("updateSetting", (setting) => {
         // Build the expected setting key from Daggerheart system config
@@ -648,13 +648,13 @@ function initializeTagTeamMonitoring() {
             return;
         }
 
-        // Debounce: prevent duplicate triggers for the same initiator
-        if (recentTagTeams.has(initiatorId)) {
-            logDebug("Skipping duplicate Tag Team Open trigger for:", initiatorId);
+        // Build session signature from initiator + member keys to detect duplicate triggers
+        const sessionSignature = `${initiatorId}:${Object.keys(members).sort().join(",")}`;
+        if (lastTriggeredSignature === sessionSignature) {
+            logDebug("Tag Team skipped — already triggered for this session:", sessionSignature);
             return;
         }
-        recentTagTeams.add(initiatorId);
-        setTimeout(() => recentTagTeams.delete(initiatorId), 5000);
+        lastTriggeredSignature = sessionSignature;
 
         handleTagTeamOpen(initiatorId);
     });

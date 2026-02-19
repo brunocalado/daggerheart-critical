@@ -1,3 +1,6 @@
+# 0.1.4
+- Possible tag team fix
+
 # 0.1.3
 - Tag Team will send a chat message to the players warning them.
 
