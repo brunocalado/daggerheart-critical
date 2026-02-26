@@ -174,9 +174,9 @@ Hooks.on("createChatMessage", (message) => {
 
         if (isDSNActive()) {
             logDebug("Dice So Nice active — deferring effect for message", message.id);
-            pendingCriticals.set(message.id, { type, triggerType: dhRoll.type });
+            pendingCriticals.set(message.id, { type, triggerType: dhRoll.type ?? "action" });
         } else {
-            triggerCriticalEffect(message, type, dhRoll.type);
+            triggerCriticalEffect(message, type, dhRoll.type ?? "action");
         }
     }
     

@@ -1,3 +1,6 @@
+# 0.1.5
+- Quick Actions Request Roll can trigger Critical
+
 # 0.1.4
 - Possible tag team fix
 
