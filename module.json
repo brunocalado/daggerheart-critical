@@ -1,12 +1,14 @@
 {
   "id": "daggerheart-critical",
   "title": "Daggerheart: Critical",  
-  "version": "0.1.6",
+  "type": "module",
+  "version": "0.1.8",
   "description": "Animated Critical for Daggerheart!",  
   "compatibility": {
-    "minimum": "13",
-    "verified": "13"
+    "minimum": 14,
+    "verified": 14
   },
+  
   "authors": [
     {
       "name": "Mestre Digital"
@@ -19,7 +21,7 @@
         "id": "daggerheart",
         "type": "system",
         "compatibility": {
-          "minimum": "1.7.0"
+          "minimum": "2.2.6"
         }
       }
     ],
