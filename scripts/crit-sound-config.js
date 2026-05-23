@@ -174,7 +174,25 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
         // Get configId from hidden field in form
         const configId = object._configId;
         delete object._configId; // Remove from saved data
-        
+
+        // Pre-cache audio file list so non-GM clients can pick randomly without FilePicker access.
+        if (object.multiSound && object.soundPath) {
+            try {
+                const FilePickerClass = foundry.applications?.apps?.FilePicker ?? FilePicker;
+                const result = await FilePickerClass.browse("data", object.soundPath.replace(/\/$/, ""));
+                const audioExtensions = [".mp3", ".ogg", ".wav", ".webm", ".flac", ".m4a"];
+                object.soundFiles = (result?.files ?? []).filter(f =>
+                    audioExtensions.includes(f.substring(f.lastIndexOf(".")).toLowerCase())
+                );
+                if (!object.soundFiles.length) ui.notifications.warn("No audio files found in the selected folder.");
+            } catch (e) {
+                console.error("Could not cache sound file list:", e);
+                object.soundFiles = [];
+            }
+        } else {
+            object.soundFiles = [];
+        }
+
         if (configId) {
             // Save to config-specific settings
             await CriticalSettingsManager.saveConfigSettings(configId, "sound", object);
@@ -207,7 +225,13 @@ export class CritSoundConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             return soundConfig.soundPath;
         }
 
-        // Multi-sound mode: get random file from folder
+        // Multi-sound mode: use pre-cached file list when available (works for non-GMs).
+        if (soundConfig.soundFiles?.length) {
+            const idx = Math.floor(Math.random() * soundConfig.soundFiles.length);
+            return soundConfig.soundFiles[idx];
+        }
+
+        // Fallback: browse live — GM only, will error for non-GMs on old configs not yet re-saved.
         try {
             let folderPath = soundConfig.soundPath.replace(/\/$/, ''); // Remove trailing slash
             const audioExtensions = ['.mp3', '.ogg', '.wav', '.webm', '.flac', '.m4a'];

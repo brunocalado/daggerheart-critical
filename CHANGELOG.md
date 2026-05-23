@@ -1,3 +1,8 @@
+# 0.2.1
+
+- fixed extra comma in manifest https://github.com/brunocalado/daggerheart-critical/issues/3
+- https://github.com/brunocalado/daggerheart-critical/issues/2
+
 # 0.1.8
 
 - v14
