@@ -33,8 +33,6 @@ https://raw.githubusercontent.com/brunocalado/daggerheart-critical/refs/heads/ma
 
 * **Code License:** GNU GPLv3.
 
-* **Assets:** AI images provided are [CC0 1.0 Universal Public Domain](https://creativecommons.org/publicdomain/zero/1.0/).
-
 * **sfx-critical:** [https://pixabay.com/service/license-summary/](https://pixabay.com/service/license-summary/)
 
 * **Font Modification Notice:** The font files included in this module have been modified from their original Source form. Specifically, the original TrueType Font (.ttf) files were compressed and converted to Web Open Font Format 2 (.woff2) to optimize performance and reduce loading times within the Foundry VTT environment. All original copyright, trademark, and attribution notices have been retained.

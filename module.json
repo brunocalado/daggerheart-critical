@@ -1,8 +1,7 @@
 {
   "id": "daggerheart-critical",
   "title": "Daggerheart: Critical",  
-  "type": "module",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "description": "Animated Critical for Daggerheart!",  
   "compatibility": {
     "minimum": 14,
@@ -11,7 +10,8 @@
   
   "authors": [
     {
-      "name": "Mestre Digital"
+      "name": "Mestre Digital",
+      "url": "https://www.youtube.com/@mestredigital",
     }
   ],
   
@@ -31,7 +31,7 @@
         "type": "module",
         "title": "Dice So Nice!",
         "compatibility": {
-          "minimum": "5.2.4"
+          "minimum": "6.2.3"
         }
       }
     ]
