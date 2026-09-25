@@ -53,7 +53,7 @@ export class CritTextConfig extends HandlebarsApplicationMixin(ApplicationV2) {
             fill: "none",
             usePlayerColor: false,
             useImage: false,
-            imagePath: "modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp",
+            imagePath: "",
             imageSize: "large",
             duration: 0
         }, configSettings);

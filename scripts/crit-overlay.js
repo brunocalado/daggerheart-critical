@@ -17,6 +17,10 @@ const LETTER_SPACING_MAP = {
     "extra-wide": "0.3em"
 };
 
+// The bundled demo images were removed (AI art is no longer allowed); worlds may still have these paths saved
+const REMOVED_DEMO_ART = /^modules\/daggerheart-critical\/assets\/(art-demo|critical-img-demo|levelup-img-demo)\//;
+const isRemovedDemoArt = (path) => !!path && REMOVED_DEMO_ART.test(path);
+
 export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
 
     constructor(options = {}) {
@@ -59,8 +63,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
         // Load text settings
         const textSettings = game.settings.get("daggerheart-critical", "critTextSettings");
         const defaults = {
-            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp", imageSize: "large", duration: 0 },
-            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "modules/daggerheart-critical/assets/critical-img-demo/arcane_strike.webp", imageSize: "large", duration: 0 }
+            pc: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ffcc00", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "", imageSize: "large", duration: 0 },
+            adversary: { content: "CRITICAL", fontFamily: "Bangers", fontSize: "large", letterSpacing: "wide", color: "#ff0000", backgroundColor: "#000000", fill: "none", usePlayerColor: false, useImage: false, imagePath: "", imageSize: "large", duration: 0 }
         };
         const textConfig = this.configOverride
             ? foundry.utils.mergeObject(defaults[configKey], this.configOverride)
@@ -81,9 +85,12 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
 
         // Determine if imagePath is a video
         let isVideo = false;
-        let mediaPath = textConfig.imagePath;
-        
-        if (textConfig.useImage && mediaPath) {
+        let mediaPath = isRemovedDemoArt(textConfig.imagePath) ? "" : textConfig.imagePath;
+
+        // No usable image (empty, or a removed demo file still saved in the world): show the text instead
+        if (!mediaPath) textConfig.useImage = false;
+
+        if (textConfig.useImage) {
             const ext = mediaPath.split('.').pop().toLowerCase();
             if (ext === "webm" || ext === "mp4") {
                 isVideo = true;
@@ -137,6 +144,8 @@ export class CritOverlay extends HandlebarsApplicationMixin(ApplicationV2) {
                 }
             }
         }
+
+        if (isRemovedDemoArt(artImagePath)) artImagePath = null;
 
         // Determine if art is a video
         let artIsVideo = false;

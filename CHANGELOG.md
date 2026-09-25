@@ -1,6 +1,11 @@
 # 0.2.2
 
-
+- Fixed for Daggerheart system 2.10: the trigger type (action/reaction) is read from the roll's new action type field again, so "Only Action" and "Only Reaction" configurations work.
+- Fixed for Daggerheart system 2.10: Tag Team trigger now listens to the system's Tag Team start hook (tag team data moved to the party actor).
+- Removed all AI-generated art from the module (demo critical images, demo art, demo level up images, old preview and thumbnail). They were moved to the ai-assets module.
+- Default critical image path is now empty.
+- Saved configurations still pointing to the removed demo images fall back to the critical text (image) or to no art (art) instead of showing a broken image.
+- New preview image: a real screenshot of the module, no AI art. Also used as the module thumbnail.
 
 # 0.2.1
 

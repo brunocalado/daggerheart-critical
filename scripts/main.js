@@ -116,7 +116,7 @@ Hooks.once("init", () => {
                 fill: "none",
                 usePlayerColor: false,
                 useImage: false,
-                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/arcane_strike.webp`,
+                imagePath: "",
                 imageSize: "large"
             },
             adversary: {
@@ -129,7 +129,7 @@ Hooks.once("init", () => {
                 fill: "none",
                 usePlayerColor: false,
                 useImage: false,
-                imagePath: `modules/${MODULE_ID}/assets/critical-img-demo/arcane_strike.webp`,
+                imagePath: "",
                 imageSize: "large"
             }
         }

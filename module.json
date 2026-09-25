@@ -47,8 +47,8 @@
   "media": [
     {
       "type": "setup",
-      "url": "modules/daggerheart-critical/docs/thumbnail.webp",
-      "thumbnail": "modules/daggerheart-critical/docs/thumbnail.webp",
+      "url": "modules/daggerheart-critical/docs/preview.webp",
+      "thumbnail": "modules/daggerheart-critical/docs/preview.webp",
       "loop": false,
       "flags": {}
     }
