@@ -1,27 +1,27 @@
 {
   "id": "daggerheart-critical",
-  "title": "Daggerheart: Critical",  
-  "version": "0.2.1",
-  "description": "Animated Critical for Daggerheart!",  
+  "title": "Daggerheart: Critical",
+  "version": "0.2.2",
+  "description": "Animated Critical for Daggerheart!",
   "compatibility": {
-    "minimum": 14,
-    "verified": 14
+    "minimum": "14",
+    "verified": "14",
+    "maximum": "14"
   },
-  
   "authors": [
     {
       "name": "Mestre Digital",
-      "url": "https://www.youtube.com/@mestredigital"
+      "url": "https://www.youtube.com/@mestredigital",
+      "flags": {}
     }
   ],
-  
   "relationships": {
     "systems": [
       {
         "id": "daggerheart",
         "type": "system",
         "compatibility": {
-          "minimum": "2.2.6"
+          "minimum": "2.10.5"
         }
       }
     ],
@@ -36,21 +36,25 @@
       }
     ]
   },
-  
   "esmodules": [
     "scripts/main.js"
   ],
   "styles": [
-    "styles/crit-style.css"
+    {
+      "src": "styles/crit-style.css"
+    }
   ],
-
-  "media": [{
-    "type": "setup",
-    "url": "modules/daggerheart-critical/docs/thumbnail.webp",
-    "thumbnail": "modules/daggerheart-critical/docs/thumbnail.webp"
-  }], 
-
+  "media": [
+    {
+      "type": "setup",
+      "url": "modules/daggerheart-critical/docs/thumbnail.webp",
+      "thumbnail": "modules/daggerheart-critical/docs/thumbnail.webp",
+      "loop": false,
+      "flags": {}
+    }
+  ],
   "url": "https://github.com/brunocalado/daggerheart-critical",
   "manifest": "https://raw.githubusercontent.com/brunocalado/daggerheart-critical/refs/heads/main/module.json",
-  "download": "https://codeload.github.com/brunocalado/daggerheart-critical/zip/main"
+  "download": "https://codeload.github.com/brunocalado/daggerheart-critical/zip/main",
+  "flags": {}
 }

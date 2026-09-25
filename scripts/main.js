@@ -157,7 +157,7 @@ Hooks.on("createChatMessage", (message) => {
         console.log("DH-CRIT DEBUG | Key Fields:");
         console.log("  - isCritical:", message.system?.roll?.isCritical);
         console.log("  - type:", message.type);
-        console.log("  - system.roll.type:", message.system?.roll?.type);
+        console.log("  - system.roll.options.actionType:", message.system?.roll?.options?.actionType);
         console.log("  - system.roll.dice[0].total:", message.system?.roll?.dice?.[0]?.total);
         console.log("  - author.isGM:", message.author?.isGM);
         console.log("  - speaker.actor:", message.speaker?.actor);
@@ -174,9 +174,9 @@ Hooks.on("createChatMessage", (message) => {
 
         if (isDSNActive()) {
             logDebug("Dice So Nice active — deferring effect for message", message.id);
-            pendingCriticals.set(message.id, { type, triggerType: dhRoll.type ?? "action" });
+            pendingCriticals.set(message.id, { type, triggerType: dhRoll.options?.actionType ?? "action" });
         } else {
-            triggerCriticalEffect(message, type, dhRoll.type ?? "action");
+            triggerCriticalEffect(message, type, dhRoll.options?.actionType ?? "action");
         }
     }
     
@@ -608,25 +608,19 @@ async function triggerLevelUpEffect(user, config) {
 
 /**
  * Initialize Tag Team Open monitoring
- * Watches the Daggerheart TagTeamRoll setting for changes
- * Triggers only when: initiator.id is non-null, members has 2+, and all selected are false
+ * Listens to the Daggerheart tag team start hook, which the system fires once on every client
+ * (locally for the starter, via its socket for everyone else). Since system 2.10 the tag team
+ * data lives on the party actor (system.tagTeam) instead of the old TagTeamRoll world setting.
  */
 function initializeTagTeamMonitoring() {
     logDebug("Initializing Tag Team Open monitoring...");
 
-    // Session signature to prevent duplicate triggers (lost on F5)
-    let lastTriggeredSignature = "";
+    Hooks.on(CONFIG.DH.HOOKS.hooksConfig.tagTeamStart, ({ partyId } = {}) => {
+        const tagTeamData = game.actors.get(partyId)?.system?.tagTeam;
+        const initiatorId = tagTeamData?.initiator?.memberId;
 
-    Hooks.on("updateSetting", (setting) => {
-        // Build the expected setting key from Daggerheart system config
-        const targetKey = `${CONFIG.DH.id}.${CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll}`;
-        if (setting.key !== targetKey) return;
-
-        // Read the current value of the setting
-        const tagTeamData = game.settings.get(CONFIG.DH.id, CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll);
-        const initiatorId = tagTeamData?.initiator?.id;
-
-        logDebug("Tag Team setting updated:", {
+        logDebug("Tag Team started:", {
+            partyId,
             initiatorId,
             tagTeamData
         });
@@ -641,30 +635,16 @@ function initializeTagTeamMonitoring() {
             return;
         }
 
-        // All members must have selected === false (avoid false positives from member selection updates)
-        const allUnselected = Object.values(members).every(m => m.selected === false);
-        if (!allUnselected) {
-            logDebug("Tag Team skipped — one or more members already selected");
-            return;
-        }
-
-        // Build session signature from initiator + member keys to detect duplicate triggers
-        const sessionSignature = `${initiatorId}:${Object.keys(members).sort().join(",")}`;
-        if (lastTriggeredSignature === sessionSignature) {
-            logDebug("Tag Team skipped — already triggered for this session:", sessionSignature);
-            return;
-        }
-        lastTriggeredSignature = sessionSignature;
-
-        handleTagTeamOpen(initiatorId);
+        handleTagTeamOpen(initiatorId, members);
     });
 }
 
 /**
  * Handle Tag Team Open event
  * @param {string} initiatorId - The actor ID of the Tag Team initiator
+ * @param {Object} members - The party's tag team members, keyed by actor ID
  */
-async function handleTagTeamOpen(initiatorId) {
+async function handleTagTeamOpen(initiatorId, members) {
     logDebug("=== Handling Tag Team Open ===");
     logDebug("Initiator Actor ID:", initiatorId);
 
@@ -730,15 +710,16 @@ async function handleTagTeamOpen(initiatorId) {
     await triggerTagTeamEffect(linkedUser, matchedConfig);
 
     // Send Tag Team whispers to team members
-    await sendTagTeamWhispers();
+    await sendTagTeamWhispers(members);
 }
 
 /**
  * Send Tag Team whispers to all team members
  * Sends a private chat message to users whose actors are in the Tag Team members list
  * Only runs on GM client to avoid duplicate messages
+ * @param {Object} members - The party's tag team members, keyed by actor ID
  */
-async function sendTagTeamWhispers() {
+async function sendTagTeamWhispers(members) {
     // Only GM creates the messages to avoid duplicates from multiple clients
     if (!game.user.isGM) {
         logDebug("Tag Team whisper: Skipping (not GM client)");
@@ -747,12 +728,7 @@ async function sendTagTeamWhispers() {
 
     logDebug("=== Sending Tag Team Whispers ===");
 
-    // Get the Tag Team data
-    const tagTeamData = game.settings.get(CONFIG.DH.id, CONFIG.DH.SETTINGS.gameSettings.TagTeamRoll);
-    const members = tagTeamData?.members || {};
-
     logDebug("Tag Team members:", Object.keys(members));
-    logDebug("Full Tag Team data:", tagTeamData);
 
     // Get all actor identifiers from members
     const memberActorIds = Object.keys(members);
